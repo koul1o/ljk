@@ -1,0 +1,9 @@
+# Instruction manual for the Quiz platform prototype #
+
+ 
+-Open start.html
+-start.html is the first question of the quiz
+-in this page the user can access the documents or press submit and proceed to the last question
+-from the documents page the user can access all available documents or go back to the point he/she left from (on the quiz)
+-once being in a document the user can either go back to the documents or continue for the point he/she left from (on the quiz)
+-after pressing submit on the last question (quiz2.html) the user is redirected to the final quiz (final_quiz.html) where there is no access to the documents 
