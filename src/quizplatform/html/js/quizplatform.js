@@ -56,7 +56,7 @@ function sendElementJson(){
     
     
     var id = $('#accordion .in').parent().attr("id");
-    var pageName=document.title+"_"+id;
+    var pageName=document.title+"-"+id;
     var jsonObj = {
     sequence: 
            {
