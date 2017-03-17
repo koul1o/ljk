@@ -20,12 +20,7 @@ function showText(text) {
 function sendJson(){
 
     var pageName=document.title;
-    var jsonObj = {
     
-                time:time,page:pageName
-
-    }
-
     var s = time.toString()+"_"+pageName.toString();
     java.getJson(s);
     updateJavaTime();
@@ -35,13 +30,7 @@ function sendJson(){
 function quit(){
     var pageName=document.title;
     var exitTime=time+timer();
-    var jsonObj = {
-   
-                time:exitTime,page:"Exit "+pageName
-
-    }
-
-    var s=JSON.stringify(jsonObj);
+    var s = time.toString()+"_Exit"+pageName.toString();
     java.getJson(s);
     java.exit();
 }
@@ -57,16 +46,8 @@ function sendElementJson(){
     
     var id = $('#accordion .in').parent().attr("id");
     var pageName=document.title+"-"+id;
-    var jsonObj = {
-    sequence: 
-           {
-                time:time,page:pageName
+    var s = time.toString()+"_"+pageName.toString();
 
-
-        }
-    }
-
-    var s=JSON.stringify(jsonObj);
     java.getJson(s);
     updateJavaTime();
     
