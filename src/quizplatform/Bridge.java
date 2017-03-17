@@ -58,11 +58,11 @@ public class Bridge {
         return title;
     }
     
-    public void getJson(String j){
+    public void getTrace(String j){
        
         
         String pageName = j.toString();
-        System.out.println("JSON object: "+j);
+        System.out.println("Trace: "+j);
         saveJson(j);
         
     }
