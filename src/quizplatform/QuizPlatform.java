@@ -21,16 +21,19 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import org.reactfx.EventStreams;
 
 import org.reactfx.util.FxTimer;
 
 public class QuizPlatform extends Application {
 
+    private double p=0.0;
+
     @Override
     public void start(Stage primaryStage) {
         
         
-        double p=0.0;
+        
         /* Create the WebView and WebEngine */
         WebView webView = new WebView();
         WebEngine engine = webView.getEngine();
@@ -71,9 +74,17 @@ public class QuizPlatform extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         
+       
         FxTimer.runPeriodically(
         Duration.ofMillis(250),
-        () -> p2.setProgress(p+0.1));
+        () -> {
+            this.p=this.p+0.1;
+            p2.setProgress(this.p);
+        });
+        
+        FxTimer.runLater(
+        Duration.ofMillis(2500),
+        () -> bridge.exit());
     }
 
     public static void main(String[] args) {
