@@ -67,6 +67,11 @@ public class Bridge {
         
     }
     
+    public void getUrl(String url){
+        
+        System.out.println("quizplatform.Bridge.getUrl()" +url);
+    }
+    
     /**
      * This function saves the String <b>j</b> into a file called "./test.csv". <br>
      * It takes a formatted String containing data separated by underscores and changes the underscores into commas. <br>

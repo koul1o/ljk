@@ -42,7 +42,7 @@ public class QuizPlatform extends Application {
         Bridge bridge = new Bridge(engine,primaryStage);
         
         /* Load the first Url */
-        engine.load(getClass().getResource("html/start.html").toExternalForm());
+        engine.load(getClass().getResource("html/documents.html").toExternalForm());
        
         /* Enable JS in the WebEngine */
         engine.setJavaScriptEnabled(true);

@@ -64,3 +64,23 @@ function sendElementTrace(){
     updateJavaTime();
     
 }
+
+function checkAnswer() {
+  var message= 'Try again',
+      selected= document.querySelector('input[value="correct"]:checked'),
+      messageDiv= document.querySelector('#message');
+  
+  if(selected) {
+  	
+    answer= document.querySelector('label[for="'+selected.id+'"]').innerHTML;
+    message='Correct';
+    sendUrl();
+    sendTrace();
+  }
+  messageDiv.innerHTML= message;
+}
+
+function sendUrl(){
+var url=window.location.pathname;
+java.getUrl(url);
+}
