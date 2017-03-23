@@ -12,6 +12,7 @@ import java.io.PrintWriter;
  */
 import java.util.function.Consumer;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
 import javafx.concurrent.Worker.State;
 import javafx.scene.web.WebEngine;
@@ -24,6 +25,7 @@ public class Bridge {
     private JSObject window ;
     private String title;
     private WebEngine engine;
+    
     public Bridge(WebEngine engine,Stage stage) {
         time=0;
         engine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
@@ -36,8 +38,16 @@ public class Bridge {
                         if (engine != null) 
                             {
                                 
-                               engine.executeScript("var time="+time+"");
+                                engine.executeScript("var time="+time+"");
+                                engine.executeScript("var qUrl='/C:/Users/koul1o/Workspaces/Netbeans/QuizPlatform/build/classes/quizplatform/html/quiz1.html\'");
+                                engine.executeScript("var bUrl='/C:/Users/koul1o/Workspaces/Netbeans/QuizPlatform/build/classes/quizplatform/html/document_page.html\'");
+                                ObservableList his= engine.getHistory().getEntries();
+                                System.out.println("History"+his);
                             }
+                       
+                            
+                            
+
                     }
             });
     }

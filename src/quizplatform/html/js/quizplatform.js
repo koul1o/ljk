@@ -2,6 +2,7 @@ var startDate = new Date();
 var start=startDate.getTime();
 var ms=1;
 var time;
+var qUrl;
 
 /**
  * Update the time passed since the intit of the platform
@@ -85,7 +86,26 @@ var url=window.location.pathname;
 java.getUrl(url);
 }
 
+
 function redirect(){
     
     window.location.replace("/C:/Users/koul1o/Workspaces/Netbeans/QuizPlatform/build/classes/quizplatform/html/quiz2.html");
+}
+
+
+function setQuizUrl(){
+    
+    var a = document.getElementById('quiz_start'); //or grab it by tagname etc
+    a.href = qUrl;
+    sendElementTrace();
+    
+}
+
+
+function backToDoc(){
+    
+    var a = document.getElementById('back'); //or grab it by tagname etc
+    a.href = bUrl;
+    sendTrace();
+    
 }
