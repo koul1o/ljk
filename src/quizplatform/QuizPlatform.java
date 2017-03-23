@@ -81,10 +81,11 @@ public class QuizPlatform extends Application {
             this.p=this.p+0.1;
             p2.setProgress(this.p);
         });
-        
+        /*
         FxTimer.runLater(
         Duration.ofMillis(2500),
         () -> bridge.exit());
+        */
     }
 
     public static void main(String[] args) {
