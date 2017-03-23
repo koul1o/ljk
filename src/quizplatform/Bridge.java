@@ -23,16 +23,19 @@ public class Bridge {
     private int time;
     private JSObject window ;
     private String title;
+    private WebEngine engine;
     public Bridge(WebEngine engine,Stage stage) {
         time=0;
         engine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
-            if (newState == State.SUCCEEDED) {                        
+            if (newState == State.SUCCEEDED) {           
+                       this.engine=engine;
                        window = (JSObject) engine.executeScript("window");
                        window.setMember("java", this);
                        title=engine.getTitle();
                        stage.setTitle(engine.getTitle());
                         if (engine != null) 
                             {
+                                
                                engine.executeScript("var time="+time+"");
                             }
                     }
@@ -70,6 +73,14 @@ public class Bridge {
     public void getUrl(String url){
         
         System.out.println("quizplatform.Bridge.getUrl()" +url);
+        redirect();
+    }
+    
+    public void redirect (){
+        
+        //engine.load(getClass().getResource("html/document_page.html").toExternalForm());
+        engine.executeScript("window.location.replace(\'/C:/Users/koul1o/Workspaces/Netbeans/QuizPlatform/build/classes/quizplatform/html/quiz2.html\');");
+        //engine.executeScript("redirect();");
     }
     
     /**

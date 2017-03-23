@@ -84,3 +84,8 @@ function sendUrl(){
 var url=window.location.pathname;
 java.getUrl(url);
 }
+
+function redirect(){
+    
+    window.location.replace("/C:/Users/koul1o/Workspaces/Netbeans/QuizPlatform/build/classes/quizplatform/html/quiz2.html");
+}
