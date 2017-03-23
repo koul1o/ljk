@@ -12,8 +12,7 @@ import java.io.PrintWriter;
  */
 import java.util.function.Consumer;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
-import javafx.concurrent.Worker;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker.State;
 import javafx.scene.web.WebEngine;
 import javafx.stage.Stage;
@@ -25,11 +24,13 @@ public class Bridge {
     private JSObject window ;
     private String title;
     private WebEngine engine;
-    
+    String docUrl = null;
     public Bridge(WebEngine engine,Stage stage) {
         time=0;
-        engine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
-            if (newState == State.SUCCEEDED) {           
+        
+        engine.getLoadWorker().stateProperty().addListener((ObservableValue<? extends State> obs, State oldState, State newState) -> {
+            if (newState == State.SUCCEEDED) { 
+                       
                        this.engine=engine;
                        window = (JSObject) engine.executeScript("window");
                        window.setMember("java", this);
@@ -39,15 +40,26 @@ public class Bridge {
                             {
                                 
                                 engine.executeScript("var time="+time+"");
+                                if(engine.getTitle().toLowerCase().contains("document ")){
+                                    docUrl=engine.getLocation();
+                                    docUrl=docUrl.replace("file://","");
+                                }
+                                if (docUrl!=null){
+                                    engine.executeScript("var bUrl=\'"+docUrl+"\'"+"");
+                                }
+                               
+                                
+                                
+                                /*
+                                for (int i = 0; i < 10; i++) {
+                                    if (==engine.getLocation()){
+                                        engine.executeScript("var qUrl='/C:/Users/koul1o/Workspaces/Netbeans/QuizPlatform/build/classes/quizplatform/html/quiz1.html\'");
+                                    }
+                                }
+                                */
                                 engine.executeScript("var qUrl='/C:/Users/koul1o/Workspaces/Netbeans/QuizPlatform/build/classes/quizplatform/html/quiz1.html\'");
-                                engine.executeScript("var bUrl='/C:/Users/koul1o/Workspaces/Netbeans/QuizPlatform/build/classes/quizplatform/html/document_page.html\'");
-                                ObservableList his= engine.getHistory().getEntries();
-                                System.out.println("History"+his);
+                                
                             }
-                       
-                            
-                            
-
                     }
             });
     }

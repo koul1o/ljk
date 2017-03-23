@@ -104,8 +104,8 @@ function setQuizUrl(){
 
 function backToDoc(){
     
-    var a = document.getElementById('back'); //or grab it by tagname etc
-    a.href = bUrl;
+    var b = document.getElementById('back'); //or grab it by tagname etc
+    b.href = bUrl;
     sendTrace();
     
 }
