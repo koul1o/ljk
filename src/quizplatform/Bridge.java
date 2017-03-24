@@ -6,11 +6,15 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 /**
  *
  * @author koul1o
  */
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker.State;
@@ -25,9 +29,12 @@ public class Bridge {
     private String title;
     private WebEngine engine;
     String docUrl = null;
+    
+    HashMap<String, String> quizLinks;
+    
     public Bridge(WebEngine engine,Stage stage) {
         time=0;
-        
+        this.quizLinks = new HashMap<String, String>();
         engine.getLoadWorker().stateProperty().addListener((ObservableValue<? extends State> obs, State oldState, State newState) -> {
             if (newState == State.SUCCEEDED) { 
                        
@@ -50,6 +57,22 @@ public class Bridge {
                                 /* Update the doc url in the webpage */
                                 if (docUrl!=null){
                                     engine.executeScript("var bUrl=\'"+docUrl+"\'"+"");
+                                    
+                                    // add the doc into the hashmap if it doesn't exist yet then update the quiz URL
+                                    if(!quizLinks.containsKey(docUrl)){
+                                    	quizLinks.put(docUrl, docUrl.replace(".html", "_quiz1.html"));
+                                    }
+                                    
+                                    /* 	if the quizLink point to a quiz (ie if the quiz hasn't already been finished) it changes the value of qUrl
+                                    	the next question of the quizz */
+                                    
+                                    if(quizLinks.get(docUrl).contains("_quiz")){
+                                    	engine.executeScript("var qUrl=\'" + quizLinks.get(docUrl) + "\'");
+                                    } else {
+                                    	engine.executeScript("var qUrl='#'");
+                                    }
+                                    
+                                    System.out.println(quizLinks);
                                 }
                                
                                 
@@ -61,7 +84,8 @@ public class Bridge {
                                     }
                                 }
                                 */
-                                engine.executeScript("var qUrl='/C:/Users/koul1o/Workspaces/Netbeans/QuizPlatform/build/classes/quizplatform/html/quiz1.html\'");
+                                
+                                //engine.executeScript("var qUrl='/C:/Users/koul1o/Workspaces/Netbeans/QuizPlatform/build/classes/quizplatform/html/quiz1.html\'");
                                 
                             }
                     }
@@ -84,7 +108,7 @@ public class Bridge {
     /* Upcall to this function from the page, to get the interaction trace */
     public void getTrace(String j){
         System.out.println("Trace: "+j);
-        saveJson(j);
+        saveData(j);
         
     }
     
@@ -92,14 +116,42 @@ public class Bridge {
     public void getUrl(String url){
         
         System.out.println("quizplatform.Bridge.getUrl()" +url);
-        redirect();
+        URLToNextQuestion(url);
+        redirect(quizLinks.get(docUrl));
+    }
+    
+    public void URLToNextQuestion(String quizUrl){
+    	Pattern digitPattern = Pattern.compile("(\\d+)");
+
+    	Matcher matcher = digitPattern.matcher(quizUrl);
+    	StringBuffer result = new StringBuffer();
+    	while (matcher.find())
+    	{
+    	    matcher.appendReplacement(result, String.valueOf(Integer.parseInt(matcher.group(1)) + 1));
+    	}
+    	matcher.appendTail(result);
+    	
+    	String r = result.toString();
+    	File f = new File(r);
+    	
+    	if(!f.exists()){
+    		r = "";
+    		String s[] = result.toString().split("/");
+    		s[s.length-1] = "documents.html";
+    		for(int i=0; i<s.length; i++){
+    			r = r+s[i];
+    		}
+    	}
+    	
+		quizLinks.replace(docUrl, r);
+    	
     }
     
     /* This function redirects us to the next question while in the quiz */
-    public void redirect (){
+    public void redirect (String url){
         
         //engine.load(getClass().getResource("html/document_page.html").toExternalForm());
-        engine.executeScript("window.location.replace(\'/C:/Users/koul1o/Workspaces/Netbeans/QuizPlatform/build/classes/quizplatform/html/quiz2.html\');");
+        engine.executeScript("window.location.replace(\'" + url + "\');");
         //engine.executeScript("redirect();");
     }
     
@@ -116,8 +168,8 @@ public class Bridge {
      * @param j - the string to save
      */
     
-    public void saveJson(String j){
-    	saveJson(j, "test.csv");
+    public void saveData(String j){
+    	saveData(j, "test.csv");
     }
     
     /**
@@ -132,7 +184,7 @@ public class Bridge {
      * @param filepath - the file path of the file to save in 
      */
     
-    public void saveJson(String j, String filepath){
+    public void saveData(String j, String filepath){
     	
     	try {
     		StringBuilder sb = new StringBuilder();
