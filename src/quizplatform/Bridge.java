@@ -133,14 +133,19 @@ public class Bridge {
     	
     	String r = result.toString();
     	File f = new File(r);
-    	
     	if(!f.exists()){
+    		String s[] = r.split("/");
     		r = "";
-    		String s[] = result.toString().split("/");
     		s[s.length-1] = "documents.html";
-    		for(int i=0; i<s.length; i++){
-    			r = r+s[i];
+    		int i = 0;
+    		for(i=0; i<s.length; i++){
+    			if(i != 0){
+    				r = r + "/" + s[i];
+    			} else {
+        			r = r + s[i];
+    			}
     		}
+    		System.out.println(r);
     	}
     	
 		quizLinks.replace(docUrl, r);
