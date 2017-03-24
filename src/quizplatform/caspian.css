@@ -2002,6 +2002,9 @@
     -fx-indeterminate-bar-escape: true;
     -fx-indeterminate-bar-flip: true;
     -fx-indeterminate-bar-animation-time: 2;
+    -fx-padding: 5px;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
 }
 
 .progress-bar .bar {
@@ -2011,6 +2014,7 @@
         linear-gradient(to bottom, derive(-fx-accent,38%), -fx-accent);
     -fx-background-insets: 0, 1, 2;
     -fx-padding: 0.416667em; /* 5 */
+    
     
 }
 

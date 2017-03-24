@@ -33,23 +33,27 @@ public class Bridge {
                        
                        this.engine=engine;
                        window = (JSObject) engine.executeScript("window");
+                       /* Register our java app to the window so that we can make upcalls to the app using java.functionName(); */
                        window.setMember("java", this);
                        title=engine.getTitle();
                        stage.setTitle(engine.getTitle());
+                       /* */
                         if (engine != null) 
                             {
-                                
+                                /* Update the global time passed everytime we load a new page */ 
                                 engine.executeScript("var time="+time+"");
+                                /* Check if we are in a document page and format the url removing the file:// prefix */ 
                                 if(engine.getTitle().toLowerCase().contains("document ")){
                                     docUrl=engine.getLocation();
                                     docUrl=docUrl.replace("file://","");
                                 }
+                                /* Update the doc url in the webpage */
                                 if (docUrl!=null){
                                     engine.executeScript("var bUrl=\'"+docUrl+"\'"+"");
                                 }
                                
                                 
-                                
+                                /* Update the starting question of a quiz when inside a document page */
                                 /*
                                 for (int i = 0; i < 10; i++) {
                                     if (==engine.getLocation()){
@@ -65,39 +69,33 @@ public class Bridge {
     }
     
     
-    
+    /* Upcall to this function from the page, to update the global time passed  */
     public void updateTime(int time){
         this.time=time;
         //System.out.println("Exit time: "+time);
     }
     
-    
+    /* Function, to exit the platform */
     public void exit() {
         Platform.exit();
         
     }
-   
     
-    public String sendTitle(){
-        
-        return title;
-    }
-    
+    /* Upcall to this function from the page, to get the interaction trace */
     public void getTrace(String j){
-       
-        
-        String pageName = j.toString();
         System.out.println("Trace: "+j);
         saveJson(j);
         
     }
     
+    /* Upcall to this function from the page, to update the next question Url for a document quiz */
     public void getUrl(String url){
         
         System.out.println("quizplatform.Bridge.getUrl()" +url);
         redirect();
     }
     
+    /* This function redirects us to the next question while in the quiz */
     public void redirect (){
         
         //engine.load(getClass().getResource("html/document_page.html").toExternalForm());

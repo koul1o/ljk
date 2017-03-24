@@ -47,7 +47,7 @@ public class QuizPlatform extends Application {
         p2.setProgress(p);
         
         /* Add progress bar and webView in top and center of a BorderPane */
-        BorderPane root = new BorderPane(webView, p2, null, null, null); 
+        BorderPane root = new BorderPane(webView, null, null, p2, null); 
         
         /* Align the process bar on the center */
         root.setAlignment(p2,Pos.CENTER);
@@ -69,16 +69,16 @@ public class QuizPlatform extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         
-       
+        /* Using org.reactfx.util.FxTimer augment the progress bar periodicaly every 15min by 25% */
         FxTimer.runPeriodically(
-        Duration.ofMillis(250),
+        Duration.ofMillis(900000),
         () -> {
-            this.p=this.p+0.1;
+            this.p=this.p+0.25;
             p2.setProgress(this.p);
         });
-        /*
+        /* Exit the app after 1h
         FxTimer.runLater(
-        Duration.ofMillis(2500),
+        Duration.ofMillis(3600000),
         () -> bridge.exit());
         */
     }
