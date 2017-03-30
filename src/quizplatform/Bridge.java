@@ -122,7 +122,7 @@ public class Bridge {
     }
     
     public void URLToNextQuestion(String quizUrl){
-    	Pattern digitPattern = Pattern.compile("(\\d+)");
+    	Pattern digitPattern = Pattern.compile("(\\d)");
 
     	Matcher matcher = digitPattern.matcher(quizUrl);
     	StringBuffer result = new StringBuffer();
@@ -133,6 +133,7 @@ public class Bridge {
     	matcher.appendTail(result);
     	
     	String r = result.toString();
+        System.out.println("Next quiz : "+r);
     	File f = new File(r);
     	if(!f.exists()){
     		String s[] = r.split("/");
