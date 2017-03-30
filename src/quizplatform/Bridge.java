@@ -145,6 +145,7 @@ public class Bridge {
         			r = r + s[i];
     			}
     		}
+    		
     		System.out.println(r);
     	}
     	
