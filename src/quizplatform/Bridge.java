@@ -68,6 +68,7 @@ public class Bridge {
                                     
                                     if(quizLinks.get(docUrl).contains("_quiz")){
                                     	engine.executeScript("var qUrl=\'" + quizLinks.get(docUrl) + "\'");
+                                        System.out.println("qurl"+quizLinks.get(docUrl));
                                     } else {
                                     	engine.executeScript("var qUrl='#'");
                                     }
@@ -150,12 +151,14 @@ public class Bridge {
     	}
     	
 		quizLinks.replace(docUrl, r);
+                System.out.println("quizplatform.Bridge.URLToNextQuestion()"+r);
+                System.out.println("quizplatform.Bridge.URLToNextQuestion()"+quizLinks);
     	
     }
     
     /* This function redirects us to the next question while in the quiz */
     public void redirect (String url){
-        
+        System.out.println("quizplatform.Bridge.redirect() "+url);
         //engine.load(getClass().getResource("html/document_page.html").toExternalForm());
         engine.executeScript("window.location.replace(\'" + url + "\');");
         //engine.executeScript("redirect();");
