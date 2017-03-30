@@ -70,15 +70,17 @@ function checkAnswer() {
   var message= 'Try again',
       selected= document.querySelector('input[value="correct"]:checked'),
       messageDiv= document.querySelector('#message');
+      messageDiv.style.color="red";
   
   if(selected) {
   	
     answer= document.querySelector('label[for="'+selected.id+'"]').innerHTML;
     message='Correct';
+    messageDiv.style.color="green";
     sendUrl();
     sendTrace();
   }
-  messageDiv.innerHTML= message;
+  messageDiv.innerHTML=message;
 }
 
 function sendUrl(){
@@ -87,16 +89,16 @@ java.getUrl(url);
 }
 
 
-function redirect(){
-    
-    window.location.replace("/C:/Users/koul1o/Workspaces/Netbeans/QuizPlatform/build/classes/quizplatform/html/quiz2.html");
-}
-
-
 function setQuizUrl(){
     
     var a = document.getElementById('quiz_start'); //or grab it by tagname etc
     a.href = qUrl;
+    
+  if(document.getElementById('quiz_start').href!==""){
+    messageDivCompl=document.getElementById('message_completed') ;
+    messageDivCompl.style.color="green";
+    messageDivCompl.innerHTML= 'You have completed the quiz';
+  }
     sendElementTrace();
     
 }
