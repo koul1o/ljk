@@ -121,17 +121,27 @@ public class Bridge {
     }
     
     public void URLToNextQuestion(String quizUrl){
+
     	Pattern digitPattern = Pattern.compile("(\\d+)");
 
     	Matcher matcher = digitPattern.matcher(quizUrl);
     	StringBuffer result = new StringBuffer();
+    	int index = 0;
     	while (matcher.find())
     	{
-    	    matcher.appendReplacement(result, String.valueOf(Integer.parseInt(matcher.group(1)) + 1));
-    	}
+
+        	System.out.println("Next q : " + result.toString());
+        	index = matcher.start();
+        	
+        }
+    	System.out.println("index = " + index);
+    	matcher.find(index);
+    	matcher.appendReplacement(result, String.valueOf(Integer.parseInt(matcher.group(1)) + 1));
     	matcher.appendTail(result);
-    	
+
     	String r = result.toString();
+
+    	System.out.println("Next q : " + result.toString());
     	File f = new File(r);
     	if(!f.exists()){
     		String s[] = r.split("/");
