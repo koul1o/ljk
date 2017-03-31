@@ -24,6 +24,8 @@ import netscape.javascript.JSObject;
 
 public class Bridge {
 
+	private static final String QUESTION_NAME = "_question";
+	
     private int time;
     private JSObject window ;
     private String title;
@@ -50,7 +52,7 @@ public class Bridge {
                                 /* Update the global time passed everytime we load a new page */ 
                                 engine.executeScript("var time="+time+"");
                                 /* Check if we are in a document page and format the url removing the file:// prefix */ 
-                                if(engine.getTitle().toLowerCase().contains("document ") && !engine.getTitle().toLowerCase().contains("question")){
+                                if(engine.getTitle().toLowerCase().contains("document ") && !title.toLowerCase().contains(QUESTION_NAME)){
                                     docUrl=engine.getLocation();
                                     docUrl=docUrl.replace("file://","");
                                 }
@@ -59,15 +61,15 @@ public class Bridge {
                                     engine.executeScript("var bUrl=\'"+docUrl+"\'"+"");
                                     
                                     // add the doc into the hashmap if it doesn't exist yet then update the quiz URL
-                                    if(!quizLinks.containsKey(docUrl) && !title.toLowerCase().contains("question")){
-                                    	quizLinks.put(docUrl, docUrl.replace(".html", "_quiz1.html"));
+                                    if(!this.quizLinks.containsKey(docUrl) && !title.toLowerCase().contains(QUESTION_NAME)){
+                                    	this.quizLinks.put(docUrl, docUrl.replace(".html", QUESTION_NAME+"1.html"));
                                     }
                                     
                                     /* 	if the quizLink point to a quiz (ie if the quiz hasn't already been finished) it changes the value of qUrl
                                     	the next question of the quizz */
                                     
-                                    if(quizLinks.get(docUrl) != null && quizLinks.get(docUrl).contains("_quiz")){
-                                    	engine.executeScript("var qUrl=\'" + quizLinks.get(docUrl) + "\'");
+                                    if(this.quizLinks.get(docUrl) != null && this.quizLinks.get(docUrl).contains(QUESTION_NAME)){
+                                    	engine.executeScript("var qUrl=\'" + this.quizLinks.get(docUrl) + "\'");
                                     } else {
                                     	engine.executeScript("var qUrl='#'");
                                     }
@@ -106,7 +108,7 @@ public class Bridge {
     /* Upcall to this function from the page, to update the next question Url for a document quiz */
     public void getUrl(String url){
         URLToNextQuestion(url);
-        redirect(quizLinks.get(docUrl));
+        redirect(this.quizLinks.get(docUrl));
     }
     
     /**
@@ -153,7 +155,7 @@ public class Bridge {
     		
     	}
     	
-		quizLinks.replace(docUrl, r);
+		this.quizLinks.replace(docUrl, r);
                 
     }
     
