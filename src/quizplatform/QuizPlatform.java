@@ -80,11 +80,19 @@ public class QuizPlatform extends Application {
             p2.setProgress(this.p);
         });
         
-        /* Exit the app after 1h */
+        /* Go to the final quiz after 1h */
         FxTimer.runLater(
-        Duration.ofMillis(3600000),
-        () -> bridge.exit());
- 
+            Duration.ofMillis(3600000),
+            () -> { bridge.lastTrace();
+                    engine.load(getClass().getResource("html/final_quiz.html").toExternalForm());
+                        
+                    });
+        /* Exit the platform and the final quiz after 10m */
+        FxTimer.runLater(
+            Duration.ofMillis(4200000),
+            () -> { bridge.lastTrace();
+                    bridge.exit();
+                      });
         primaryStage.setOnCloseRequest(exit());
     }
     

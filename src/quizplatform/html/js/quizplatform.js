@@ -38,7 +38,7 @@ function sendTrace(){
 function quit(){
     var pageName=document.title;
     var exitTime=time+timer();
-    var s = exitTime.toString()+"_Exit"+pageName.toString();
+    var s = exitTime.toString()+"_"+pageName.toString()+"_Platform Exit";
     java.getTrace(s);
     java.exit();
 }
@@ -111,4 +111,17 @@ function backToDoc(){
     b.href = bUrl;
     sendTrace();
     
+}
+
+
+function checkFinalAnswers(){
+var radios = document.getElementsByClassName("question_item");
+var ans;
+    for (var i = 0, length = radios.length; i < length; i++) {
+        if (radios[i].checked) {
+            ans="Question: "+radios[i].name+" Answer: "+radios[i].value;
+            java.getTrace(ans);
+           
+        }
+    }
 }
