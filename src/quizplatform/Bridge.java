@@ -110,6 +110,16 @@ public class Bridge {
         redirect(quizLinks.get(docUrl));
     }
     
+    /**
+     * This function changes the String <b>quizUrl</b> by adding 1 to the number of the quiz. So C://example/document1_quiz1.html would become C://example/document1_quiz2.html.<br>
+     * It takes the path to the html file then parses it and changes only the last number. <br>
+     * It then changes the entry of the document in the <b>quizLinks</b> hashmap so that the value matches the path of the next question. <br>
+     * <br>
+     * If the resulting file does not exist, the url is set to the list of documents. <br>
+     * 
+     * @param quizUrl - the url to save
+     */
+    
     public void URLToNextQuestion(String quizUrl){
 
     	Pattern digitPattern = Pattern.compile("(\\d+)");
