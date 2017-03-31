@@ -82,7 +82,7 @@ public class QuizPlatform extends Application {
         
         /* Go to the final quiz after 1h */
         FxTimer.runLater(
-            Duration.ofMillis(3600),
+            Duration.ofMillis(3600000),
             () -> { bridge.finalQuiz();
                     engine.load(getClass().getResource("html/final_quiz.html").toExternalForm());
                         

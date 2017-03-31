@@ -136,7 +136,6 @@ public class Bridge {
     	{
         	index = matcher.start();      	
         }
-    	System.out.println("index = " + index);
     	matcher.find(index);
     	matcher.appendReplacement(result, String.valueOf(Integer.parseInt(matcher.group(1)) + 1));
     	matcher.appendTail(result);

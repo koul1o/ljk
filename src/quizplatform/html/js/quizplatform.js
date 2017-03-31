@@ -67,7 +67,7 @@ function sendElementTrace(){
     
     
     var id = $('#accordion .in').parent().attr("id");
-    var pageName=document.title+"-"+id;
+    var pageName=document.title+" - "+id;
     var s = time.toString()+"_"+pageName.toString();
     java.getTrace(s);
     updateJavaTime();
@@ -79,15 +79,28 @@ function checkAnswer() {
       selected= document.querySelector('input[value="correct"]:checked'),
       messageDiv= document.querySelector('#message');
       messageDiv.style.color="red";
+
+    var radios = document.getElementsByClassName("question_item");
+    var ans;
+    for (var i = 0, length = radios.length; i < length; i++) {
+        if (radios[i].checked) {
+           ans=radios[i].value;
+        }
+    }
+   
   
   if(selected) {
   	
-    answer= document.querySelector('label[for="'+selected.id+'"]').innerHTML;
+   
     message='Correct';
     messageDiv.style.color="green";
     sendUrl();
-    sendTrace();
   }
+  var pageName=document.title;
+  var s = time.toString()+"_"+pageName.toString()+"_Answer: "+ans;
+  java.getTrace(s);
+  updateJavaTime();
+ 
   messageDiv.innerHTML=message;
 }
 
@@ -106,6 +119,7 @@ function setQuizUrl(){
     messageDivCompl=document.getElementById('message_completed') ;
     messageDivCompl.style.color="green";
     messageDivCompl.innerHTML= 'You have completed the quiz';
+    return;
     
   }
     sendElementTrace();
