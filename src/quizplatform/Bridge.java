@@ -86,8 +86,9 @@ public class Bridge {
         //System.out.println("Exit time: "+time);
     }
     
-    /* Function, to exit the platform */
+    /* Function, to exit the platform and call to lastTrace()*/
     public void exit() {
+        lastTrace();
         Platform.exit();
         
     }
@@ -98,7 +99,7 @@ public class Bridge {
         saveData(j);
         
     }
-    
+    /* Upcall to this function from the page, to get the last trace on window exit */
     public void lastTrace(){
         engine.executeScript("sendTrace()");
     }
