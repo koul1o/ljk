@@ -79,12 +79,12 @@ public class QuizPlatform extends Application {
             this.p=this.p+0.25;
             p2.setProgress(this.p);
         });
-        /* Exit the app after 1h
+        
+        /* Exit the app after 1h */
         FxTimer.runLater(
         Duration.ofMillis(3600000),
         () -> bridge.exit());
-        */
-        
+ 
         primaryStage.setOnCloseRequest(exit());
     }
     
