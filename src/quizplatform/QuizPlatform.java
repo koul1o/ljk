@@ -82,9 +82,11 @@ public class QuizPlatform extends Application {
         () -> bridge.exit());
         */
     }
+
     public static void main(String[] args) {
         launch(args);
     }
+    
     
     
 }
