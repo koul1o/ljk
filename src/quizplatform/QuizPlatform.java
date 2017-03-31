@@ -9,6 +9,8 @@ package quizplatform;
 import java.net.URL;
 import java.time.Duration;
 import javafx.application.Application;
+import javafx.event.EventHandler;
+
 import static javafx.application.Application.launch;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -17,13 +19,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import org.reactfx.util.FxTimer;
 
 public class QuizPlatform extends Application {
 
     private double p=0.0;
-
+    public Bridge bridge;
     @Override
     public void start(Stage primaryStage) {
         
@@ -34,7 +37,7 @@ public class QuizPlatform extends Application {
         WebEngine engine = webView.getEngine();
         
         /* Initialize the Bridge */
-        Bridge bridge = new Bridge(engine,primaryStage);
+        bridge = new Bridge(engine,primaryStage);
         
         /* Load the first Url */
         engine.load(getClass().getResource("html/documents.html").toExternalForm());
@@ -81,6 +84,17 @@ public class QuizPlatform extends Application {
         Duration.ofMillis(3600000),
         () -> bridge.exit());
         */
+        
+        primaryStage.setOnCloseRequest(exit());
+    }
+    
+    public EventHandler<WindowEvent> exit(){
+    	return new EventHandler<WindowEvent>() {
+    		@Override
+    		public void handle(WindowEvent event) {
+    			bridge.lastTrace();
+    		}
+		};
     }
 
     public static void main(String[] args) {
