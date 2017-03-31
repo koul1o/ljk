@@ -54,7 +54,6 @@ public class Bridge {
                                     docUrl=engine.getLocation();
                                     docUrl=docUrl.replace("file://","");
                                 }
-                                System.out.println("Url : " + docUrl);
                                 /* Update the doc url in the webpage */
                                 if (docUrl!=null){
                                     engine.executeScript("var bUrl=\'"+docUrl+"\'"+"");
@@ -69,12 +68,10 @@ public class Bridge {
                                     
                                     if(quizLinks.get(docUrl) != null && quizLinks.get(docUrl).contains("_quiz")){
                                     	engine.executeScript("var qUrl=\'" + quizLinks.get(docUrl) + "\'");
-                                        System.out.println("qurl"+quizLinks.get(docUrl));
                                     } else {
                                     	engine.executeScript("var qUrl='#'");
                                     }
                                     
-                                    System.out.println(quizLinks);
                                 }
                                
                             }
@@ -102,10 +99,12 @@ public class Bridge {
         
     }
     
+    public void lastTrace(){
+        engine.executeScript("sendTrace()");
+    }
+    
     /* Upcall to this function from the page, to update the next question Url for a document quiz */
     public void getUrl(String url){
-        
-        System.out.println("quizplatform.Bridge.getUrl()" +url);
         URLToNextQuestion(url);
         redirect(quizLinks.get(docUrl));
     }
@@ -129,10 +128,7 @@ public class Bridge {
     	int index = 0;
     	while (matcher.find())
     	{
-
-        	System.out.println("Next q : " + result.toString());
-        	index = matcher.start();
-        	
+        	index = matcher.start();      	
         }
     	System.out.println("index = " + index);
     	matcher.find(index);
@@ -140,9 +136,8 @@ public class Bridge {
     	matcher.appendTail(result);
 
     	String r = result.toString();
-
-    	System.out.println("Next q : " + result.toString());
-    	File f = new File(r);
+        
+        File f = new File(r);
     	if(!f.exists()){
     		String s[] = r.split("/");
     		r = "";
@@ -156,21 +151,15 @@ public class Bridge {
     			}
     		}
     		
-    		System.out.println(r);
     	}
-    	System.out.println("DocUrl = " + docUrl);
-		quizLinks.replace(docUrl, r);
-                System.out.println("quizplatform.Bridge.URLToNextQuestion()"+r);
-                System.out.println("quizplatform.Bridge.URLToNextQuestion()"+quizLinks);
     	
+		quizLinks.replace(docUrl, r);
+                
     }
     
     /* This function redirects us to the next question while in the quiz */
     public void redirect (String url){
-        System.out.println("quizplatform.Bridge.redirect() "+url);
-        //engine.load(getClass().getResource("html/document_page.html").toExternalForm());
-        engine.executeScript("window.location.replace(\'" + url + "\');");
-        //engine.executeScript("redirect();");
+           engine.executeScript("window.location.replace(\'" + url + "\');");
     }
     
     /**
@@ -245,8 +234,8 @@ public class Bridge {
 		}
     	
     }
-    
 
+  
     public void execute(Consumer<Object> callback, String function, Object... args) {
         callback.accept(window.call(function, args));
     }
