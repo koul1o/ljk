@@ -50,23 +50,24 @@ public class Bridge {
                                 /* Update the global time passed everytime we load a new page */ 
                                 engine.executeScript("var time="+time+"");
                                 /* Check if we are in a document page and format the url removing the file:// prefix */ 
-                                if(engine.getTitle().toLowerCase().contains("document ")){
+                                if(engine.getTitle().toLowerCase().contains("document ") && !engine.getTitle().toLowerCase().contains("question")){
                                     docUrl=engine.getLocation();
                                     docUrl=docUrl.replace("file://","");
                                 }
+                                System.out.println("Url : " + docUrl);
                                 /* Update the doc url in the webpage */
                                 if (docUrl!=null){
                                     engine.executeScript("var bUrl=\'"+docUrl+"\'"+"");
                                     
                                     // add the doc into the hashmap if it doesn't exist yet then update the quiz URL
-                                    if(!quizLinks.containsKey(docUrl)){
+                                    if(!quizLinks.containsKey(docUrl) && !title.toLowerCase().contains("question")){
                                     	quizLinks.put(docUrl, docUrl.replace(".html", "_quiz1.html"));
                                     }
                                     
                                     /* 	if the quizLink point to a quiz (ie if the quiz hasn't already been finished) it changes the value of qUrl
                                     	the next question of the quizz */
                                     
-                                    if(quizLinks.get(docUrl).contains("_quiz")){
+                                    if(quizLinks.get(docUrl) != null && quizLinks.get(docUrl).contains("_quiz")){
                                     	engine.executeScript("var qUrl=\'" + quizLinks.get(docUrl) + "\'");
                                         System.out.println("qurl"+quizLinks.get(docUrl));
                                     } else {
@@ -147,7 +148,7 @@ public class Bridge {
     		
     		System.out.println(r);
     	}
-    	
+    	System.out.println("DocUrl = " + docUrl);
 		quizLinks.replace(docUrl, r);
                 System.out.println("quizplatform.Bridge.URLToNextQuestion()"+r);
                 System.out.println("quizplatform.Bridge.URLToNextQuestion()"+quizLinks);
