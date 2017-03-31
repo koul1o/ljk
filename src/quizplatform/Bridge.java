@@ -24,7 +24,7 @@ import netscape.javascript.JSObject;
 
 public class Bridge {
 
-	private static final String QUESTION_NAME = "_question";
+	private static final String QUESTION_NAME = "question";
 	
     private int time;
     private JSObject window ;
@@ -62,13 +62,13 @@ public class Bridge {
                                     
                                     // add the doc into the hashmap if it doesn't exist yet then update the quiz URL
                                     if(!this.quizLinks.containsKey(docUrl) && !title.toLowerCase().contains(QUESTION_NAME)){
-                                    	this.quizLinks.put(docUrl, docUrl.replace(".html", QUESTION_NAME+"1.html"));
+                                    	this.quizLinks.put(docUrl, docUrl.replace(".html", "_"+QUESTION_NAME+"1.html"));
                                     }
                                     
                                     /* 	if the quizLink point to a quiz (ie if the quiz hasn't already been finished) it changes the value of qUrl
                                     	the next question of the quizz */
                                     
-                                    if(this.quizLinks.get(docUrl) != null && this.quizLinks.get(docUrl).contains(QUESTION_NAME)){
+                                    if(this.quizLinks.get(docUrl) != null && this.quizLinks.get(docUrl).contains("_"+QUESTION_NAME)){
                                     	engine.executeScript("var qUrl=\'" + this.quizLinks.get(docUrl) + "\'");
                                     } else {
                                     	engine.executeScript("var qUrl='#'");
