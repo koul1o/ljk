@@ -43,6 +43,14 @@ function quit(){
     java.exit();
 }
 
+
+function finalQuiz(){
+    var pageName=document.title;
+    var exitTime=time+timer();
+    var s = exitTime.toString()+"_"+pageName.toString();
+    updateJavaTime();
+}
+
 /** 
   * Calculate the time passed in a page in ms
   */

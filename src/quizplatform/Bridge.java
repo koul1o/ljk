@@ -105,6 +105,9 @@ public class Bridge {
     public void lastTrace(){
         engine.executeScript("sendTrace();quit();");
     }
+    public void finalQuiz(){
+        engine.executeScript("sendTrace();finalQuiz();");
+    }
     
     /* Upcall to this function from the page, to update the next question Url for a document quiz */
     public void getUrl(String url){
