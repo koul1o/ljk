@@ -94,10 +94,11 @@ function setQuizUrl(){
     var a = document.getElementById('quiz_start'); //or grab it by tagname etc
     a.href = qUrl;
     
-  if(document.getElementById('quiz_start').href!==""){
+  if(qUrl==='#'){
     messageDivCompl=document.getElementById('message_completed') ;
     messageDivCompl.style.color="green";
     messageDivCompl.innerHTML= 'You have completed the quiz';
+    
   }
     sendElementTrace();
     
