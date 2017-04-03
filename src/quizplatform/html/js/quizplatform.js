@@ -141,7 +141,7 @@ var radios = document.getElementsByClassName("question_item");
 var ans;
     for (var i = 0, length = radios.length; i < length; i++) {
         if (radios[i].checked) {
-            ans="Question: "+radios[i].name+" Answer: "+radios[i].value;
+            ans=radios[i].name+"_Answer: "+radios[i].value;
             java.getTrace(ans);
            
         }
