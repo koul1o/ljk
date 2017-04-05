@@ -97,7 +97,7 @@ function checkAnswer() {
     sendUrl();
   }
   var pageName=document.title;
-  var s = time.toString()+"_"+pageName.toString()+"_Answer: "+ans;
+  var s = (timer()+time).toString()+"_"+pageName.toString()+"_Answer: "+ans;
   java.getTrace(s);
   updateJavaTime();
  

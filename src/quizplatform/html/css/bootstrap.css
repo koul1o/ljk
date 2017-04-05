@@ -6785,3 +6785,7 @@ button.close {
 
   margin-top: 40px;
 }
+.btn.btn-info {
+    float: right;
+    margin-right: 10px;
+}

@@ -10,7 +10,6 @@ import java.net.URL;
 import java.time.Duration;
 import javafx.application.Application;
 import javafx.event.EventHandler;
-
 import static javafx.application.Application.launch;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -25,13 +24,11 @@ import org.reactfx.util.FxTimer;
 
 public class QuizPlatform extends Application {
 
-    private double p=0.0;
+    private double percent=0.0;
     public Bridge bridge;
     @Override
     public void start(Stage primaryStage) {
-        
-        
-        
+    
         /* Create the WebView and WebEngine */
         WebView webView = new WebView();
         WebEngine engine = webView.getEngine();
@@ -46,14 +43,14 @@ public class QuizPlatform extends Application {
         engine.setJavaScriptEnabled(true);
         
         /* Create a progress bar */
-        ProgressBar p2 = new ProgressBar();
-        p2.setProgress(p);
+        ProgressBar progressBar = new ProgressBar();
+        progressBar.setProgress(percent);
         
         /* Add progress bar and webView in top and center of a BorderPane */
-        BorderPane root = new BorderPane(webView, null, null, p2, null); 
+        BorderPane root = new BorderPane(webView, null, null, progressBar, null); 
         
         /* Align the process bar on the center */
-        root.setAlignment(p2,Pos.CENTER);
+        root.setAlignment(progressBar,Pos.CENTER);
         
         /* Set the scene containing the BorderPane we created and set the size of it */
         Scene scene = new Scene(root,1000,800);
@@ -66,7 +63,7 @@ public class QuizPlatform extends Application {
         }
         String css = url.toExternalForm(); 
         scene.getStylesheets().add(css);
-        p2.prefWidthProperty().bind(root.widthProperty().subtract(20)); 
+        progressBar.prefWidthProperty().bind(root.widthProperty().subtract(20)); 
         
         /* Set the scene  */
         primaryStage.setScene(scene);
@@ -76,8 +73,8 @@ public class QuizPlatform extends Application {
         FxTimer.runPeriodically(
         Duration.ofMillis(900000),
         () -> {
-            this.p=this.p+0.25;
-            p2.setProgress(this.p);
+            percent+=0.25;
+            progressBar.setProgress(percent);
         });
         
         /* Go to the final quiz after 1h */
@@ -96,19 +93,17 @@ public class QuizPlatform extends Application {
         primaryStage.setOnCloseRequest(exit());
     }
     
+    
+    
+    /* Handles the platform exit. Collects the last trace prior to exit*/
     public EventHandler<WindowEvent> exit(){
-    	return new EventHandler<WindowEvent>() {
-    		@Override
-    		public void handle(WindowEvent event) {
-    			bridge.lastTrace();
-    		}
-		};
+    	return (WindowEvent event) -> {
+            bridge.lastTrace();
+            };
     }
 
     public static void main(String[] args) {
         launch(args);
     }
-    
-    
-    
+        
 }

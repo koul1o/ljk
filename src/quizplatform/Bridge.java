@@ -1,5 +1,14 @@
 package quizplatform;
 
+/**
+ *
+ * @author koul1o
+ */
+
+
+import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,14 +16,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
-/**
- *
- * @author koul1o
- */
-import java.util.function.Consumer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker.State;
@@ -60,6 +61,7 @@ public class Bridge {
                                 if (docUrl!=null){
                                     engine.executeScript("var bUrl=\'"+docUrl+"\'"+"");
                                     
+                                                                      
                                     // add the doc into the hashmap if it doesn't exist yet then update the quiz URL
                                     if(!this.quizLinks.containsKey(docUrl) && !title.toLowerCase().contains(QUESTION_NAME)){
                                     	this.quizLinks.put(docUrl, docUrl.replace(".html", "_"+QUESTION_NAME+"1.html"));
@@ -75,6 +77,10 @@ public class Bridge {
                                     }
                                     
                                 }
+                                
+                                 if(title.toLowerCase().contains(QUESTION_NAME)){
+                                        engine.executeScript("sendTrace()");
+                                    }
                                
                             }
                     }
