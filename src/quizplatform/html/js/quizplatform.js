@@ -31,6 +31,15 @@ function sendTrace(){
     updateJavaTime();
 
  }
+ 
+ function sendTrace2(){
+
+    var pageName=document.title;
+    var s = (time+timer()).toString()+"_"+pageName.toString();
+    java.getTrace(s);
+    updateJavaTime();
+
+ }
 
 /** 
   * Upcall to Java sending the time and the name of the accesed page for the final page 
@@ -40,6 +49,7 @@ function quit(){
     var exitTime=time+timer();
     var s = exitTime.toString()+"_"+pageName.toString()+"_Platform Exit";
     java.getTrace(s);
+    updateJavaTime();
     java.exit();
 }
 
@@ -48,6 +58,7 @@ function finalQuiz(){
     var pageName=document.title;
     var exitTime=time+timer();
     var s = exitTime.toString()+"_"+pageName.toString();
+    java.getTrace(s);
     updateJavaTime();
 }
 

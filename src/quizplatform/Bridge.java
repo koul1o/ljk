@@ -38,6 +38,7 @@ public class Bridge {
     public Bridge(WebEngine engine,Stage stage) {
         time=0;
         this.quizLinks = new HashMap<String, String>();
+        
         engine.getLoadWorker().stateProperty().addListener((ObservableValue<? extends State> obs, State oldState, State newState) -> {
             if (newState == State.SUCCEEDED) { 
                        
@@ -49,9 +50,11 @@ public class Bridge {
                        stage.setTitle(engine.getTitle());
                        /* */
                         if (engine != null) 
-                            {
+                            {   
+                                
                                 /* Update the global time passed everytime we load a new page */ 
                                 engine.executeScript("var time="+time+"");
+                                
                                 /* Check if we are in a document page and format the url removing the file:// prefix */ 
                                 if(engine.getTitle().toLowerCase().contains("document ") && !title.toLowerCase().contains(QUESTION_NAME)){
                                     docUrl=engine.getLocation();
@@ -109,10 +112,20 @@ public class Bridge {
     }
     /* Upcall to this function from the page, to get the last trace on window exit */
     public void lastTrace(){
-        engine.executeScript("sendTrace();quit();");
+        engine.executeScript("quit();");
     }
+    public void invokeTrace(){
+        //System.out.println("quizplatform.Bridge.invokeTrace()");
+        engine.executeScript("sendTrace();");
+    }
+    public void invokeTrace2(){
+        //System.out.println("quizplatform.Bridge.invokeTrace()");
+        engine.executeScript("sendTrace2();");
+    }
+    
+    
     public void finalQuiz(){
-        engine.executeScript("sendTrace();finalQuiz();");
+        engine.executeScript("finalQuiz();");
     }
     
     /* Upcall to this function from the page, to update the next question Url for a document quiz */

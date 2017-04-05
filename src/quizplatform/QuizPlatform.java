@@ -69,6 +69,7 @@ public class QuizPlatform extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         
+        
         /* Using org.reactfx.util.FxTimer augment the progress bar periodicaly every 15min by 25% */
         FxTimer.runPeriodically(
         Duration.ofMillis(900000),
@@ -79,14 +80,16 @@ public class QuizPlatform extends Application {
         
         /* Go to the final quiz after 1h */
         FxTimer.runLater(
-            Duration.ofMillis(3600000),
-            () -> { bridge.finalQuiz();
+            Duration.ofMillis(3600),
+            () -> { 
                     engine.load(getClass().getResource("html/final_quiz.html").toExternalForm());
-                        
+                    bridge.invokeTrace2();
+
                     });
+        
         /* Exit the platform and the final quiz after 10m */
         FxTimer.runLater(
-            Duration.ofMillis(4200000),
+            Duration.ofMillis(6200),
             () -> { bridge.lastTrace();
                     bridge.exit();
                       });
