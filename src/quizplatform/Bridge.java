@@ -17,6 +17,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker.State;
 import javafx.scene.web.WebEngine;
@@ -33,13 +36,37 @@ public class Bridge {
     private WebEngine engine;
     String docUrl = null;
     
+    final LongProperty startTime = new SimpleLongProperty();
+    final LongProperty endTime = new SimpleLongProperty();
+    final LongProperty elapsedTime = new SimpleLongProperty();
+    
+    private int cnt ,cnt2 = 1;
+    
     HashMap<String, String> quizLinks;
+    boolean firstStat = true;
     
     public Bridge(WebEngine engine,Stage stage) {
         time=0;
         this.quizLinks = new HashMap<String, String>();
         engine.getLoadWorker().stateProperty().addListener((ObservableValue<? extends State> obs, State oldState, State newState) -> {
-            if (newState == State.SUCCEEDED) { 
+    	switch (newState) {
+	        case RUNNING:
+	            startTime.set(System.nanoTime());
+	            break;
+	
+	        case SUCCEEDED:
+	            endTime.set(System.nanoTime());
+	            elapsedTime.bind(Bindings.subtract(endTime, startTime));
+	            if (cnt2>0){
+	            	System.out.println(time);
+	                time=(int) (time+elapsedTime.divide(1_000_000).getValue());
+	                System.out.println("Time: "+time+" Elapsed t: "+elapsedTime.divide(1_000_000).getValue() );
+	            }
+	            cnt2++;
+	            break;
+    	}
+        	
+        	if (newState == State.SUCCEEDED) { 
                        
                        this.engine=engine;
                        window = (JSObject) engine.executeScript("window");
@@ -218,8 +245,9 @@ public class Bridge {
     		}
     		
     		// we leave a space at the beginning of each test, to separate them
-    		if(j.startsWith("0")){
+    		if(this.firstStat){
     			sb.append("\n");
+    			this.firstStat = false;
     		}
     		
     		// add the data to the string to put in the file
