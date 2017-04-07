@@ -30,7 +30,7 @@ public class Bridge {
 
 	private static final String QUESTION_NAME = "question";
 	private static final String DOCUMENT_PATH = "../../git/ljk/src/quizplatform/html";
-	private static final String[] FORBIDEN_WORDS = {QUESTION_NAME, "start2", "final_quiz", "manual", "documents"};
+	private static final String[] FORBIDDEN_WORDS = {QUESTION_NAME, "start2", "final_quiz", "manual", "documents"};
 	
     private int time;
     private JSObject window ;
@@ -208,6 +208,15 @@ public class Bridge {
            engine.executeScript("window.location.replace(\'" + url + "\');");
     }
     
+    /**
+     * This function goes through all files contained in the <b>directory</b> path. If the file is a document, then it adds it to the returning array.<br/>
+     * The entries of the array have two values, the first one is the canonical path to the file and the second is the name of the file without its extension.<br/>
+     * 
+     * @param directory The path to the directory to explore
+     * @return An array of two dimensions. The first dimension contains the canonical path (0) and the filename (1), the second dimension is the entries
+     * @throws IOException If an I/O error occurs, which is possible because the construction of the canonical pathname may require filesystem queries.
+     */
+    
     public static String[][] findFiles(File directory) throws IOException {
     	File[] file;
     	HashMap<String, String> al = new HashMap<String, String>();
@@ -221,7 +230,7 @@ public class Bridge {
             		//TODO break down the string to obtain the name of the document only (without the extension and the path) and set it as value of entry
             		String value = f.getName().split("\\.")[0]; // we remove extension from the file name.
             		
-            		if(!al.containsKey(key) && notIn(value, Bridge.FORBIDEN_WORDS)){
+            		if(!al.containsKey(key) && notIn(value, Bridge.FORBIDDEN_WORDS)){
             			al.put(key, value);
     					System.out.println(f.getName() + " / " + value);
             		}
@@ -242,10 +251,18 @@ public class Bridge {
         return null;
     }
     
-    public static boolean notIn(String stringToBeChecked, String[] forbidenWords){
+    /**
+     * This function checks if the <b>forbiddenWords</b> are contained within the <b>stringToBeChecked</b>.
+     * 
+     * @param stringToBeChecked The string to check
+     * @param forbidenWords The array of forbidden words
+     * @return true if the string is clear, false if it contains at least one forbidden word.
+     */
+    
+    public static boolean notIn(String stringToBeChecked, String[] forbiddenWords){
     	boolean clear = true;
     	if(!stringToBeChecked.equals("")){
-	    	for(String s : forbidenWords){
+	    	for(String s : forbiddenWords){
 	    		if(clear){
 	    			clear = !stringToBeChecked.contains(s);
 	    		}
