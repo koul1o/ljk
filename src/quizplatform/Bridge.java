@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.Duration;
 import java.util.HashMap;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -23,6 +24,8 @@ import javafx.concurrent.Worker.State;
 import javafx.scene.web.WebEngine;
 import javafx.stage.Stage;
 import netscape.javascript.JSObject;
+import org.reactfx.util.FxTimer;
+import org.reactfx.util.Timer;
 
 public class Bridge {
 
@@ -45,22 +48,6 @@ public class Bridge {
         this.quizLinks = new HashMap<String, String>();
         engine.getLoadWorker().stateProperty().addListener((ObservableValue<? extends State> obs, State oldState, State newState) -> {
 
-            switch (newState) {
-                case RUNNING:
-
-                    break;
-
-                case SUCCEEDED:
-                    if (cnt < 1) {
-                        startTime.set(System.nanoTime());
-                        getTime();
-                        cnt++;
-                    } else {
-                        getTime();
-                        break;
-                    }
-            }
-
             if (newState == State.SUCCEEDED) {
 
                 this.engine = engine;
@@ -73,13 +60,25 @@ public class Bridge {
                 if (engine != null) {
                     if (cnt < 1) {
                         startTime.set(System.nanoTime());
-                        
+                        FxTimer.runLater(
+                                Duration.ofMillis(36000),
+                                () -> {
+                                    System.out.println("Time: " + time);
+                                    engine.load(getClass().getResource("html/final_quiz.html").toExternalForm());
+
+                                });
+                        FxTimer.runLater(
+                                Duration.ofMillis(42000),
+                                () -> {
+                                    System.out.println("Time: " + time);
+                                    exit();
+
+                                });
                         cnt++;
 
-                    } 
-                        getTime();
+                    }
+                    getTime();
 
-                   
                     traceT = time + "_" + title;
                     getTrace(traceT);
 
@@ -119,7 +118,7 @@ public class Bridge {
 
     /* Function, to exit the platform */
     public void exit() {
-        getTrace(traceT);
+        getLastTrace(traceT);
         Platform.exit();
 
     }
@@ -127,6 +126,12 @@ public class Bridge {
     /* Upcall to this function from the page, to get the interaction trace */
     public void getTrace(String trace) {
         System.out.println("Trace: " + trace);
+        saveData(trace);
+
+    }
+
+    public void getLastTrace(String trace) {
+        System.out.println("Trace: " + trace + "_Exit");
         saveData(trace);
 
     }
