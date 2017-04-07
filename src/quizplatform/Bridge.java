@@ -17,6 +17,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker.State;
 import javafx.scene.web.WebEngine;
@@ -26,6 +29,8 @@ import netscape.javascript.JSObject;
 public class Bridge {
 
 	private static final String QUESTION_NAME = "question";
+	private static final String DOCUMENT_PATH = "../../git/ljk/src/quizplatform/html";
+	private static final String[] FORBIDDEN_WORDS = {QUESTION_NAME, "start2", "final_quiz", "manual", "documents"};
 	
     private int time;
     private JSObject window ;
@@ -33,13 +38,37 @@ public class Bridge {
     private WebEngine engine;
     String docUrl = null;
     
+    final LongProperty startTime = new SimpleLongProperty();
+    final LongProperty endTime = new SimpleLongProperty();
+    final LongProperty elapsedTime = new SimpleLongProperty();
+    
+    private int cnt ,cnt2 = 1;
+    
     HashMap<String, String> quizLinks;
+    boolean firstStat = true;
     
     public Bridge(WebEngine engine,Stage stage) {
         time=0;
         this.quizLinks = new HashMap<String, String>();
         engine.getLoadWorker().stateProperty().addListener((ObservableValue<? extends State> obs, State oldState, State newState) -> {
-            if (newState == State.SUCCEEDED) { 
+    	switch (newState) {
+	        case RUNNING:
+	            startTime.set(System.nanoTime());
+	            break;
+	
+	        case SUCCEEDED:
+	            endTime.set(System.nanoTime());
+	            elapsedTime.bind(Bindings.subtract(endTime, startTime));
+	            if (cnt2>0){
+	            	System.out.println(time);
+	                time=(int) (time+elapsedTime.divide(1_000_000).getValue());
+	                System.out.println("Time: "+time+" Elapsed t: "+elapsedTime.divide(1_000_000).getValue() );
+	            }
+	            cnt2++;
+	            break;
+    	}
+        	
+        	if (newState == State.SUCCEEDED) { 
                        
                        this.engine=engine;
                        window = (JSObject) engine.executeScript("window");
@@ -48,12 +77,18 @@ public class Bridge {
                        title=engine.getTitle();
                        stage.setTitle(engine.getTitle());
                        /* */
+                       try {
+                    	   findFiles(new File(Bridge.DOCUMENT_PATH));
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
                         if (engine != null) 
                             {
                                 /* Update the global time passed everytime we load a new page */ 
                                 engine.executeScript("var time="+time+"");
                                 /* Check if we are in a document page and format the url removing the file:// prefix */ 
-                                if(engine.getTitle().toLowerCase().contains("document ") && !title.toLowerCase().contains(QUESTION_NAME)){
+                                if(engine.getTitle().toLowerCase().contains("document ") && !title.toLowerCase().contains(Bridge.QUESTION_NAME)){
                                     docUrl=engine.getLocation();
                                     docUrl=docUrl.replace("file://","");
                                 }
@@ -63,14 +98,14 @@ public class Bridge {
                                     
                                                                       
                                     // add the doc into the hashmap if it doesn't exist yet then update the quiz URL
-                                    if(!this.quizLinks.containsKey(docUrl) && !title.toLowerCase().contains(QUESTION_NAME)){
-                                    	this.quizLinks.put(docUrl, docUrl.replace(".html", "_"+QUESTION_NAME+"1.html"));
+                                    if(!this.quizLinks.containsKey(docUrl) && !title.toLowerCase().contains(Bridge.QUESTION_NAME)){
+                                    	this.quizLinks.put(docUrl, docUrl.replace(".html", "_"+Bridge.QUESTION_NAME+"1.html"));
                                     }
                                     
                                     /* 	if the quizLink point to a quiz (ie if the quiz hasn't already been finished) it changes the value of qUrl
                                     	the next question of the quizz */
                                     
-                                    if(this.quizLinks.get(docUrl) != null && this.quizLinks.get(docUrl).contains("_"+QUESTION_NAME)){
+                                    if(this.quizLinks.get(docUrl) != null && this.quizLinks.get(docUrl).contains("_"+Bridge.QUESTION_NAME)){
                                     	engine.executeScript("var qUrl=\'" + this.quizLinks.get(docUrl) + "\'");
                                     } else {
                                     	engine.executeScript("var qUrl='#'");
@@ -78,7 +113,7 @@ public class Bridge {
                                     
                                 }
                                 
-                                 if(title.toLowerCase().contains(QUESTION_NAME)){
+                                 if(title.toLowerCase().contains(Bridge.QUESTION_NAME)){
                                         engine.executeScript("sendTrace()");
                                     }
                                
@@ -174,6 +209,72 @@ public class Bridge {
     }
     
     /**
+     * This function goes through all files contained in the <b>directory</b> path. If the file is a document, then it adds it to the returning array.<br/>
+     * The entries of the array have two values, the first one is the canonical path to the file and the second is the name of the file without its extension.<br/>
+     * 
+     * @param directory The path to the directory to explore
+     * @return An array of two dimensions. The first dimension contains the canonical path (0) and the filename (1), the second dimension is the entries
+     * @throws IOException If an I/O error occurs, which is possible because the construction of the canonical pathname may require filesystem queries.
+     */
+    
+    public static String[][] findFiles(File directory) throws IOException {
+    	File[] file;
+    	HashMap<String, String> al = new HashMap<String, String>();
+        if (directory.isDirectory()) {
+            file = directory.listFiles(); // Calls same method again.
+            for(File f : file){
+            	if(f.isDirectory()){
+            		// findFiles(f);
+            	} else {
+            		String key = f.getCanonicalPath();
+            		//TODO break down the string to obtain the name of the document only (without the extension and the path) and set it as value of entry
+            		String value = f.getName().split("\\.")[0]; // we remove extension from the file name.
+            		
+            		if(!al.containsKey(key) && notIn(value, Bridge.FORBIDDEN_WORDS)){
+            			al.put(key, value);
+    					System.out.println(f.getName() + " / " + value);
+            		}
+            	}
+            }
+            String[][] result = new String[2][al.size()];
+            int i = 0;
+            for(String key : al.keySet()){
+            	result[0][i] = key;
+            	result[1][i] = al.get(key);
+            	System.out.println(result[0][i] + " / " + result[1][i]);
+            	i++;
+            }
+            return result;
+        } else {
+            System.out.println("The argument should be a directory ! Got : " + directory.getAbsolutePath());
+        }
+        return null;
+    }
+    
+    /**
+     * This function checks if the <b>forbiddenWords</b> are contained within the <b>stringToBeChecked</b>.
+     * 
+     * @param stringToBeChecked The string to check
+     * @param forbidenWords The array of forbidden words
+     * @return true if the string is clear, false if it contains at least one forbidden word.
+     */
+    
+    public static boolean notIn(String stringToBeChecked, String[] forbiddenWords){
+    	boolean clear = true;
+    	if(!stringToBeChecked.equals("")){
+	    	for(String s : forbiddenWords){
+	    		if(clear){
+	    			clear = !stringToBeChecked.contains(s);
+	    		}
+	    	}
+    	} else {
+    		clear = false;
+    	}
+    	
+    	return clear;
+    }
+    
+    /**
      * This function saves the String <b>j</b> into a file called "./test.csv". <br>
      * It takes a formatted String containing data separated by underscores and changes the underscores into commas. <br>
      * It appends this changed String to the end of the file. <br>
@@ -218,8 +319,9 @@ public class Bridge {
     		}
     		
     		// we leave a space at the beginning of each test, to separate them
-    		if(j.startsWith("0")){
+    		if(this.firstStat){
     			sb.append("\n");
+    			this.firstStat = false;
     		}
     		
     		// add the data to the string to put in the file

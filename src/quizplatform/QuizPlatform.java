@@ -79,14 +79,14 @@ public class QuizPlatform extends Application {
         
         /* Go to the final quiz after 1h */
         FxTimer.runLater(
-            Duration.ofMillis(3600000),
+            Duration.ofMillis(36000),
             () -> { bridge.finalQuiz();
                     engine.load(getClass().getResource("html/final_quiz.html").toExternalForm());
                         
                     });
         /* Exit the platform and the final quiz after 10m */
         FxTimer.runLater(
-            Duration.ofMillis(4200000),
+            Duration.ofMillis(42000),
             () -> { bridge.lastTrace();
                     bridge.exit();
                       });
