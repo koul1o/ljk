@@ -79,15 +79,15 @@ public class QuizPlatform extends Application {
         
         /* Go to the final quiz after 1h */
         FxTimer.runLater(
-            Duration.ofMillis(3600000),
-            () -> { bridge.finalQuiz();
+            Duration.ofMillis(36000),
+            () -> { 
                     engine.load(getClass().getResource("html/final_quiz.html").toExternalForm());
                         
                     });
         /* Exit the platform and the final quiz after 10m */
         FxTimer.runLater(
-            Duration.ofMillis(4200000),
-            () -> { bridge.lastTrace();
+            Duration.ofMillis(42000),
+            () -> { 
                     bridge.exit();
                       });
         primaryStage.setOnCloseRequest(exit());
@@ -98,7 +98,7 @@ public class QuizPlatform extends Application {
     /* Handles the platform exit. Collects the last trace prior to exit*/
     public EventHandler<WindowEvent> exit(){
     	return (WindowEvent event) -> {
-            bridge.lastTrace();
+            bridge.exit();
             };
     }
 
