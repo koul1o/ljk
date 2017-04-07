@@ -29,6 +29,8 @@ import netscape.javascript.JSObject;
 public class Bridge {
 
 	private static final String QUESTION_NAME = "question";
+	private static final String DOCUMENT_PATH = "../../git/ljk/src/quizplatform/html";
+	private static final String[] FORBIDEN_WORDS = {QUESTION_NAME, "start2", "final_quiz", "manual", "documents"};
 	
     private int time;
     private JSObject window ;
@@ -75,12 +77,18 @@ public class Bridge {
                        title=engine.getTitle();
                        stage.setTitle(engine.getTitle());
                        /* */
+                       try {
+                    	   findFiles(new File(Bridge.DOCUMENT_PATH));
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
                         if (engine != null) 
                             {
                                 /* Update the global time passed everytime we load a new page */ 
                                 engine.executeScript("var time="+time+"");
                                 /* Check if we are in a document page and format the url removing the file:// prefix */ 
-                                if(engine.getTitle().toLowerCase().contains("document ") && !title.toLowerCase().contains(QUESTION_NAME)){
+                                if(engine.getTitle().toLowerCase().contains("document ") && !title.toLowerCase().contains(Bridge.QUESTION_NAME)){
                                     docUrl=engine.getLocation();
                                     docUrl=docUrl.replace("file://","");
                                 }
@@ -90,14 +98,14 @@ public class Bridge {
                                     
                                                                       
                                     // add the doc into the hashmap if it doesn't exist yet then update the quiz URL
-                                    if(!this.quizLinks.containsKey(docUrl) && !title.toLowerCase().contains(QUESTION_NAME)){
-                                    	this.quizLinks.put(docUrl, docUrl.replace(".html", "_"+QUESTION_NAME+"1.html"));
+                                    if(!this.quizLinks.containsKey(docUrl) && !title.toLowerCase().contains(Bridge.QUESTION_NAME)){
+                                    	this.quizLinks.put(docUrl, docUrl.replace(".html", "_"+Bridge.QUESTION_NAME+"1.html"));
                                     }
                                     
                                     /* 	if the quizLink point to a quiz (ie if the quiz hasn't already been finished) it changes the value of qUrl
                                     	the next question of the quizz */
                                     
-                                    if(this.quizLinks.get(docUrl) != null && this.quizLinks.get(docUrl).contains("_"+QUESTION_NAME)){
+                                    if(this.quizLinks.get(docUrl) != null && this.quizLinks.get(docUrl).contains("_"+Bridge.QUESTION_NAME)){
                                     	engine.executeScript("var qUrl=\'" + this.quizLinks.get(docUrl) + "\'");
                                     } else {
                                     	engine.executeScript("var qUrl='#'");
@@ -105,7 +113,7 @@ public class Bridge {
                                     
                                 }
                                 
-                                 if(title.toLowerCase().contains(QUESTION_NAME)){
+                                 if(title.toLowerCase().contains(Bridge.QUESTION_NAME)){
                                         engine.executeScript("sendTrace()");
                                     }
                                
@@ -198,6 +206,55 @@ public class Bridge {
     /* This function redirects us to the next question while in the quiz */
     public void redirect (String url){
            engine.executeScript("window.location.replace(\'" + url + "\');");
+    }
+    
+    public static String[][] findFiles(File directory) throws IOException {
+    	File[] file;
+    	HashMap<String, String> al = new HashMap<String, String>();
+        if (directory.isDirectory()) {
+            file = directory.listFiles(); // Calls same method again.
+            for(File f : file){
+            	if(f.isDirectory()){
+            		// findFiles(f);
+            	} else {
+            		String key = f.getCanonicalPath();
+            		//TODO break down the string to obtain the name of the document only (without the extension and the path) and set it as value of entry
+            		String value = f.getName().split("\\.")[0]; // we remove extension from the file name.
+            		
+            		if(!al.containsKey(key) && notIn(value, Bridge.FORBIDEN_WORDS)){
+            			al.put(key, value);
+    					System.out.println(f.getName() + " / " + value);
+            		}
+            	}
+            }
+            String[][] result = new String[2][al.size()];
+            int i = 0;
+            for(String key : al.keySet()){
+            	result[0][i] = key;
+            	result[1][i] = al.get(key);
+            	System.out.println(result[0][i] + " / " + result[1][i]);
+            	i++;
+            }
+            return result;
+        } else {
+            System.out.println("The argument should be a directory ! Got : " + directory.getAbsolutePath());
+        }
+        return null;
+    }
+    
+    public static boolean notIn(String stringToBeChecked, String[] forbidenWords){
+    	boolean clear = true;
+    	if(!stringToBeChecked.equals("")){
+	    	for(String s : forbidenWords){
+	    		if(clear){
+	    			clear = !stringToBeChecked.contains(s);
+	    		}
+	    	}
+    	} else {
+    		clear = false;
+    	}
+    	
+    	return clear;
     }
     
     /**
