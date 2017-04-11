@@ -1,6 +1,4 @@
-
 var qUrl;
-
 
 /** 
  * Upcall to Java sending the time and the name of the accesed page for the final page 
@@ -64,7 +62,6 @@ function checkAnswer() {
     var pageName = document.title;
     var s = "_Answer: " + ans;
     java.elementTrace(s);
-    updateJavaTime();
     messageDiv.innerHTML = message;
 }
 

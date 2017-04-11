@@ -14,7 +14,7 @@
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
     </head>
-    <body style="margin: 15px;">
+    <body>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script src="js/quizplatform.js"></script>
@@ -78,6 +78,20 @@
                             </div>
                         </div>
                     </div>
+                    <div class="panel panel-default" id="Panel 4">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" onclick="sendElementTrace();" data-parent="#accordion" href="#collapseFour" >
+                                    Collapsible Group Item #4
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseFour" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <a href="#" class="btn btn-info" id="quiz_start" role="button" onclick="setQuizUrl();" >Take the Quiz</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
 
@@ -90,7 +104,7 @@
 
 
             <div id="buttons_area" style="padding-top: 15px;">
-                <a href="#" class="btn btn-info" id="quiz_start" role="button" onclick="setQuizUrl();" style="float: right;">Take the Quiz</a>
+                
                 <a href="documents.html" class="btn btn-info" role="button"    >Documents</a> 
             </div>
             <div id="message_completed"> </div>
