@@ -26,6 +26,7 @@ public class QuizPlatform extends Application {
 
     private double percent=0.0;
     public Bridge bridge;
+    
     @Override
     public void start(Stage primaryStage) {
     
@@ -77,19 +78,6 @@ public class QuizPlatform extends Application {
             progressBar.setProgress(percent);
         });
         
-        /* Go to the final quiz after 1h */
-        FxTimer.runLater(
-            Duration.ofMillis(36000),
-            () -> { bridge.finalQuiz();
-                    engine.load(getClass().getResource("html/final_quiz.html").toExternalForm());
-                        
-                    });
-        /* Exit the platform and the final quiz after 10m */
-        FxTimer.runLater(
-            Duration.ofMillis(42000),
-            () -> { bridge.lastTrace();
-                    bridge.exit();
-                      });
         primaryStage.setOnCloseRequest(exit());
     }
     
@@ -98,7 +86,7 @@ public class QuizPlatform extends Application {
     /* Handles the platform exit. Collects the last trace prior to exit*/
     public EventHandler<WindowEvent> exit(){
     	return (WindowEvent event) -> {
-            bridge.lastTrace();
+            bridge.exit();
             };
     }
 

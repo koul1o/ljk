@@ -14,7 +14,7 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body style="margin: 15px;">
+  <body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/quizplatform.js"></script>
@@ -35,10 +35,10 @@
           <h2 style="padding-top: 10px;">Third question</h2>
           <h4 style="padding-top: 10px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras mollis efficitur turpis, quis ultrices sem congue vel. Nunc id enim eu eros molestie eleifend. Aenean nec laoreet nisl, nec efficitur mauris. Phasellus vulputate lobortis orci in tempus. Duis volutpat quam vitae imperdiet dignissim. Nullam pretium eget enim et dictum. Suspendisse sit amet turpis posuere, lobortis elit nec, interdum erat. Cras turpis ligula, pulvinar eu ultrices id, semper eu turpis. </h4>
           <ul  class="answers" style="padding-top: 10px;">
-            <input type="radio" name="q1" value="a" id="q1a" class="question_item"> Answer 1<br/>
-            <input type="radio" name="q1" value="b" id="q1b" class="question_item"> Answer 2<br/>
-            <input type="radio" name="q1" value="correct" id="q1c" class="question_item"> Answer 3<br/>
-            <input type="radio" name="q1" value="d" id="q1d" class="question_item"> Answer 4<br/>
+            <input type="radio" name="q1" value="a" id="a" class="question_item" onclick="sendElementTraceQ();"> Answer 1<br/>
+            <input type="radio" name="q1" value="b" id="b" class="question_item" onclick="sendElementTraceQ();"> Answer 2<br/>
+            <input type="radio" name="q1" value="correct" id="c" class="question_item" onclick="sendElementTraceQ();"> Answer 3<br/>
+            <input type="radio" name="q1" value="d" id="d" class="question_item" onclick="sendElementTraceQ();"> Answer 4<br/>
           </ul>
   <div id="message">Select an answer</div>
 
