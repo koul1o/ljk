@@ -6796,7 +6796,7 @@ button.close {
     
 }
 
-.panel-body:last-child {
+.panel:last-child> .panel-collapse > .panel-body{
     text-align: center;
 }
 

@@ -268,7 +268,7 @@ public class Bridge {
             }
             return result;
         } else {
-            System.out.println("The argument should be a directory ! Got : " + directory.getAbsolutePath());
+           // System.out.println("The argument should be a directory ! Got : " + directory.getAbsolutePath());
         }
         return null;
     }
