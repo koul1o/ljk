@@ -37,15 +37,15 @@ public class Bridge {
     private String title;
     private WebEngine engine;
     private String docUrl = null;
-    final LongProperty startTime = new SimpleLongProperty();
-    final LongProperty endTime = new SimpleLongProperty();
-    final LongProperty elapsedTime = new SimpleLongProperty();
+    private final LongProperty startTime = new SimpleLongProperty();
+    private final LongProperty endTime = new SimpleLongProperty();
+    private final LongProperty elapsedTime = new SimpleLongProperty();
     private int cnt = 0;
-    String traceT = "";
-    boolean firstStat = true;
-    HashMap<String, String> quizLinks;
+    private String traceT = "";
+    private boolean firstStat = true;
+    private HashMap<String, String> quizLinks;
 
-    public Bridge(WebEngine engine, Stage stage) {
+    public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform) {
 
         this.quizLinks = new HashMap<String, String>();
 
@@ -73,16 +73,24 @@ public class Bridge {
                         getTime();
                         traceT = time + "_" + title;
                         getTrace(traceT);
-
+                        
+                        /* Using org.reactfx.util.FxTimer augment the progress bar periodicaly every 15min by 25% */
+                        FxTimer.runPeriodically(
+                                Duration.ofMillis(90000),
+                                () -> {
+                                    quizPlatform.percent += 0.25;
+                                    quizPlatform.progressBar.setProgress(quizPlatform.percent);
+                                });
+                        
                         FxTimer.runLater(
-                                Duration.ofMillis(36000),
+                                Duration.ofMillis(3600000),
                                 () -> {
 
                                     engine.load(getClass().getResource("html/final_quiz.html").toExternalForm());
 
                                 });
                         FxTimer.runLater(
-                                Duration.ofMillis(42000),
+                                Duration.ofMillis(4200000),
                                 () -> {
 
                                     exit();
@@ -147,7 +155,7 @@ public class Bridge {
 
     public void getLastTrace(String trace) {
         getTime();
-        traceT = time + "_" + title;
+        traceT = time + "_" + title + "_Exit";
         getTrace(traceT);
     }
 
@@ -166,8 +174,13 @@ public class Bridge {
     /* Upcall to this function from the page, to update the next question Url for a document quiz */
     public void getUrl(String url) {
         URLToNextQuestion(url);
-        redirect(this.quizLinks.get(docUrl));
+        engine.executeScript("var qUrl=\'" + this.quizLinks.get(docUrl) + "\'");
+        engine.executeScript("redirect();");
+
+        //redirect(this.quizLinks.get(docUrl));
     }
+
+    
 
     /**
      * This function changes the String <b>quizUrl</b> by adding 1 to the number
@@ -268,7 +281,7 @@ public class Bridge {
             }
             return result;
         } else {
-           // System.out.println("The argument should be a directory ! Got : " + directory.getAbsolutePath());
+            // System.out.println("The argument should be a directory ! Got : " + directory.getAbsolutePath());
         }
         return null;
     }

@@ -1,9 +1,9 @@
 var qUrl;
 
+
 /** 
  * Upcall to Java sending the time and the name of the accesed page for the final page 
  */
-
 function quit() {
     var pageName = document.title;
     var exitTime = time + timer();
@@ -11,7 +11,6 @@ function quit() {
     java.getTrace(s);
     java.exit();
 }
-
 
 /** 
  * Upcall to Java sending the time and the page accessed in a dom element
@@ -30,6 +29,15 @@ function sendElementTraceQ() {
 
 }
 
+function iframeElementTrace(trace) {
+    java.elementTrace(trace);
+}
+
+function iframeElementTraceCorrect(trace) {
+    java.elementTrace(trace);
+}
+
+/*
 function checkAnswer() {
     var message = 'Try again',
             selected = document.querySelector('input[value="correct"]:checked'),
@@ -50,25 +58,35 @@ function checkAnswer() {
 
         message = 'Correct';
         messageDiv.style.color = "green";
+
         sendUrl();
     }
     var pageName = document.title;
     var s = "_Answer: " + ans;
     java.elementTrace(s);
     messageDiv.innerHTML = message;
+
 }
+*/
 
 function sendUrl() {
-    var url = window.location.pathname;
+    var url = qUrl;
     java.getUrl(url);
 }
 
 
 function setQuizUrl() {
 
-    var a = document.getElementById('quiz_start'); //or grab it by tagname etc
-    a.href = qUrl;
+//    var a = document.getElementById('quiz_start'); //or grab it by tagname etc
+//    a.href = qUrl;
+    document.getElementById("mbd").src = qUrl;
 
+
+
+
+    if (qUrl === '#') {
+        qUrl = "";
+    }
     if (qUrl === '#') {
         messageDivCompl = document.getElementById('message_completed');
         messageDivCompl.style.color = "green";
@@ -80,7 +98,7 @@ function setQuizUrl() {
 
 }
 
-
+/*
 function backToDoc() {
 
     var b = document.getElementById('back'); //or grab it by tagname etc
@@ -88,7 +106,7 @@ function backToDoc() {
     sendTrace();
 
 }
-
+*/
 
 function checkFinalAnswers() {
     var radios = document.getElementsByClassName("question_item");
@@ -101,3 +119,20 @@ function checkFinalAnswers() {
         }
     }
 }
+
+function redirect() {
+
+    document.getElementById("mbd").src = qUrl;
+    document.getElementById('mbd').contentWindow.reload();
+
+}
+
+function qTrace() {
+
+    title = "" + document.getElementById("mbd").contentDocument.title;
+    java.elementTrace(title);
+}
+
+
+
+  
