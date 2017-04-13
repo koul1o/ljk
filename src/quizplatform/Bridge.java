@@ -54,7 +54,6 @@ public class Bridge {
         this.quizLinks = new HashMap<String, String>();
 		try {
             findFiles(new File(Bridge.DOCUMENT_PATH));
-            this.getDocuments();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -200,8 +199,7 @@ public class Bridge {
     		}
     	}
     	s = s + "];";
-    	System.out.println(s);
-    	//engine.executeScript(s);
+    	engine.executeScript(s);
     }
 
     /**
