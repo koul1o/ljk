@@ -1,5 +1,5 @@
 var qUrl;
-
+var docs;
 
 /** 
  * Upcall to Java sending the time and the name of the accesed page for the final page 
@@ -133,6 +133,15 @@ function qTrace() {
     java.elementTrace(title);
 }
 
-
+function setDocuments(){
+    var divDoc=document.getElementById("documents");
+  
+   for(var i=0; i<docs.length;i++)
+    divDoc.innerHTML+="<ul><a href=\'"+docs[i][0]+"\'>"+docs[i][1]+"</a></ul>";
+}
 
   
+  function print(){
+      
+      java.print(docs.length);
+  }

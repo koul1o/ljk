@@ -33,7 +33,7 @@ import org.reactfx.util.Timer;
 public class Bridge {
 
     private static final String QUESTION_NAME = "question";
-    private static final String DOCUMENT_PATH = "../../git/ljk/src/quizplatform/html";
+    private static final String DOCUMENT_PATH = "src/quizplatform/html";
     private static final String[] FORBIDDEN_WORDS = {QUESTION_NAME, "start2", "final_quiz", "manual", "documents"};
     private int time = 0;
     private JSObject window;
@@ -47,19 +47,18 @@ public class Bridge {
     private String traceT = "";
     private boolean firstStat = true;
     private HashMap<String, String> quizLinks;
-    private static String [][] files;
+    private static String[][] files;
 
     public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform) {
 
         this.quizLinks = new HashMap<String, String>();
-		try {
+        try {
             findFiles(new File(Bridge.DOCUMENT_PATH));
-            this.getDocuments();
+
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        System.out.println("quizplatform.Bridge.<init>()"+files);
         engine.getLoadWorker().stateProperty().addListener((ObservableValue<? extends State> obs, State oldState, State newState) -> {
 
             if (newState == State.SUCCEEDED) {
@@ -110,9 +109,10 @@ public class Bridge {
                         getTrace(traceT);
                     }
 
-                    if (engine.getTitle().toLowerCase().contains("document ") && !title.toLowerCase().contains(QUESTION_NAME)) {
-                        docUrl = engine.getLocation();
-                        docUrl = docUrl.replace("file://", "");
+                    if (engine.getTitle().toLowerCase().contains("documents")) {
+                        getDocuments();
+                        engine.executeScript("setDocuments();");
+
                     }
                     /* Update the doc url in the webpage */
                     if (docUrl != null) {
@@ -184,18 +184,21 @@ public class Bridge {
 
         //redirect(this.quizLinks.get(docUrl));
     }
-    
-    public void getDocuments(){
-    	String s = "var docs = [";
-    	for(int i = 0; i < Bridge.files[0].length; i++){
-    		s = s + "[\'" + Bridge.files[0][i] + "\',\'" + Bridge.files[1][i] + "\']";
-    		if(i != Bridge.files[0].length-1){
-    			s = s + ",";
-    		}
-    	}
-    	s = s + "];";
-    	System.out.println(s);
-    	//engine.executeScript(s);
+
+    public void getDocuments() {
+        String s = "var docs = [";
+        for (int i = 0; i < Bridge.files[0].length; i++) {
+            s = s + "[\'" + Bridge.files[0][i] + "\',\'" + Bridge.files[1][i] + "\']";
+            if (i != Bridge.files[0].length - 1) {
+                s = s + ",";
+            }
+        }
+        s = s + "]";
+        engine.executeScript(s);
+        engine.executeScript("print();");
+
+        System.out.println(s);
+        //engine.executeScript(s);
     }
 
     /**
@@ -407,6 +410,10 @@ public class Bridge {
 
         }
 
+    }
+
+    public void print(int l) {
+        System.out.println("quizplatform.Bridge.print()" + l);
     }
 
     public void execute(Consumer<Object> callback, String function, Object... args) {
