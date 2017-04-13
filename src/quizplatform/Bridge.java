@@ -185,6 +185,12 @@ public class Bridge {
         //redirect(this.quizLinks.get(docUrl));
     }
     
+    /**
+     * This function sends an double dimension array to the javascript containing the name of the documents and their urls.</br>
+     * The urls are in the first column, the names are in the second. </br>
+     * The array is stored in the <b>docs</b> variable in the javascript.
+     */
+    
     public void getDocuments(){
     	String s = "var docs = [";
     	for(int i = 0; i < Bridge.files[0].length; i++){
