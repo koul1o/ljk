@@ -47,11 +47,18 @@ public class Bridge {
     private String traceT = "";
     private boolean firstStat = true;
     private HashMap<String, String> quizLinks;
+    private static String [][] files;
 
     public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform) {
 
         this.quizLinks = new HashMap<String, String>();
 		try {
+            findFiles(new File(Bridge.DOCUMENT_PATH));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        System.out.println("quizplatform.Bridge.<init>()"+files);        try {
             findFiles(new File(Bridge.DOCUMENT_PATH));
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -69,12 +76,6 @@ public class Bridge {
                 title = engine.getTitle();
                 stage.setTitle(engine.getTitle());
                 /* */
-                try {
-                    findFiles(new File(Bridge.DOCUMENT_PATH));
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
 
                 if (engine != null) {
                     if (cnt < 1) {
@@ -82,7 +83,7 @@ public class Bridge {
                         getTime();
                         traceT = time + "_" + title;
                         getTrace(traceT);
-                        
+
                         /* Using org.reactfx.util.FxTimer augment the progress bar periodicaly every 15min by 25% */
                         FxTimer.runPeriodically(
                                 Duration.ofMillis(90000),
@@ -90,7 +91,7 @@ public class Bridge {
                                     quizPlatform.percent += 0.25;
                                     quizPlatform.progressBar.setProgress(quizPlatform.percent);
                                 });
-                        
+
                         FxTimer.runLater(
                                 Duration.ofMillis(3600000),
                                 () -> {
@@ -189,8 +190,6 @@ public class Bridge {
         //redirect(this.quizLinks.get(docUrl));
     }
 
-    
-
     /**
      * This function changes the String <b>quizUrl</b> by adding 1 to the number
      * of the quiz. So C://example/document1_quiz1.html would become
@@ -261,7 +260,7 @@ public class Bridge {
      * @throws IOException If an I/O error occurs, which is possible because the
      * construction of the canonical pathname may require filesystem queries.
      */
-    public static String[][] findFiles(File directory) throws IOException {
+    public static void findFiles(File directory) throws IOException {
         File[] file;
         HashMap<String, String> al = new HashMap<String, String>();
         if (directory.isDirectory()) {
@@ -280,20 +279,19 @@ public class Bridge {
                     }
                 }
             }
-            String[][] result = new String[2][al.size()];
+            Bridge.files = new String[2][al.size()];
             SortedSet<String> sortedKeys = new TreeSet<String>(al.keySet());
             int i = 0;
             for (String key : sortedKeys) {
-                result[0][i] = key;
-                result[1][i] = al.get(key);
-                System.out.println(result[0][i] + " / " + result[1][i]);
+                Bridge.files[0][i] = key;
+                Bridge.files[1][i] = al.get(key);
+                System.out.println(Bridge.files[0][i] + " / " + Bridge.files[1][i]);
                 i++;
             }
-            return result;
+            System.out.println("files = " + Bridge.files);
         } else {
-            // System.out.println("The argument should be a directory ! Got : " + directory.getAbsolutePath());
+            System.out.println("The argument should be a directory ! Got : " + directory.getAbsolutePath());
         }
-        return null;
     }
 
     /**
