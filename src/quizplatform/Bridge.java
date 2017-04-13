@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.LongProperty;
@@ -272,8 +275,9 @@ public class Bridge {
                 }
             }
             String[][] result = new String[2][al.size()];
+            SortedSet<String> sortedKeys = new TreeSet<String>(al.keySet());
             int i = 0;
-            for (String key : al.keySet()) {
+            for (String key : sortedKeys) {
                 result[0][i] = key;
                 result[1][i] = al.get(key);
                 System.out.println(result[0][i] + " / " + result[1][i]);
