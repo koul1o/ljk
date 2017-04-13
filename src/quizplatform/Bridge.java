@@ -54,6 +54,7 @@ public class Bridge {
         this.quizLinks = new HashMap<String, String>();
 		try {
             findFiles(new File(Bridge.DOCUMENT_PATH));
+            this.getDocuments();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -182,6 +183,19 @@ public class Bridge {
         engine.executeScript("redirect();");
 
         //redirect(this.quizLinks.get(docUrl));
+    }
+    
+    public void getDocuments(){
+    	String s = "var docs = [";
+    	for(int i = 0; i < Bridge.files[0].length; i++){
+    		s = s + "[\'" + Bridge.files[0][i] + "\',\'" + Bridge.files[1][i] + "\']";
+    		if(i != Bridge.files[0].length-1){
+    			s = s + ",";
+    		}
+    	}
+    	s = s + "];";
+    	System.out.println(s);
+    	//engine.executeScript(s);
     }
 
     /**
