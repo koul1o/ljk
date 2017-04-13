@@ -280,7 +280,7 @@ public class Bridge {
                 if (f.isDirectory()) {
                     // findFiles(f);
                 } else {
-                    String key = f.getCanonicalPath();
+                    String key = f.getName();
                     //TODO break down the string to obtain the name of the document only (without the extension and the path) and set it as value of entry
                     String value = f.getName().split("\\.")[0]; // we remove extension from the file name.
 
