@@ -190,17 +190,23 @@ public class Bridge {
             engine.executeScript("afterSubmit();");
         }
     }
-
-    public void getDocuments() {
-        String s = "var docs = [";
-        for (int i = 0; i < Bridge.files[0].length; i++) {
-            s = s + "[\'" + Bridge.files[0][i] + "\',\'" + Bridge.files[1][i] + "\']";
-            if (i != Bridge.files[0].length - 1) {
-                s = s + ",";
-            }
-        }
-        s = s + "]";
-        engine.executeScript(s);
+    
+    /**
+     * This function sends an double dimension array to the javascript containing the name of the documents and their urls.</br>
+     * The urls are in the first column, the names are in the second. </br>
+     * The array is stored in the <b>docs</b> variable in the javascript.
+     */
+    
+    public void getDocuments(){
+    	String s = "var docs = [";
+    	for(int i = 0; i < Bridge.files[0].length; i++){
+    		s = s + "[\'" + Bridge.files[0][i] + "\',\'" + Bridge.files[1][i] + "\']";
+    		if(i != Bridge.files[0].length-1){
+    			s = s + ",";
+    		}
+    	}
+    	s = s + "];";
+    	engine.executeScript(s);
     }
 
     /**
