@@ -33,7 +33,7 @@ import org.reactfx.util.Timer;
 public class Bridge {
 
     private static final String QUESTION_NAME = "question";
-    private static final String DOCUMENT_PATH = "../../git/ljk/src/quizplatform/html";
+    private static final String DOCUMENT_PATH = "src/quizplatform/html";
     private static final String[] FORBIDDEN_WORDS = {QUESTION_NAME, "start2", "final_quiz", "manual", "documents"};
     private int time = 0;
     private JSObject window;
@@ -51,7 +51,13 @@ public class Bridge {
     public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform) {
 
         this.quizLinks = new HashMap<String, String>();
-
+		try {
+            findFiles(new File(Bridge.DOCUMENT_PATH));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        System.out.println("quizplatform.Bridge.<init>()"+files);
         engine.getLoadWorker().stateProperty().addListener((ObservableValue<? extends State> obs, State oldState, State newState) -> {
 
             if (newState == State.SUCCEEDED) {
