@@ -114,6 +114,10 @@ public class Bridge {
                         engine.executeScript("setDocuments();");
 
                     }
+                    if (engine.getTitle().toLowerCase().contains("document") && !title.toLowerCase().contains(QUESTION_NAME)) {
+                        docUrl = engine.getLocation();
+                        docUrl = docUrl.replace("file://", "");
+                    }
                     /* Update the doc url in the webpage */
                     if (docUrl != null) {
                         engine.executeScript("var bUrl=\'" + docUrl + "\'" + "");
@@ -180,9 +184,11 @@ public class Bridge {
     public void getUrl(String url) {
         URLToNextQuestion(url);
         engine.executeScript("var qUrl=\'" + this.quizLinks.get(docUrl) + "\'");
-        engine.executeScript("redirect();");
-
-        //redirect(this.quizLinks.get(docUrl));
+        if (!this.quizLinks.get(docUrl).contains("finished")) {
+            engine.executeScript("redirect();");
+        } else {
+            engine.executeScript("afterSubmit();");
+        }
     }
 
     public void getDocuments() {
@@ -195,10 +201,6 @@ public class Bridge {
         }
         s = s + "]";
         engine.executeScript(s);
-        engine.executeScript("print();");
-
-        System.out.println(s);
-        //engine.executeScript(s);
     }
 
     /**
@@ -235,7 +237,8 @@ public class Bridge {
         if (!f.exists()) {
             String s[] = r.split("/");
             r = "";
-            s[s.length - 1] = "documents.html";
+
+            s[s.length - 1] = "finished";
             int i = 0;
             for (i = 0; i < s.length; i++) {
                 if (i != 0) {
@@ -286,7 +289,6 @@ public class Bridge {
 
                     if (!al.containsKey(key) && notIn(value, Bridge.FORBIDDEN_WORDS)) {
                         al.put(key, value);
-                        System.out.println(f.getName() + " / " + value);
                     }
                 }
             }
@@ -296,10 +298,8 @@ public class Bridge {
             for (String key : sortedKeys) {
                 Bridge.files[0][i] = key;
                 Bridge.files[1][i] = al.get(key);
-                System.out.println(Bridge.files[0][i] + " / " + Bridge.files[1][i]);
                 i++;
             }
-            System.out.println("files = " + Bridge.files);
         } else {
             System.out.println("The argument should be a directory ! Got : " + directory.getAbsolutePath());
         }
