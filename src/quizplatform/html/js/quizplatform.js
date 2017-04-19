@@ -158,6 +158,7 @@ function print() {
 
 function collectInfo() {
 
+    var message = document.getElementById('message');
 
     var info = document.getElementsByClassName('form-control');
     var infoRadio = document.getElementsByClassName('form-control-radio');
@@ -166,7 +167,16 @@ function collectInfo() {
         if (infoRadio[i].checked) {
             ans = infoRadio[i].name + ": " + infoRadio[i].value;
             java.elementTrace(ans);
-           
+
+        }
+    }
+    for (var i = 0, length = info.length; i < length; i++) {
+
+        if (!info[i].value ) {
+            java.print(i);
+            message.style.display = "";
+            
+            return;
         }
     }
     for (var i = 0, length = info.length; i < length; i++) {
@@ -175,4 +185,5 @@ function collectInfo() {
         java.elementTrace(ans);
 
     }
+    quit();
 }

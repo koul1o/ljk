@@ -34,7 +34,7 @@ public class Bridge {
 
     private static final String QUESTION_NAME = "question";
     private static final String DOCUMENT_PATH = "src/quizplatform/html";
-    private static final String[] FORBIDDEN_WORDS = {QUESTION_NAME,"info", "final_quiz", "manual", "documents"};
+    private static final String[] FORBIDDEN_WORDS = {QUESTION_NAME, "info", "final_quiz", "manual", "documents"};
     private int time = 0;
     private JSObject window;
     private String title;
@@ -87,21 +87,18 @@ public class Bridge {
                                 });
 
                         FxTimer.runLater(
-                                Duration.ofMillis(3600000),
+                                Duration.ofMillis(3600),
                                 () -> {
-
                                     engine.load(getClass().getResource("html/final_quiz.html").toExternalForm());
-
                                 });
+
                         FxTimer.runLater(
                                 Duration.ofMillis(4200000),
                                 () -> {
                                     if (title.toLowerCase().contains("final")) {
                                         engine.executeScript("checkFinalAnswers();");
                                         engine.load(getClass().getResource("html/info.html").toExternalForm());
-                                       
                                     }
-
                                 });
                         cnt++;
 

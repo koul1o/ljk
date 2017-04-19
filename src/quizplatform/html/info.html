@@ -33,7 +33,7 @@
             <!--<legend>Merci de répondre à toutes les questions ci-dessous:</legend>-->
 
 
-            <div class="form-group row">
+            <form class="form-group row">
 
                 <label>Sexe</label>
                 <div>
@@ -43,23 +43,26 @@
                     Female
                 </div>
 
-                <label for="text-input" class="col-2 col-form-label">Age</label>
+                <label for="text-input" class="col-2 col-form-label" >Age</label>
                 <div class="col-10">
-                    <input class="form-control" type="text"  id="Age">
+                    <input class="form-control" type="text"  id="Age" required="true">
                 </div>
                 <label for="text-input" class="col-2 col-form-label">Profession du père</label>
                 <div class="col-10">
-                    <input class="form-control" type="text" id="Profession du père">
+                    <input class="form-control" type="text" id="Profession du père" required="true">
                 </div>
                 <label for="example-text-input" class="col-2 col-form-label">Diplôme du père</label>
                 <div class="col-10">
-                    <input class="form-control" type="text"  id="Diplôme du père">
+                    <input class="form-control" type="text"  id="Diplôme du père" required="true">
                 </div>
 
-            </div>
-            <div id="buttons_area" style="padding-top: 15px;">
-                <a href="#" class="btn btn-info" role="button" onclick="collectInfo();quit();"  >Submit</a> 
-            </div>
+                <div id="message"  style="display:none; position: fixed; color: red;">Please fill up all the fields</div>
+                <div id="buttons_area" style="padding-top: 15px;">
+
+                    <a  class="btn btn-success" role="button" onclick="collectInfo();" style="float: right;">Submit</a>
+                </div>
+            </form>
+
         </div>
     </body>
 </html>
