@@ -87,7 +87,7 @@ public class Bridge {
                                 });
 
                         FxTimer.runLater(
-                                Duration.ofMillis(3600),
+                                Duration.ofMillis(3600000),
                                 () -> {
                                     engine.load(getClass().getResource("html/final_quiz.html").toExternalForm());
                                 });
