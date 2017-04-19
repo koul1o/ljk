@@ -121,11 +121,11 @@ function checkFinalAnswers() {
     var ans;
     for (var i = 0, length = radios.length; i < length; i++) {
         if (radios[i].checked) {
-            ans = radios[i].name+": " + radios[i].value;
+            ans = radios[i].name + ": " + radios[i].value;
             java.elementTrace(ans);
 
         }
-        
+
     }
 }
 
@@ -160,12 +160,19 @@ function collectInfo() {
 
 
     var info = document.getElementsByClassName('form-control');
+    var infoRadio = document.getElementsByClassName('form-control-radio');
     var ans;
+    for (var i = 0, length = infoRadio.length; i < length; i++) {
+        if (infoRadio[i].checked) {
+            ans = infoRadio[i].name + ": " + infoRadio[i].value;
+            java.elementTrace(ans);
+           
+        }
+    }
     for (var i = 0, length = info.length; i < length; i++) {
 
         ans = info[i].id + ": " + info[i].value;
         java.elementTrace(ans);
 
     }
-
 }
