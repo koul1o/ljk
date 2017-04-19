@@ -1,14 +1,26 @@
 var qUrl;
 var docs;
+//
+//$(document).load(function () {
+//
+//    getFirstPanel();
+//
+//});
+
+
+
+function getFirstPanel() {
+    // var panel = document.getElementsByClassName('panel-collapse collapse in');
+    // var open = panel[0].id;
+    var test = "tassa";
+    java.getTrace(test);
+
+}
 
 /** 
  * Upcall to Java sending the time and the name of the accesed page for the final page 
  */
 function quit() {
-    var pageName = document.title;
-    var exitTime = time + timer();
-    var s = exitTime.toString() + "_" + pageName.toString() + "_Platform Exit";
-    java.getTrace(s);
     java.exit();
 }
 
@@ -109,10 +121,11 @@ function checkFinalAnswers() {
     var ans;
     for (var i = 0, length = radios.length; i < length; i++) {
         if (radios[i].checked) {
-            ans = "_Answer: " + radios[i].value;
+            ans = radios[i].name+": " + radios[i].value;
             java.elementTrace(ans);
 
         }
+        
     }
 }
 
@@ -140,4 +153,19 @@ function setDocuments() {
 function print() {
 
     java.print(docs.length);
+}
+
+
+function collectInfo() {
+
+
+    var info = document.getElementsByClassName('form-control');
+    var ans;
+    for (var i = 0, length = info.length; i < length; i++) {
+
+        ans = info[i].id + ": " + info[i].value;
+        java.elementTrace(ans);
+
+    }
+
 }

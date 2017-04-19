@@ -34,7 +34,7 @@ public class Bridge {
 
     private static final String QUESTION_NAME = "question";
     private static final String DOCUMENT_PATH = "src/quizplatform/html";
-    private static final String[] FORBIDDEN_WORDS = {QUESTION_NAME, "start2", "final_quiz", "manual", "documents"};
+    private static final String[] FORBIDDEN_WORDS = {QUESTION_NAME,"info", "final_quiz", "manual", "documents"};
     private int time = 0;
     private JSObject window;
     private String title;
@@ -87,7 +87,7 @@ public class Bridge {
                                 });
 
                         FxTimer.runLater(
-                                Duration.ofMillis(3600000),
+                                Duration.ofMillis(3600),
                                 () -> {
 
                                     engine.load(getClass().getResource("html/final_quiz.html").toExternalForm());
@@ -96,12 +96,18 @@ public class Bridge {
                         FxTimer.runLater(
                                 Duration.ofMillis(4200000),
                                 () -> {
-
-                                    exit();
+                                    if (title.toLowerCase().contains("final")) {
+                                        engine.executeScript("checkFinalAnswers();");
+                                        engine.load(getClass().getResource("html/info.html").toExternalForm());
+                                       
+                                    }
 
                                 });
                         cnt++;
 
+                    } else if (!(title.toLowerCase().contains("final") || title.toLowerCase().contains("documents") || title.toLowerCase().contains("demographic"))) {
+                        traceT = time + "_" + title + "_Panel 1";
+                        getTrace(traceT);
                     } else {
                         getTime();
 
@@ -137,10 +143,6 @@ public class Bridge {
 
                     }
 
-                    if (title.toLowerCase().contains(QUESTION_NAME)) {
-
-                    }
-
                 }
             }
         });
@@ -150,6 +152,7 @@ public class Bridge {
 
     /* Function, to exit the platform */
     public void exit() {
+
         getLastTrace(traceT);
         Platform.exit();
 
@@ -190,23 +193,23 @@ public class Bridge {
             engine.executeScript("afterSubmit();");
         }
     }
-    
+
     /**
-     * This function sends an double dimension array to the javascript containing the name of the documents and their urls.</br>
+     * This function sends an double dimension array to the javascript
+     * containing the name of the documents and their urls.</br>
      * The urls are in the first column, the names are in the second. </br>
      * The array is stored in the <b>docs</b> variable in the javascript.
      */
-    
-    public void getDocuments(){
-    	String s = "var docs = [";
-    	for(int i = 0; i < Bridge.files[0].length; i++){
-    		s = s + "[\'" + Bridge.files[0][i] + "\',\'" + Bridge.files[1][i] + "\']";
-    		if(i != Bridge.files[0].length-1){
-    			s = s + ",";
-    		}
-    	}
-    	s = s + "];";
-    	engine.executeScript(s);
+    public void getDocuments() {
+        String s = "var docs = [";
+        for (int i = 0; i < Bridge.files[0].length; i++) {
+            s = s + "[\'" + Bridge.files[0][i] + "\',\'" + Bridge.files[1][i] + "\']";
+            if (i != Bridge.files[0].length - 1) {
+                s = s + ",";
+            }
+        }
+        s = s + "];";
+        engine.executeScript(s);
     }
 
     /**
