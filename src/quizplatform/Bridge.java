@@ -28,7 +28,6 @@ import javafx.scene.web.WebEngine;
 import javafx.stage.Stage;
 import netscape.javascript.JSObject;
 import org.reactfx.util.FxTimer;
-import org.reactfx.util.Timer;
 
 public class Bridge {
 
@@ -55,7 +54,6 @@ public class Bridge {
 		try {
             findFiles(new File(Bridge.DOCUMENT_PATH));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         System.out.println("quizplatform.Bridge.<init>()"+files);
@@ -143,14 +141,14 @@ public class Bridge {
     }
 
 
-    /* Function, to exit the platform */
+    /** Function, to exit the platform */
     public void exit() {
         getLastTrace(traceT);
         Platform.exit();
 
     }
 
-    /* Upcall to this function from the page, to get the interaction trace */
+    /** Upcall to this function from the page, to get the interaction trace */
     public void getTrace(String trace) {
         System.out.println("Trace: " + trace);
         saveData(trace);
@@ -175,7 +173,7 @@ public class Bridge {
         time = (int) (0 + elapsedTime.divide(1_000_000).getValue());
     }
 
-    /* Upcall to this function from the page, to update the next question Url for a document quiz */
+    /** Upcall to this function from the page, to update the next question Url for a document quiz */
     public void getUrl(String url) {
         URLToNextQuestion(url);
         engine.executeScript("var qUrl=\'" + this.quizLinks.get(docUrl) + "\'");
@@ -282,7 +280,6 @@ public class Bridge {
                     // findFiles(f);
                 } else {
                     String key = f.getCanonicalPath();
-                    //TODO break down the string to obtain the name of the document only (without the extension and the path) and set it as value of entry
                     String value = f.getName().split("\\.")[0]; // we remove extension from the file name.
 
                     if (!al.containsKey(key) && notIn(value, Bridge.FORBIDDEN_WORDS)) {
