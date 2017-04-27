@@ -32,8 +32,8 @@ import org.reactfx.util.FxTimer;
 public class Bridge {
 
     private static final String QUESTION_NAME = "question";
-    private static final String DOCUMENT_PATH = "../../git/ljk/src/quizplatform/html";
-    private static final String[] FORBIDDEN_WORDS = {QUESTION_NAME, "start2", "final_quiz", "manual", "documents"};
+    private static final String DOCUMENT_PATH = "src/quizplatform/html";
+    private static final String[] FORBIDDEN_WORDS = {QUESTION_NAME, "info", "final_quiz", "manual", "documents"};
     private int time = 0;
     private JSObject window;
     private String title;
@@ -46,17 +46,17 @@ public class Bridge {
     private String traceT = "";
     private boolean firstStat = true;
     private HashMap<String, String> quizLinks;
-    private static String [][] files;
+    private static String[][] files;
 
     public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform) {
 
         this.quizLinks = new HashMap<String, String>();
-		try {
+        try {
             findFiles(new File(Bridge.DOCUMENT_PATH));
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("quizplatform.Bridge.<init>()"+files);
         engine.getLoadWorker().stateProperty().addListener((ObservableValue<? extends State> obs, State oldState, State newState) -> {
 
             if (newState == State.SUCCEEDED) {
@@ -87,19 +87,22 @@ public class Bridge {
                         FxTimer.runLater(
                                 Duration.ofMillis(3600000),
                                 () -> {
-
                                     engine.load(getClass().getResource("html/final_quiz.html").toExternalForm());
-
                                 });
+
                         FxTimer.runLater(
                                 Duration.ofMillis(4200000),
                                 () -> {
-
-                                    exit();
-
+                                    if (title.toLowerCase().contains("final")) {
+                                        engine.executeScript("checkFinalAnswers();");
+                                        engine.load(getClass().getResource("html/info.html").toExternalForm());
+                                    }
                                 });
                         cnt++;
 
+                    } else if (!(title.toLowerCase().contains("final") || title.toLowerCase().contains("documents") || title.toLowerCase().contains("demographic"))) {
+                        traceT = time + "_" + title + "_Panel 1";
+                        getTrace(traceT);
                     } else {
                         getTime();
 
@@ -107,7 +110,12 @@ public class Bridge {
                         getTrace(traceT);
                     }
 
-                    if (engine.getTitle().toLowerCase().contains("document ") && !title.toLowerCase().contains(QUESTION_NAME)) {
+                    if (engine.getTitle().toLowerCase().contains("documents")) {
+                        getDocuments();
+                        engine.executeScript("setDocuments();");
+
+                    }
+                    if (engine.getTitle().toLowerCase().contains("document") && !title.toLowerCase().contains(QUESTION_NAME)) {
                         docUrl = engine.getLocation();
                         docUrl = docUrl.replace("file://", "");
                     }
@@ -130,10 +138,6 @@ public class Bridge {
 
                     }
 
-                    if (title.toLowerCase().contains(QUESTION_NAME)) {
-
-                    }
-
                 }
             }
         });
@@ -143,6 +147,7 @@ public class Bridge {
 
     /** Function, to exit the platform */
     public void exit() {
+
         getLastTrace(traceT);
         Platform.exit();
 
@@ -177,27 +182,29 @@ public class Bridge {
     public void getUrl(String url) {
         URLToNextQuestion(url);
         engine.executeScript("var qUrl=\'" + this.quizLinks.get(docUrl) + "\'");
-        engine.executeScript("redirect();");
-
-        //redirect(this.quizLinks.get(docUrl));
+        if (!this.quizLinks.get(docUrl).contains("finished")) {
+            engine.executeScript("redirect();");
+        } else {
+            engine.executeScript("afterSubmit();");
+        }
     }
-    
+
     /**
-     * This function sends an double dimension array to the javascript containing the name of the documents and their urls.</br>
+     * This function sends an double dimension array to the javascript
+     * containing the name of the documents and their urls.</br>
      * The urls are in the first column, the names are in the second. </br>
      * The array is stored in the <b>docs</b> variable in the javascript.
      */
-    
-    public void getDocuments(){
-    	String s = "var docs = [";
-    	for(int i = 0; i < Bridge.files[0].length; i++){
-    		s = s + "[\'" + Bridge.files[0][i] + "\',\'" + Bridge.files[1][i] + "\']";
-    		if(i != Bridge.files[0].length-1){
-    			s = s + ",";
-    		}
-    	}
-    	s = s + "];";
-    	engine.executeScript(s);
+    public void getDocuments() {
+        String s = "var docs = [";
+        for (int i = 0; i < Bridge.files[0].length; i++) {
+            s = s + "[\'" + Bridge.files[0][i] + "\',\'" + Bridge.files[1][i] + "\']";
+            if (i != Bridge.files[0].length - 1) {
+                s = s + ",";
+            }
+        }
+        s = s + "];";
+        engine.executeScript(s);
     }
 
     /**
@@ -234,7 +241,8 @@ public class Bridge {
         if (!f.exists()) {
             String s[] = r.split("/");
             r = "";
-            s[s.length - 1] = "documents.html";
+
+            s[s.length - 1] = "finished";
             int i = 0;
             for (i = 0; i < s.length; i++) {
                 if (i != 0) {
@@ -279,12 +287,11 @@ public class Bridge {
                 if (f.isDirectory()) {
                     // findFiles(f);
                 } else {
-                    String key = f.getCanonicalPath();
+                    String key = f.getName();
                     String value = f.getName().split("\\.")[0]; // we remove extension from the file name.
 
                     if (!al.containsKey(key) && notIn(value, Bridge.FORBIDDEN_WORDS)) {
                         al.put(key, value);
-                        System.out.println(f.getName() + " / " + value);
                     }
                 }
             }
@@ -294,10 +301,8 @@ public class Bridge {
             for (String key : sortedKeys) {
                 Bridge.files[0][i] = key;
                 Bridge.files[1][i] = al.get(key);
-                System.out.println(Bridge.files[0][i] + " / " + Bridge.files[1][i]);
                 i++;
             }
-            System.out.println("files = " + Bridge.files);
         } else {
             System.out.println("The argument should be a directory ! Got : " + directory.getAbsolutePath());
         }
@@ -408,6 +413,10 @@ public class Bridge {
 
         }
 
+    }
+
+    public void print(int l) {
+        System.out.println("quizplatform.Bridge.print()" + l);
     }
 
     public void execute(Consumer<Object> callback, String function, Object... args) {

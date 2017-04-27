@@ -780,3 +780,44 @@ Time,Location
 
 0,Documents
 1325,Documents
+
+0,Documents
+1143,Document 1
+2150,Document 1,Panel 4
+2201,Document 1,Question 1
+3817,Document 1,Question 1,d
+4117,Document 1,Question 1,d
+4717,Document 1,Question 1,Answer: correct
+4752,Document 1,Question 2
+6122,Document 1,Question 2,d
+7299,Document 1,Question 2,Answer: correct
+7301,Document 1,Question 2,Answer: correct
+9907,Documents
+11198,Document 5
+12055,Document 5,Panel 4
+12103,Document 5,Question 1
+16030,Documents
+17437,Document 1
+19319,Document 1,Panel 4
+20731,Documents
+21820,Document 2
+24832,Documents
+25860,Document 4
+26915,Documents
+27881,Document 3
+28917,Documents
+32223,Document 3
+33212,Document 3,Panel 4
+33247,Document 3,Question 1
+36513,Document 3,Question 1,d
+37907,Document 3,Question 1,Answer: correct
+37934,Document 3,Question 2
+39276,Document 3,Question 2,d
+40020,Document 3,Question 2,Answer: d
+41472,Document 3,Question 2,c
+42314,Document 3,Question 2,Answer: correct
+42337,Document 3,Question 3
+43455,Document 3,Question 3,d
+44163,Document 3,Question 3,Answer: correct
+44164,Document 3,Question 3,Answer: correct
+46816,Document 3,Exit

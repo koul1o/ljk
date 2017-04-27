@@ -6796,7 +6796,7 @@ button.close {
     
 }
 
-.panel:last-child> .panel-collapse > .panel-body{
+#quiz-container{
     text-align: center;
     height: 650px;
 }
