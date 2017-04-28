@@ -32,8 +32,9 @@ import org.reactfx.util.Timer;
 
 public class Bridge {
 
+    
     private static final String QUESTION_NAME = "question";
-    private static final String DOCUMENT_PATH = "src/quizplatform/html";
+    
     private static final String[] FORBIDDEN_WORDS = {QUESTION_NAME, "info", "final_quiz", "manual", "documents"};
     private int time = 0;
     private JSObject window;
@@ -48,12 +49,16 @@ public class Bridge {
     private boolean firstStat = true;
     private HashMap<String, String> quizLinks;
     private static String[][] files;
+    private static final float MILIS = 60000;
+    private float augmentBar;
+    private Timer timer2;
 
-    public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform) {
-
+    public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform, float tTime, float fTime, float step, String root) {
+        String DOCUMENT_PATH = "src/quizplatform/" + root;
+        
         this.quizLinks = new HashMap<String, String>();
         try {
-            findFiles(new File(Bridge.DOCUMENT_PATH));
+            findFiles(new File(DOCUMENT_PATH));
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -79,25 +84,43 @@ public class Bridge {
                         getTrace(traceT);
 
                         /* Using org.reactfx.util.FxTimer augment the progress bar periodicaly every 15min by 25% */
-                        FxTimer.runPeriodically(
-                                Duration.ofMillis(90000),
+                        augmentBar = ((tTime / step));
+
+                        Timer timer = FxTimer.runPeriodically(
+                                Duration.ofMillis((long) (augmentBar * MILIS)),
                                 () -> {
-                                    quizPlatform.percent += 0.25;
+                                    quizPlatform.percent += 1 / step;
                                     quizPlatform.progressBar.setProgress(quizPlatform.percent);
                                 });
 
                         FxTimer.runLater(
-                                Duration.ofMillis(3600000),
+                                Duration.ofMillis((long) (tTime * MILIS)),
                                 () -> {
-                                    engine.load(getClass().getResource("html/final_quiz.html").toExternalForm());
+                                    quizPlatform.percent = 0;
+                                    augmentBar = ((fTime / step));
+                                    timer.stop();
+                                    timer2 = FxTimer.runPeriodically(
+                                            Duration.ofMillis((long) (augmentBar * MILIS)),
+                                            () -> {
+                                                quizPlatform.percent += 1 / step;
+                                                quizPlatform.progressBar.setProgress(quizPlatform.percent);
+                                            });
+
+                                    quizPlatform.progressBar.setProgress(quizPlatform.percent);
+                                    engine.load(getClass().getResource(root + "final_quiz.html").toExternalForm());
+
                                 });
 
                         FxTimer.runLater(
-                                Duration.ofMillis(4200000),
+                                Duration.ofMillis((long) ((tTime + fTime) * MILIS)),
                                 () -> {
+                                    System.out.println("Entering demog");
                                     if (title.toLowerCase().contains("final")) {
                                         engine.executeScript("checkFinalAnswers();");
-                                        engine.load(getClass().getResource("html/info.html").toExternalForm());
+                                        timer2.stop();
+                                        quizPlatform.percent = 0;
+                                        quizPlatform.progressBar.setProgress(quizPlatform.percent);
+                                        engine.load(getClass().getResource(root + "info.html").toExternalForm());
                                     }
                                 });
                         cnt++;
@@ -306,6 +329,7 @@ public class Bridge {
                 Bridge.files[1][i] = al.get(key);
                 i++;
             }
+            
         } else {
             System.out.println("The argument should be a directory ! Got : " + directory.getAbsolutePath());
         }

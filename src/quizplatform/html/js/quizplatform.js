@@ -1,21 +1,5 @@
 var qUrl;
 var docs;
-//
-//$(document).load(function () {
-//
-//    getFirstPanel();
-//
-//});
-
-
-
-function getFirstPanel() {
-    // var panel = document.getElementsByClassName('panel-collapse collapse in');
-    // var open = panel[0].id;
-    var test = "tassa";
-    java.getTrace(test);
-
-}
 
 /** 
  * Upcall to Java sending the time and the name of the accesed page for the final page 
@@ -36,7 +20,7 @@ function sendElementTrace() {
 
 function sendElementTraceQ() {
     // var id = $('#accordion .in').parent().attr("id");
-    var id = event.srcElement.id;
+    var id = event.srcElement.name+"_"+event.srcElement.id;
     java.elementTrace(id);
 
 }
@@ -121,7 +105,7 @@ function checkFinalAnswers() {
     var ans;
     for (var i = 0, length = radios.length; i < length; i++) {
         if (radios[i].checked) {
-            ans = radios[i].name + ": " + radios[i].value;
+            ans = radios[i].name + "_Answer: " + radios[i].value;
             java.elementTrace(ans);
 
         }
