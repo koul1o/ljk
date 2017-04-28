@@ -32,9 +32,8 @@ import org.reactfx.util.Timer;
 
 public class Bridge {
 
-    
     private static final String QUESTION_NAME = "question";
-    
+
     private static final String[] FORBIDDEN_WORDS = {QUESTION_NAME, "info", "final_quiz", "manual", "documents"};
     private int time = 0;
     private JSObject window;
@@ -55,7 +54,7 @@ public class Bridge {
 
     public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform, float tTime, float fTime, float step, String root) {
         String DOCUMENT_PATH = "src/quizplatform/" + root;
-        
+
         this.quizLinks = new HashMap<String, String>();
         try {
             findFiles(new File(DOCUMENT_PATH));
@@ -168,8 +167,9 @@ public class Bridge {
 
     }
 
-
-    /** Function, to exit the platform */
+    /**
+     * Function, to exit the platform
+     */
     public void exit() {
 
         getLastTrace(traceT);
@@ -177,7 +177,9 @@ public class Bridge {
 
     }
 
-    /** Upcall to this function from the page, to get the interaction trace */
+    /**
+     * Upcall to this function from the page, to get the interaction trace
+     */
     public void getTrace(String trace) {
         System.out.println("Trace: " + trace);
         saveData(trace);
@@ -202,15 +204,29 @@ public class Bridge {
         time = (int) (0 + elapsedTime.divide(1_000_000).getValue());
     }
 
-    /** Upcall to this function from the page, to update the next question Url for a document quiz */
+    /**
+     * Upcall to this function from the page, to update the next question Url
+     * for a document quiz
+     */
     public void getUrl(String url) {
         URLToNextQuestion(url);
         engine.executeScript("var qUrl=\'" + this.quizLinks.get(docUrl) + "\'");
         if (!this.quizLinks.get(docUrl).contains("finished")) {
             engine.executeScript("redirect();");
         } else {
+
+            //engine.executeScript("redirect();");
             engine.executeScript("afterSubmit();");
+
         }
+    }
+
+    public void restartQuiz() {
+        String docUrltmp = docUrl.replace(".html", "_question1.html");
+        this.quizLinks.replace(docUrl, docUrltmp);
+
+        engine.executeScript("var qUrl=\'" + this.quizLinks.get(docUrl) + "\'");
+        System.out.println("quizplatform.Bridge.getUrl()" + this.quizLinks.get(docUrl));
     }
 
     /**
@@ -327,7 +343,7 @@ public class Bridge {
                 Bridge.files[1][i] = al.get(key);
                 i++;
             }
-            
+
         } else {
             System.out.println("The argument should be a directory ! Got : " + directory.getAbsolutePath());
         }
@@ -440,7 +456,7 @@ public class Bridge {
 
     }
 
-    public void print(int l) {
+    public void print(String l) {
         System.out.println("quizplatform.Bridge.print()" + l);
     }
 

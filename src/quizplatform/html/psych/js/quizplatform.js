@@ -83,7 +83,7 @@ function setQuizUrl() {
 }
 
 function afterSubmit() {
-    document.getElementById("mbd").style.display = "none";
+   // document.getElementById("mbd").style.display = "none";
     messageDivCompl = document.getElementById('message_completed');
     messageDivCompl.style.display = "";
     document.getElementById("quiz-container").style.height = "10px";

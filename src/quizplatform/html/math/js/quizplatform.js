@@ -85,8 +85,25 @@ function setQuizUrl() {
 function afterSubmit() {
     document.getElementById("mbd").style.display = "none";
     messageDivCompl = document.getElementById('message_completed');
+    retakeBtn=document.getElementById('retake');
+    retakeBtn.style.display = "";
     messageDivCompl.style.display = "";
     document.getElementById("quiz-container").style.height = "10px";
+    
+    
+}
+function retake(){
+    java.restartQuiz();
+    
+    document.getElementById("mbd").style.display = "";
+     messageDivCompl = document.getElementById('message_completed');
+    retakeBtn=document.getElementById('retake');
+    retakeBtn.style.display = "none";
+    messageDivCompl.style.display = "none";
+    document.getElementById("quiz-container").style.height = "650px";
+    
+    redirect();
+    
 }
 
 
