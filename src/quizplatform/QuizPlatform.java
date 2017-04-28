@@ -139,8 +139,11 @@ public class QuizPlatform extends Application {
             System.out.println("Property Step missing, default value set: " + step + "  To change this parameter set step=number of steps in run.bat");
         }
         try {
+            if(!System.getProperty("root").isEmpty()){
             this.root = "html/"+(String) System.getProperty("root");
-        } catch (NumberFormatException e) {
+                System.out.println("quizplatform.QuizPlatform.setProperties()"+root);
+            }
+        } catch (NullPointerException e) {
             System.out.println("Property Root missing, default value set: " + root + "  To change this parameter set root=name (available folders: psych,math) of setup in run.bat");
         }
 
