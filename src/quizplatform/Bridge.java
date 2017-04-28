@@ -28,6 +28,7 @@ import javafx.scene.web.WebEngine;
 import javafx.stage.Stage;
 import netscape.javascript.JSObject;
 import org.reactfx.util.FxTimer;
+import org.reactfx.util.Timer;
 
 public class Bridge {
 
