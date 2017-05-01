@@ -33,6 +33,7 @@ public class QuizPlatform extends Application {
     private String root = "html/math";
 
     ProgressBar progressBar = new ProgressBar();
+	private String partId = "00000";
 
     @Override
     public void start(Stage primaryStage) {
@@ -43,7 +44,7 @@ public class QuizPlatform extends Application {
         setProperties();
 
         /* Initialize the Bridge */
-        bridge = new Bridge(engine, primaryStage, this, tTime, fTime, step, root);
+        bridge = new Bridge(engine, primaryStage, this, tTime, fTime, step, root, this.partId);
 
         /* Load the first Url */
         engine.load(getClass().getResource(root + "/documents.html").toExternalForm());
@@ -144,6 +145,13 @@ public class QuizPlatform extends Application {
             }
         } catch (NullPointerException e) {
             System.out.println("Property Root missing, default value set: " + root + "  To change this parameter set root=name (available folders: psych,math) of setup in run.bat");
+        }
+        try {
+            if (!System.getProperty("partId").isEmpty()) {
+                this.partId = (String) System.getProperty("partId");
+            }
+        } catch (NullPointerException e) {
+            System.out.println("Property Participant ID missing, default value set: " + this.partId + "  To change this parameter set partId=id of setup in run.bat");
         }
 
     }

@@ -13,7 +13,10 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -46,15 +49,17 @@ public class Bridge {
     private int cnt = 0;
     private String traceT = "";
     private boolean firstStat = true;
+    private String partId = "";
+    private String fullFilepath = "";
     private HashMap<String, String> quizLinks;
     private static String[][] files;
     private static final float MILIS = 60000;
     private float augmentBar;
     private Timer timer2;
 
-    public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform, float tTime, float fTime, float step, String root) {
+    public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform, float tTime, float fTime, float step, String root, String partId) {
         String DOCUMENT_PATH = "src/quizplatform/" + root;
-
+        this.partId = partId;
         this.quizLinks = new HashMap<String, String>();
         try {
             findFiles(new File(DOCUMENT_PATH));
@@ -263,19 +268,7 @@ public class Bridge {
      */
     public void URLToNextQuestion(String quizUrl) {
 
-        Pattern digitPattern = Pattern.compile("(\\d+)");
-
-        Matcher matcher = digitPattern.matcher(quizUrl);
-        StringBuffer result = new StringBuffer();
-        int index = 0;
-        while (matcher.find()) {
-            index = matcher.start();
-        }
-        matcher.find(index);
-        matcher.appendReplacement(result, String.valueOf(Integer.parseInt(matcher.group(1)) + 1));
-        matcher.appendTail(result);
-
-        String r = result.toString();
+        String r = this.incrementString(quizUrl);
 
         File f = new File(r);
         if (!f.exists()) {
@@ -296,6 +289,22 @@ public class Bridge {
 
         this.quizLinks.replace(docUrl, r);
 
+    }
+    
+    public String incrementString(String sti){
+    	Pattern digitPattern = Pattern.compile("(\\d+)");
+
+        Matcher matcher = digitPattern.matcher(sti);
+        StringBuffer result = new StringBuffer();
+        int index = 0;
+        while (matcher.find()) {
+            index = matcher.start();
+        }
+        matcher.find(index);
+        matcher.appendReplacement(result, String.valueOf(Integer.parseInt(matcher.group(1)) + 1));
+        matcher.appendTail(result);
+        
+    	return result.toString();
     }
 
     /* This function redirects us to the next question while in the quiz */
@@ -392,7 +401,7 @@ public class Bridge {
      * @param j - the string to save
      */
     public void saveData(String j) {
-        saveData(j, "test.csv");
+        saveData(j, partId+"_1.csv");
     }
 
     /**
@@ -405,8 +414,7 @@ public class Bridge {
      * If the file does not exist, it creates it and adds the right header to it
      * (separation char ',' and the name of each columns : "Time" and
      * "Location"). <br>
-     * If it exists and the data is the first one of the test (ie : if the time
-     * is equal to 0), it skips a line to separate the tests. <br>
+     * If it exists and the data is the first one of the test, it skips a line to separate the tests. <br>
      *
      * @param j - the string to save
      * @param filepath - the file path of the file to save in
@@ -415,21 +423,39 @@ public class Bridge {
 
         try {
             StringBuilder sb = new StringBuilder();
-            File f = new File(filepath);
 
-            // if the file doesn't exist we need to create it and add the header (separation char and name of the columns)
-            if (!f.exists()) {
-                f.createNewFile();
+            File f;
+            // we leave a space at the beginning of each test, to separate them
+            if (this.firstStat) {
+            	int cpt = 1;
+            	DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            	Date date = new Date();
+            	
+                f = new File(filepath);
+                while(f.exists()){
+                	filepath = incrementString(filepath);
+                	f = new File(filepath);
+                	cpt++;
+                }  
+                
+                this.fullFilepath = filepath;
+            	f.createNewFile();
                 sb.append("sep=,");
+                sb.append('\n');
+                sb.append(date);
+                sb.append('\n');
+                sb.append("Participant : " + partId);
+                sb.append('\n');
+                sb.append("Experiment number : " + cpt);
                 sb.append('\n');
                 sb.append("Time,Location");
                 sb.append('\n');
-            }
-
-            // we leave a space at the beginning of each test, to separate them
-            if (this.firstStat) {
+                
                 sb.append("\n");
                 this.firstStat = false;
+            } else {
+
+                f = new File(this.fullFilepath);
             }
 
             // add the data to the string to put in the file
