@@ -24,22 +24,29 @@ import org.reactfx.util.FxTimer;
 
 public class QuizPlatform extends Application {
 
+    private static String[] arguments;
     double percent = 0.0;
     private Bridge bridge;
+    private float tTime = 60;
+    private float fTime = 20;
+    private float step = 4;
+    private String root = "html/math";
+
     ProgressBar progressBar = new ProgressBar();
 
     @Override
     public void start(Stage primaryStage) {
-
+        argsToProperties(arguments);
         /* Create the WebView and WebEngine */
         WebView webView = new WebView();
         WebEngine engine = webView.getEngine();
+        setProperties();
 
         /* Initialize the Bridge */
-        bridge = new Bridge(engine, primaryStage, this);
+        bridge = new Bridge(engine, primaryStage, this, tTime, fTime, step, root);
 
         /* Load the first Url */
-        engine.load(getClass().getResource("html/documents.html").toExternalForm());
+        engine.load(getClass().getResource(root + "/documents.html").toExternalForm());
 
         /* Enable JS in the WebEngine */
         engine.setJavaScriptEnabled(true);
@@ -68,13 +75,18 @@ public class QuizPlatform extends Application {
 
         /* Set the scene  */
         primaryStage.setScene(scene);
-       // primaryStage.initStyle(StageStyle.UNDECORATED);
+        try {
+            if (System.getProperty("fullscreen").equals("y")) {
+                primaryStage.initStyle(StageStyle.UNDECORATED);
+                primaryStage.setFullScreen(true);
+                primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+            }
+        } catch (Exception e) {
+            System.out.println("Property Fullscreen missing. To change this parameter set fullscreen=y in run.bat");
 
-     //   primaryStage.setFullScreen(true);
-       // primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+        }
+
         primaryStage.show();
-
-        
 
         primaryStage.setOnCloseRequest(exit());
     }
@@ -86,7 +98,60 @@ public class QuizPlatform extends Application {
         };
     }
 
+    /**
+     * Convert command line arguments into system properties
+     *
+     * @param args
+     */
+    public static void argsToProperties(String[] args) {
+        // Go through all the parameters
+
+        for (int i = 0; i < args.length; i++) {
+            String[] nameval = args[i].split("=");
+
+            // Does it have the parameter format : name=value
+            if (nameval.length == 2) {
+                // Remove the '," and additional spaces if needed
+                nameval[1].replace('"', ' ');
+                nameval[1].replace('\'', ' ');
+                // Set the property
+                System.setProperty(nameval[0].trim(), nameval[1].trim());
+
+            }
+        }
+    }
+
+    public void setProperties() {
+
+        try {
+            tTime = Integer.parseInt(System.getProperty("tTime"));
+        } catch (NumberFormatException e) {
+            System.out.println("Property Training Time missing, default value set: " + tTime + "  To change this parameter set tTime=minutes in run.bat");
+        }
+        try {
+            fTime = Integer.parseInt(System.getProperty("fTime"));
+        } catch (NumberFormatException e) {
+            System.out.println("Property Final Quiz Time missing, default value set: " + fTime + "  To change this parameter set fTime=minutes in run.bat");
+        }
+        try {
+            step = Integer.parseInt(System.getProperty("step"));
+        } catch (NumberFormatException e) {
+            System.out.println("Property Step missing, default value set: " + step + "  To change this parameter set step=number of steps in run.bat");
+        }
+        try {
+            if (!System.getProperty("root").isEmpty()) {
+                this.root = "html/" + (String) System.getProperty("root");
+            }
+        } catch (NullPointerException e) {
+            System.out.println("Property Root missing, default value set: " + root + "  To change this parameter set root=name (available folders: psych,math) of setup in run.bat");
+        }
+
+    }
+
     public static void main(String[] args) {
+
+        arguments = args;
+
         launch(args);
     }
 

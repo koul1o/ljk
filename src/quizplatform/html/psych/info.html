@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Demographic</title>
+        <link href="css/bootstrap.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/quizplatform.js"></script>
+
+        <div id="logos" style="overflow: auto;"> 
+            <img src="img/logo_gipsa.jpg" style="width: 200px; height: 150px; margin: auto; float: left;"> </img>
+            <img src="img/logo_ljk.jpg" style="width: 200px; height: 150px; margin: auto; float: right; "> </img>
+        </div>  
+
+
+        <div style="background-color: #e2e2e2;">
+            <h1 align="center">Merci de répondre à toutes les questions ci-dessous:</h1>  
+        </div>
+
+        <div class="container">
+            <!--<legend>Merci de répondre à toutes les questions ci-dessous:</legend>-->
+
+
+            <form class="form-group row">
+
+                <label>Sexe</label>
+                <div>
+                    <input type="radio" class="form-control-radio" name="Sexe" id="optionsRadios1" value="Male" checked>
+                    Male
+                    <input type="radio" class="form-control-radio" name="Sexe" id="optionsRadios2" value="Female">
+                    Female
+                </div>
+
+                <label for="text-input" class="col-2 col-form-label" >Age</label>
+                <div class="col-10">
+                    <input class="form-control" type="text"  id="Age" required="true">
+                </div>
+                <label for="text-input" class="col-2 col-form-label">Profession du père</label>
+                <div class="col-10">
+                    <input class="form-control" type="text" id="Profession du père" required="true">
+                </div>
+                <label for="example-text-input" class="col-2 col-form-label">Diplôme du père</label>
+                <div class="col-10">
+                    <input class="form-control" type="text"  id="Diplôme du père" required="true">
+                </div>
+                <label for="exampleSelect1">Example select</label>
+                <select class="form-control" id="exampleSelect1">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select>
+
+                <div id="message"  style="display:none; position: fixed; color: red;">Please fill up all the fields</div>
+                <div id="buttons_area" style="padding-top: 15px;">
+
+                    <a  class="btn btn-success" role="button" onclick="collectInfo();" style="float: right;">Submit</a>
+                </div>
+
+
+
+
+            </form>
+
+        </div>
+    </body>
+</html>
