@@ -13,7 +13,10 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -45,6 +48,7 @@ public class Bridge {
     private int cnt = 0;
     private String traceT = "";
     private boolean firstStat = true;
+    private String fullFilepath = "";
     private HashMap<String, String> quizLinks;
     private static String[][] files;
 
@@ -223,19 +227,7 @@ public class Bridge {
      */
     public void URLToNextQuestion(String quizUrl) {
 
-        Pattern digitPattern = Pattern.compile("(\\d+)");
-
-        Matcher matcher = digitPattern.matcher(quizUrl);
-        StringBuffer result = new StringBuffer();
-        int index = 0;
-        while (matcher.find()) {
-            index = matcher.start();
-        }
-        matcher.find(index);
-        matcher.appendReplacement(result, String.valueOf(Integer.parseInt(matcher.group(1)) + 1));
-        matcher.appendTail(result);
-
-        String r = result.toString();
+        String r = this.incrementString(quizUrl);
 
         File f = new File(r);
         if (!f.exists()) {
@@ -256,6 +248,22 @@ public class Bridge {
 
         this.quizLinks.replace(docUrl, r);
 
+    }
+    
+    public String incrementString(String sti){
+    	Pattern digitPattern = Pattern.compile("(\\d+)");
+
+        Matcher matcher = digitPattern.matcher(sti);
+        StringBuffer result = new StringBuffer();
+        int index = 0;
+        while (matcher.find()) {
+            index = matcher.start();
+        }
+        matcher.find(index);
+        matcher.appendReplacement(result, String.valueOf(Integer.parseInt(matcher.group(1)) + 1));
+        matcher.appendTail(result);
+        
+    	return result.toString();
     }
 
     /* This function redirects us to the next question while in the quiz */
@@ -364,8 +372,7 @@ public class Bridge {
      * If the file does not exist, it creates it and adds the right header to it
      * (separation char ',' and the name of each columns : "Time" and
      * "Location"). <br>
-     * If it exists and the data is the first one of the test (ie : if the time
-     * is equal to 0), it skips a line to separate the tests. <br>
+     * If it exists and the data is the first one of the test, it skips a line to separate the tests. <br>
      *
      * @param j - the string to save
      * @param filepath - the file path of the file to save in
@@ -374,21 +381,42 @@ public class Bridge {
 
         try {
             StringBuilder sb = new StringBuilder();
-            File f = new File(filepath);
 
             // if the file doesn't exist we need to create it and add the header (separation char and name of the columns)
-            if (!f.exists()) {
-                f.createNewFile();
-                sb.append("sep=,");
-                sb.append('\n');
-                sb.append("Time,Location");
-                sb.append('\n');
-            }
-
+            String path = filepath;
+            File f;
             // we leave a space at the beginning of each test, to separate them
             if (this.firstStat) {
+            	
+            	DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            	Date date = new Date();
+            	
+            	String[] tmp = path.split("/");
+            	tmp[tmp.length-1] = dateFormat.format(date) + tmp[tmp.length-1];
+            	
+            	path = "";
+            	
+            	for (int i = 0; i < tmp.length; i++) {
+                    if (i != 0) {
+                        path = path + "/" + tmp[i];
+                    } else {
+                    	path = path + tmp[i];
+                    }
+                }
+            	
+                f = new File(path);
+                if(!f.exists()){
+                	f.createNewFile();
+	                sb.append("sep=,");
+	                sb.append('\n');
+	                sb.append("Time,Location");
+	                sb.append('\n');
+                }
                 sb.append("\n");
                 this.firstStat = false;
+            } else {
+
+                f = new File(filepath);
             }
 
             // add the data to the string to put in the file
