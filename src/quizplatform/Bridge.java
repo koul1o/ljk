@@ -49,6 +49,7 @@ public class Bridge {
     private int cnt = 0;
     private String traceT = "";
     private boolean firstStat = true;
+    private String partId = "";
     private String fullFilepath = "";
     private HashMap<String, String> quizLinks;
     private static String[][] files;
@@ -56,9 +57,9 @@ public class Bridge {
     private float augmentBar;
     private Timer timer2;
 
-    public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform, float tTime, float fTime, float step, String root) {
+    public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform, float tTime, float fTime, float step, String root, String partId) {
         String DOCUMENT_PATH = "src/quizplatform/" + root;
-
+        this.partId = partId;
         this.quizLinks = new HashMap<String, String>();
         try {
             findFiles(new File(DOCUMENT_PATH));
@@ -400,7 +401,7 @@ public class Bridge {
      * @param j - the string to save
      */
     public void saveData(String j) {
-        saveData(j, "test.csv");
+        saveData(j, partId+"_1.csv");
     }
 
     /**
@@ -423,41 +424,38 @@ public class Bridge {
         try {
             StringBuilder sb = new StringBuilder();
 
-            // if the file doesn't exist we need to create it and add the header (separation char and name of the columns)
-            String path = filepath;
             File f;
             // we leave a space at the beginning of each test, to separate them
             if (this.firstStat) {
-            	
+            	int cpt = 1;
             	DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
             	Date date = new Date();
             	
-            	String[] tmp = path.split("/");
-            	tmp[tmp.length-1] = dateFormat.format(date) + tmp[tmp.length-1];
-            	
-            	path = "";
-            	
-            	for (int i = 0; i < tmp.length; i++) {
-                    if (i != 0) {
-                        path = path + "/" + tmp[i];
-                    } else {
-                    	path = path + tmp[i];
-                    }
-                }
-            	
-                f = new File(path);
-                if(!f.exists()){
-                	f.createNewFile();
-	                sb.append("sep=,");
-	                sb.append('\n');
-	                sb.append("Time,Location");
-	                sb.append('\n');
-                }
+                f = new File(filepath);
+                while(f.exists()){
+                	filepath = incrementString(filepath);
+                	f = new File(filepath);
+                	cpt++;
+                }  
+                
+                this.fullFilepath = filepath;
+            	f.createNewFile();
+                sb.append("sep=,");
+                sb.append('\n');
+                sb.append(date);
+                sb.append('\n');
+                sb.append("Participant : " + partId);
+                sb.append('\n');
+                sb.append("Experiment number : " + cpt);
+                sb.append('\n');
+                sb.append("Time,Location");
+                sb.append('\n');
+                
                 sb.append("\n");
                 this.firstStat = false;
             } else {
 
-                f = new File(filepath);
+                f = new File(this.fullFilepath);
             }
 
             // add the data to the string to put in the file
