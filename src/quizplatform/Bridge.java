@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.LongProperty;
@@ -36,7 +35,6 @@ import org.reactfx.util.Timer;
 public class Bridge {
 
     private static final String QUESTION_NAME = "question";
-
     private static final String[] FORBIDDEN_WORDS = {QUESTION_NAME, "info", "final_quiz", "manual", "documents"};
     private int time = 0;
     private JSObject window;
@@ -49,17 +47,23 @@ public class Bridge {
     private int cnt = 0;
     private String traceT = "";
     private boolean firstStat = true;
-    private String partId = "";
+    private String experimentId = "";
     private String fullFilepath = "";
     private HashMap<String, String> quizLinks;
     private static String[][] files;
     private static final float MILIS = 60000;
     private float augmentBar;
     private Timer timer2;
+    private String setup;
+    private float tTime, fTime;
 
-    public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform, float tTime, float fTime, float step, String root, String partId) {
-        String DOCUMENT_PATH = "src/quizplatform/" + root;
-        this.partId = partId;
+    public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform, float tTime, float fTime, float step, String root, String experimentId) {
+        String DOCUMENT_PATH = "src"+File.separator+"quizplatform"+File.separator + root;
+        this.experimentId = experimentId;
+        this.setup = root;
+        this.setup = this.setup.replace("html/", "");
+        this.tTime = tTime;
+        this.fTime = fTime;
         this.quizLinks = new HashMap<String, String>();
         try {
             findFiles(new File(DOCUMENT_PATH));
@@ -81,6 +85,7 @@ public class Bridge {
 
                 if (engine != null) {
                     if (cnt < 1) {
+                        saveData("Time_Location_Value");
                         startTime.set(System.nanoTime());
                         getTime();
                         traceT = time + "_" + title;
@@ -145,7 +150,7 @@ public class Bridge {
                     }
                     if (engine.getTitle().toLowerCase().contains("document") && !title.toLowerCase().contains(QUESTION_NAME)) {
                         docUrl = engine.getLocation();
-                        docUrl = docUrl.replace("file://", "");
+                        docUrl = docUrl.replace("file:"+File.separator+File.separator+"", "");
                     }
                     /* Update the doc url in the webpage */
                     if (docUrl != null) {
@@ -290,9 +295,9 @@ public class Bridge {
         this.quizLinks.replace(docUrl, r);
 
     }
-    
-    public String incrementString(String sti){
-    	Pattern digitPattern = Pattern.compile("(\\d+)");
+
+    public String incrementString(String sti) {
+        Pattern digitPattern = Pattern.compile("(\\d+)");
 
         Matcher matcher = digitPattern.matcher(sti);
         StringBuffer result = new StringBuffer();
@@ -303,8 +308,8 @@ public class Bridge {
         matcher.find(index);
         matcher.appendReplacement(result, String.valueOf(Integer.parseInt(matcher.group(1)) + 1));
         matcher.appendTail(result);
-        
-    	return result.toString();
+
+        return result.toString();
     }
 
     /* This function redirects us to the next question while in the quiz */
@@ -401,7 +406,7 @@ public class Bridge {
      * @param j - the string to save
      */
     public void saveData(String j) {
-        saveData(j, partId+"_1.csv");
+        saveData(j, experimentId + "_1.csv");
     }
 
     /**
@@ -414,7 +419,8 @@ public class Bridge {
      * If the file does not exist, it creates it and adds the right header to it
      * (separation char ',' and the name of each columns : "Time" and
      * "Location"). <br>
-     * If it exists and the data is the first one of the test, it skips a line to separate the tests. <br>
+     * If it exists and the data is the first one of the test, it skips a line
+     * to separate the tests. <br>
      *
      * @param j - the string to save
      * @param filepath - the file path of the file to save in
@@ -427,30 +433,32 @@ public class Bridge {
             File f;
             // we leave a space at the beginning of each test, to separate them
             if (this.firstStat) {
-            	int cpt = 1;
-            	DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
-            	Date date = new Date();
-            	
+                int cpt = 1;
+                DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                Date date = new Date();
+
                 f = new File(filepath);
-                while(f.exists()){
-                	filepath = incrementString(filepath);
-                	f = new File(filepath);
-                	cpt++;
-                }  
-                
+                while (f.exists()) {
+                    filepath = incrementString(filepath);
+                    f = new File(filepath);
+                    cpt++;
+                }
+
                 this.fullFilepath = filepath;
-            	f.createNewFile();
+                f.createNewFile();
                 sb.append("sep=,");
                 sb.append('\n');
                 sb.append(date);
                 sb.append('\n');
-                sb.append("Participant : " + partId);
+                sb.append("Experiment Id : " + experimentId);
                 sb.append('\n');
-                sb.append("Experiment number : " + cpt);
+                sb.append("Participant Id : " + cpt);
                 sb.append('\n');
-                sb.append("Time,Location");
+                sb.append("Setup: " + setup);
                 sb.append('\n');
-                
+                sb.append("Training Time : " + tTime + " Final Quiz Time : " + fTime);
+                sb.append('\n');
+
                 sb.append("\n");
                 this.firstStat = false;
             } else {

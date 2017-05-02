@@ -4,8 +4,8 @@ package quizplatform;
  *
  * @author koul1o
  */
+import java.io.File;
 import java.net.URL;
-import java.time.Duration;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import static javafx.application.Application.launch;
@@ -20,8 +20,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
-import org.reactfx.util.FxTimer;
-
 public class QuizPlatform extends Application {
 
     private static String[] arguments;
@@ -30,10 +28,11 @@ public class QuizPlatform extends Application {
     private float tTime = 60;
     private float fTime = 20;
     private float step = 4;
-    private String root = "html/math";
+    private String root = "html"+File.separator+"math";
+    private static final String START_URL="/documents.html";
 
     ProgressBar progressBar = new ProgressBar();
-	private String partId = "00000";
+    private String experimentId = "00000";
 
     @Override
     public void start(Stage primaryStage) {
@@ -44,10 +43,10 @@ public class QuizPlatform extends Application {
         setProperties();
 
         /* Initialize the Bridge */
-        bridge = new Bridge(engine, primaryStage, this, tTime, fTime, step, root, this.partId);
+        bridge = new Bridge(engine, primaryStage, this, tTime, fTime, step, root, experimentId);
 
         /* Load the first Url */
-        engine.load(getClass().getResource(root + "/documents.html").toExternalForm());
+        engine.load(getClass().getResource(root +START_URL).toExternalForm());
 
         /* Enable JS in the WebEngine */
         engine.setJavaScriptEnabled(true);
@@ -56,13 +55,13 @@ public class QuizPlatform extends Application {
         progressBar.setProgress(percent);
 
         /* Add progress bar and webView in top and center of a BorderPane */
-        BorderPane root = new BorderPane(webView, null, null, progressBar, null);
+        BorderPane borderPane = new BorderPane(webView, null, null, progressBar, null);
 
         /* Align the process bar on the center */
-        root.setAlignment(progressBar, Pos.CENTER);
+        borderPane.setAlignment(progressBar, Pos.CENTER);
 
         /* Set the scene containing the BorderPane we created and set the size of it */
-        Scene scene = new Scene(root, 1000, 800);
+        Scene scene = new Scene(borderPane, 1000, 800);
 
         /* Add custom css for the progress bar */
         URL url = this.getClass().getResource("caspian.css");
@@ -72,7 +71,7 @@ public class QuizPlatform extends Application {
         }
         String css = url.toExternalForm();
         scene.getStylesheets().add(css);
-        progressBar.prefWidthProperty().bind(root.widthProperty().subtract(20));
+        progressBar.prefWidthProperty().bind(borderPane.widthProperty().subtract(20));
 
         /* Set the scene  */
         primaryStage.setScene(scene);
@@ -147,11 +146,11 @@ public class QuizPlatform extends Application {
             System.out.println("Property Root missing, default value set: " + root + "  To change this parameter set root=name (available folders: psych,math) of setup in run.bat");
         }
         try {
-            if (!System.getProperty("partId").isEmpty()) {
-                this.partId = (String) System.getProperty("partId");
+            if (!System.getProperty("experimentId").isEmpty()) {
+                this.experimentId = (String) System.getProperty("experimentId");
             }
         } catch (NullPointerException e) {
-            System.out.println("Property Participant ID missing, default value set: " + this.partId + "  To change this parameter set partId=id of setup in run.bat");
+            System.out.println("Property Experiment Id missing, default value set: " + this.experimentId + "  To change this parameter set experimentId=id of setup in run.bat");
         }
 
     }
