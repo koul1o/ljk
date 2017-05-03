@@ -58,7 +58,7 @@ public class Bridge {
     private float tTime, fTime;
 
     public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform, float tTime, float fTime, float step, String root, String experimentId) {
-        String DOCUMENT_PATH = "src"+File.separator+"quizplatform"+File.separator + root;
+        String DOCUMENT_PATH = "src/quizplatform/" + root;
         this.experimentId = experimentId;
         this.setup = root;
         this.setup = this.setup.replace("html/", "");
@@ -150,7 +150,7 @@ public class Bridge {
                     }
                     if (engine.getTitle().toLowerCase().contains("document") && !title.toLowerCase().contains(QUESTION_NAME)) {
                         docUrl = engine.getLocation();
-                        docUrl = docUrl.replace("file:"+File.separator+File.separator+"", "");
+                        docUrl = docUrl.replace("file://", "");
                     }
                     /* Update the doc url in the webpage */
                     if (docUrl != null) {
@@ -274,6 +274,8 @@ public class Bridge {
     public void URLToNextQuestion(String quizUrl) {
 
         String r = this.incrementString(quizUrl);
+                System.out.println("quizplatform.Bridge.getUrl()"+ r);
+
 
         File f = new File(r);
         if (!f.exists()) {
@@ -291,8 +293,11 @@ public class Bridge {
             }
 
         }
+        System.out.println("quizplatform.Bridge.getUrl()"+ this.quizLinks.get(docUrl));
 
         this.quizLinks.replace(docUrl, r);
+                System.out.println("quizplatform.Bridge.getUrl()"+ this.quizLinks.get(docUrl));
+
 
     }
 

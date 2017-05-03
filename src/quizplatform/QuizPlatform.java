@@ -28,7 +28,7 @@ public class QuizPlatform extends Application {
     private float tTime = 60;
     private float fTime = 20;
     private float step = 4;
-    private String root = "html"+File.separator+"math";
+    private String root = "html/math";
     private static final String START_URL="/documents.html";
 
     ProgressBar progressBar = new ProgressBar();
