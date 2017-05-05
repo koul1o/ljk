@@ -85,7 +85,7 @@ public class Bridge {
 
                 if (engine != null) {
                     if (cnt < 1) {
-                        saveData("Time_Location_Value");
+                        //saveData("Time_Location_Area_Value");
                         startTime.set(System.nanoTime());
                         getTime();
                         traceT = time + "_" + title;
@@ -134,6 +134,7 @@ public class Bridge {
                         cnt++;
 
                     } else if (!(title.toLowerCase().contains("final") || title.toLowerCase().contains("documents") || title.toLowerCase().contains("demographic"))) {
+                        getTime();
                         traceT = time + "_" + title + "_Panel 1";
                         getTrace(traceT);
                     } else {
@@ -148,7 +149,7 @@ public class Bridge {
                         engine.executeScript("setDocuments();");
 
                     }
-                    if (engine.getTitle().toLowerCase().contains("document") && !title.toLowerCase().contains(QUESTION_NAME)) {
+                    if ( !title.toLowerCase().contains(QUESTION_NAME)) {
                         docUrl = engine.getLocation();
                         docUrl = docUrl.replace("file://", "");
                     }

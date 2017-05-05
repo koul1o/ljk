@@ -1,0 +1,17 @@
+sep=,
+Wed May 03 14:13:12 CEST 2017
+Experiment Id : A1
+Participant Id : 1
+Setup: html/psych
+Training Time : 1.0 Final Quiz Time : 1.0
+
+Time,Location,Value
+0,Documents
+0,Document 1,Panel 1
+3502,Document 1,Panel 4
+3598,Document 1,Question 1
+5152,Document 1,Question 1,d
+6559,Document 1,Question 1,Answer: correct
+10156,Document 1,Question 1,Answer: correct
+10938,Document 1,Question 1,Answer: correct
+14537,Document 1,Exit

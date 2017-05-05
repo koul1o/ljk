@@ -29,7 +29,7 @@ public class QuizPlatform extends Application {
     private float fTime = 20;
     private float step = 4;
     private String root = "html/math";
-    private static final String START_URL="/documents.html";
+    private static final String START_URL="/Instructions.html";
 
     ProgressBar progressBar = new ProgressBar();
     private String experimentId = "00000";
