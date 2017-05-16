@@ -37,6 +37,7 @@ public class QuizPlatform extends Application {
 
     ProgressBar progressBar = new ProgressBar();
 	private String partId = "00000";
+	private Boolean highlightEnabled = false;
 
     @Override
     public void start(Stage primaryStage) {
@@ -45,13 +46,14 @@ public class QuizPlatform extends Application {
         WebView webView = new WebView();
         WebEngine engine = webView.getEngine();
         setProperties();
-
-        webView.setContextMenuEnabled(false);
         
         /* Initialize the Bridge */
         bridge = new Bridge(engine, primaryStage, this, tTime, fTime, step, root, this.partId);
-
-        createContextMenu(webView, bridge);
+        
+        if(this.highlightEnabled){
+        	webView.setContextMenuEnabled(false);
+        	createContextMenu(webView, bridge);
+        }
         
         /* Load the first Url */
         engine.load(getClass().getResource(root + "/documents.html").toExternalForm());
@@ -159,6 +161,13 @@ public class QuizPlatform extends Application {
             }
         } catch (NullPointerException e) {
             System.out.println("Property Participant ID missing, default value set: " + this.partId + "  To change this parameter set partId=id of setup in run.bat");
+        }
+        try {
+            if (!System.getProperty("highlightEnabled").isEmpty()) {
+                this.highlightEnabled = Boolean.valueOf(System.getProperty("highlightEnabled"));
+            }
+        } catch (NullPointerException e) {
+            System.out.println("Property highlight enabled missing, default value set: " + this.highlightEnabled + "  To change this parameter set highlightEnabled=boolean (true or false) of setup in run.bat");
         }
 
     }
