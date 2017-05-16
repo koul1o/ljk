@@ -188,3 +188,79 @@ function collectInfo() {
     }
     quit();
 }
+
+function checkHighlight(){
+	if (window.getSelection) {
+        var selection = window.getSelection();
+        if (selection.rangeCount) {
+            var range = selection.getRangeAt(0).cloneRange();
+            var node = $(range.commonAncestorContainer);
+            if (node.parent().is("span")) { // && node.parent().id == "highlighted"
+                unHighlight();
+            } else {
+            	highlight();
+            }
+        }
+    }
+}
+
+function highlight() {
+    if (window.getSelection) {
+        var selection = window.getSelection();
+        if (selection.rangeCount) {
+            var range = selection.getRangeAt(0).cloneRange();
+            var highlightNode = document.createElement("span");
+            highlightNode.setAttribute("id", "highlighted");
+            highlightNode.setAttribute("style", "background-color:#FFFF00");
+            range.surroundContents(highlightNode);
+            selection.removeAllRanges();
+        }
+    }
+}
+
+function unHighlight(){
+	if (window.getSelection) {
+        var selection = window.getSelection();
+        if (selection.rangeCount) {
+
+        	var highlightNode = document.createElement("span");
+            highlightNode.setAttribute("id", "highlighted");
+            highlightNode.setAttribute("style", "background-color:#FFFF00");
+            
+            var range = selection.getRangeAt(0).cloneRange();
+        	var node = $(range.commonAncestorContainer);
+        	
+        	var previousRange = document.createRange();
+        	previousRange.setStart(range.startContainer, 0);
+        	previousRange.setEnd(range.startContainer, range.startOffset);
+        	
+        	var nextRange = document.createRange();
+        	nextRange.setStart(range.endContainer, range.endOffset);
+        	nextRange.setEnd(range.endContainer, 0);
+
+        	node.unwrap();
+        	previousRange.surroundContents(highlightNode);
+        	nextRange.surroundContents(highlightNode);
+        	
+        	selection.removeAllRanges();
+            selection.addRange(previousRange);
+            selection.addRange(nextRange);
+        }
+	}
+}
+
+function clearHighlights(){
+	// select element to unwrap
+	var el = document.querySelector('#highlighted');
+	
+	// get the element's parent node
+	if(el != null){
+		var parent = el.parentNode;
+		
+		// move all children out of the element
+		while (el.firstChild) parent.insertBefore(el.firstChild, el);
+		
+		// remove the empty element
+		parent.removeChild(el);
+	}
+}

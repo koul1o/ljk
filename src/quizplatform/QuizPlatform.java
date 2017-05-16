@@ -4,21 +4,26 @@ package quizplatform;
  *
  * @author koul1o
  */
-import java.io.File;
 import java.net.URL;
+import java.time.Duration;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import static javafx.application.Application.launch;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+
+import org.reactfx.util.FxTimer;
 
 public class QuizPlatform extends Application {
 
@@ -29,10 +34,9 @@ public class QuizPlatform extends Application {
     private float fTime = 20;
     private float step = 4;
     private String root = "html/math";
-    private static final String START_URL="/Instructions.html";
 
     ProgressBar progressBar = new ProgressBar();
-    private String experimentId = "00000";
+	private String partId = "00000";
 
     @Override
     public void start(Stage primaryStage) {
@@ -42,11 +46,15 @@ public class QuizPlatform extends Application {
         WebEngine engine = webView.getEngine();
         setProperties();
 
+        webView.setContextMenuEnabled(false);
+        
         /* Initialize the Bridge */
-        bridge = new Bridge(engine, primaryStage, this, tTime, fTime, step, root, experimentId);
+        bridge = new Bridge(engine, primaryStage, this, tTime, fTime, step, root, this.partId);
 
+        createContextMenu(webView, bridge);
+        
         /* Load the first Url */
-        engine.load(getClass().getResource(root +START_URL).toExternalForm());
+        engine.load(getClass().getResource(root + "/documents.html").toExternalForm());
 
         /* Enable JS in the WebEngine */
         engine.setJavaScriptEnabled(true);
@@ -55,13 +63,13 @@ public class QuizPlatform extends Application {
         progressBar.setProgress(percent);
 
         /* Add progress bar and webView in top and center of a BorderPane */
-        BorderPane borderPane = new BorderPane(webView, null, null, progressBar, null);
+        BorderPane root = new BorderPane(webView, null, null, progressBar, null);
 
         /* Align the process bar on the center */
-        borderPane.setAlignment(progressBar, Pos.CENTER);
+        root.setAlignment(progressBar, Pos.CENTER);
 
         /* Set the scene containing the BorderPane we created and set the size of it */
-        Scene scene = new Scene(borderPane, 1000, 800);
+        Scene scene = new Scene(root, 1000, 800);
 
         /* Add custom css for the progress bar */
         URL url = this.getClass().getResource("caspian.css");
@@ -71,7 +79,7 @@ public class QuizPlatform extends Application {
         }
         String css = url.toExternalForm();
         scene.getStylesheets().add(css);
-        progressBar.prefWidthProperty().bind(borderPane.widthProperty().subtract(20));
+        progressBar.prefWidthProperty().bind(root.widthProperty().subtract(20));
 
         /* Set the scene  */
         primaryStage.setScene(scene);
@@ -146,13 +154,28 @@ public class QuizPlatform extends Application {
             System.out.println("Property Root missing, default value set: " + root + "  To change this parameter set root=name (available folders: psych,math) of setup in run.bat");
         }
         try {
-            if (!System.getProperty("experimentId").isEmpty()) {
-                this.experimentId = (String) System.getProperty("experimentId");
+            if (!System.getProperty("partId").isEmpty()) {
+                this.partId = (String) System.getProperty("partId");
             }
         } catch (NullPointerException e) {
-            System.out.println("Property Experiment Id missing, default value set: " + this.experimentId + "  To change this parameter set experimentId=id of setup in run.bat");
+            System.out.println("Property Participant ID missing, default value set: " + this.partId + "  To change this parameter set partId=id of setup in run.bat");
         }
 
+    }
+    
+    private void createContextMenu(WebView webView, Bridge bridge) {
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem highlight = new MenuItem("Highlight");
+        highlight.setOnAction(e -> bridge.checkHighlight());
+        contextMenu.getItems().addAll(highlight);
+
+        webView.setOnMousePressed(e -> {
+            if (e.getButton() == MouseButton.SECONDARY) {
+                contextMenu.show(webView, e.getScreenX(), e.getScreenY());
+            } else {
+                contextMenu.hide();
+            }
+        });
     }
 
     public static void main(String[] args) {

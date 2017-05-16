@@ -7,13 +7,19 @@ package quizplatform;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DateFormat;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
@@ -29,6 +35,7 @@ import javafx.concurrent.Worker.State;
 import javafx.scene.web.WebEngine;
 import javafx.stage.Stage;
 import netscape.javascript.JSObject;
+
 import org.reactfx.util.FxTimer;
 import org.reactfx.util.Timer;
 
@@ -51,22 +58,33 @@ public class Bridge {
     private String fullFilepath = "";
     private HashMap<String, String> quizLinks;
     private static String[][] files;
+    private static String[][] allFiles;
     private static final float MILIS = 60000;
     private float augmentBar;
     private Timer timer2;
     private String setup;
     private float tTime, fTime;
 
+    private String previousUrl = "";
+    private String changedHtml = "";
+    
+    private String srcPath = "";
+    private String binPath = "";
+
     public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform, float tTime, float fTime, float step, String root, String experimentId) {
-        String DOCUMENT_PATH = "src/quizplatform/" + root;
+        String DOCUMENT_PATH = "src" + File.separator + "quizplatform" + File.separator + root;
         this.experimentId = experimentId;
         this.setup = root;
         this.setup = this.setup.replace("html/", "");
         this.tTime = tTime;
         this.fTime = fTime;
+        this.srcPath = DOCUMENT_PATH;
+        this.binPath = this.srcPath.replace("src", "bin");
         this.quizLinks = new HashMap<String, String>();
         try {
             findFiles(new File(DOCUMENT_PATH));
+            
+            this.resetFiles();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -194,6 +212,9 @@ public class Bridge {
     public void getTrace(String trace) {
         System.out.println("Trace: " + trace);
         saveData(trace);
+        if(!this.previousUrl.equals(this.engine.getLocation()) && !this.changedHtml.equals("")){
+        	this.savePage();
+        }
 
     }
 
@@ -341,6 +362,7 @@ public class Bridge {
     public static void findFiles(File directory) throws IOException {
         File[] file;
         HashMap<String, String> al = new HashMap<String, String>();
+        HashMap<String, String> allFileList = new HashMap<String, String>();
         if (directory.isDirectory()) {
             file = directory.listFiles(); // Calls same method again.
             for (File f : file) {
@@ -350,8 +372,11 @@ public class Bridge {
                     String key = f.getName();
                     String value = f.getName().split("\\.")[0]; // we remove extension from the file name.
 
-                    if (!al.containsKey(key) && notIn(value, Bridge.FORBIDDEN_WORDS)) {
+                    if (!al.containsKey(key) && Bridge.notIn(value, Bridge.FORBIDDEN_WORDS)) {
                         al.put(key, value);
+                    }
+                    if (!allFileList.containsKey(key)) {
+                    	allFileList.put(key, value);
                     }
                 }
             }
@@ -362,6 +387,15 @@ public class Bridge {
                 Bridge.files[0][i] = key;
                 Bridge.files[1][i] = al.get(key);
                 i++;
+            }
+            
+            Bridge.allFiles = new String[2][allFileList.size()];
+            SortedSet<String> sortedKeysAllFiles = new TreeSet<String>(allFileList.keySet());
+            int j = 0;
+            for (String key : sortedKeysAllFiles) {
+                Bridge.allFiles[0][j] = key;
+                Bridge.allFiles[1][j] = allFileList.get(key);
+                j++;
             }
 
         } else {
@@ -394,7 +428,7 @@ public class Bridge {
     }
 
     /**
-     * This function saves the String <b>j</b> into a file called "./test.csv".
+     * This function saves the String <b>j</b> into a file called "./%ParticipantID%_1.csv".
      * <br>
      * It takes a formatted String containing data separated by underscores and
      * changes the underscores into commas. <br>
@@ -425,8 +459,8 @@ public class Bridge {
      * If the file does not exist, it creates it and adds the right header to it
      * (separation char ',' and the name of each columns : "Time" and
      * "Location"). <br>
-     * If it exists and the data is the first one of the test, it skips a line
-     * to separate the tests. <br>
+     * If it exists and the data is the first one of the test, it adds one to the
+     * file name to separate the tests <br>
      *
      * @param j - the string to save
      * @param filepath - the file path of the file to save in
@@ -440,7 +474,7 @@ public class Bridge {
             // we leave a space at the beginning of each test, to separate them
             if (this.firstStat) {
                 int cpt = 1;
-                DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                new SimpleDateFormat("yyyyMMdd_HHmmss");
                 Date date = new Date();
 
                 f = new File(filepath);
@@ -502,5 +536,47 @@ public class Bridge {
 
     public void execute(Consumer<Object> callback, String function, Object... args) {
         callback.accept(window.call(function, args));
+    }
+    
+    public void savePage(){
+    	
+    	StringBuilder sb = new StringBuilder();
+
+        File f = new File(this.previousUrl.replaceAll("src", "bin"));
+        if(f.exists()){
+        	this.changedHtml = this.changedHtml.replaceAll("(<div id=\"documents\">)[^&]*(</div>)", "$1 <h2>Documents</h2> $2");
+	        sb.append(this.changedHtml);
+	        FileWriter fw;
+			try {
+				fw = new FileWriter(f, false);
+		        BufferedWriter bw = new BufferedWriter(fw);
+		        PrintWriter pw = new PrintWriter(bw);
+		        pw.write(sb.toString());
+		        pw.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+        }
+    }
+    
+    public void checkHighlight(){
+    	this.engine.executeScript("checkHighlight()");
+        this.previousUrl = this.engine.getLocation().replace("file:///", "");
+        this.changedHtml = (String)this.engine.executeScript("document.documentElement.outerHTML");
+    }
+    
+    public void resetFiles(){
+    	for(int i = 0; i<Bridge.allFiles[0].length; i++){
+
+    		CopyOption options = REPLACE_EXISTING;
+    		Path source = Paths.get(this.srcPath + File.separator + Bridge.allFiles[0][i]);
+    		Path target = Paths.get(this.binPath + File.separator + Bridge.allFiles[0][i]);
+        	try {
+				Files.copy(source, target, options);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+        	
+    	}
     }
 }
