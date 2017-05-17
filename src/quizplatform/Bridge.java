@@ -79,7 +79,7 @@ public class Bridge {
         this.tTime = tTime;
         this.fTime = fTime;
         this.srcPath = DOCUMENT_PATH;
-        this.binPath = this.srcPath.replace("src", "bin");
+        this.binPath = this.getDocumentsFolderPath();
         this.quizLinks = new HashMap<String, String>();
         try {
             findFiles(new File(DOCUMENT_PATH));
@@ -584,5 +584,16 @@ public class Bridge {
 			}
         	
     	}
+    }
+    
+    public String getDocumentsFolderPath(){
+    	String filePath = getClass().getResource("html/" + this.setup + "/documents.html").toExternalForm().replaceAll("file:/", "");
+    	String[] tmp = filePath.split("/");
+    	String folder = "";
+    	tmp[tmp.length-1] = "";
+    	for(int i = 0; i < tmp.length; i++){
+    		folder += tmp[i] + "/";
+    	}
+    	return folder;
     }
 }
