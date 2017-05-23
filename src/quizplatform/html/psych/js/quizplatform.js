@@ -192,6 +192,7 @@ function collectInfo() {
 function checkHighlight(){
 	if (window.getSelection) {
         var selection = window.getSelection();
+        var selectionValue = selection.toString();
         if (selection.rangeCount) {
             var range = selection.getRangeAt(0).cloneRange();
             var node = $(range.commonAncestorContainer);
@@ -199,6 +200,7 @@ function checkHighlight(){
                 unHighlight();
             } else {
             	highlight();
+            	return selectionValue;
             }
         }
     }

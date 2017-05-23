@@ -500,7 +500,7 @@ public class Bridge {
 
                 this.fullFilepath = this.setup + File.separator + filepath;
                 f.createNewFile();
-                sb.append("sep=,");
+                sb.append("sep=^");
                 sb.append('\n');
                 sb.append(date);
                 sb.append('\n');
@@ -521,7 +521,7 @@ public class Bridge {
             }
 
             // add the data to the string to put in the file
-            j = j.replace('_', ',');
+            j = j.replace('_', '^');
             sb.append(j);
             sb.append('\n');
 
@@ -582,9 +582,10 @@ public class Bridge {
      * Calls a javascript function that does the check.
      */
     public void checkHighlight(){
-    	this.engine.executeScript("checkHighlight()");
+    	String highlightedText = (String)this.engine.executeScript("checkHighlight()");
         this.previousUrl = this.engine.getLocation().replace("file:///", "");
         this.changedHtml = (String)this.engine.executeScript("document.documentElement.outerHTML");
+        this.getTrace(time + "_" + title + "_highlighted_" + highlightedText);
     }
     
     /**
