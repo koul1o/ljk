@@ -72,7 +72,7 @@ public class Bridge {
     private String binPath = "";
 
     public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform, float tTime, float fTime, float step, String root, String experimentId) {
-        String DOCUMENT_PATH = "src" + File.separator + "quizplatform" + File.separator + root;
+        String DOCUMENT_PATH = "./src" + File.separator + "quizplatform" + File.separator + root;
         this.experimentId = experimentId;
         this.setup = root;
         this.setup = this.setup.replace("html/", "");
@@ -133,7 +133,8 @@ public class Bridge {
                                             });
 
                                     quizPlatform.progressBar.setProgress(quizPlatform.percent);
-                                    engine.load(getClass().getResource(root + "final_quiz.html").toExternalForm());
+                                    //engine.load(getClass().getResource(root + "final_quiz.html").toExternalForm());
+                                    engine.load("./" + root + "final_quiz.html");
 
                                 });
 
@@ -146,7 +147,8 @@ public class Bridge {
                                         timer2.stop();
                                         quizPlatform.percent = 0;
                                         quizPlatform.progressBar.setProgress(quizPlatform.percent);
-                                        engine.load(getClass().getResource(root + "info.html").toExternalForm());
+                                        //engine.load(getClass().getResource(root + "info.html").toExternalForm());
+                                        engine.load("./" + root + "info.html");
                                     }
                                 });
                         cnt++;
@@ -323,6 +325,11 @@ public class Bridge {
 
     }
 
+    /**
+     * Adds one to the last digit of the argument
+     * @param sti the String to increment
+     * @return the modified String
+     */
     public String incrementString(String sti) {
         Pattern digitPattern = Pattern.compile("(\\d+)");
 
@@ -369,6 +376,7 @@ public class Bridge {
                 if (f.isDirectory()) {
                     // findFiles(f);
                 } else {
+                	System.out.println(f.getAbsolutePath());
                     String key = f.getName();
                     String value = f.getName().split("\\.")[0]; // we remove extension from the file name.
 
@@ -544,6 +552,10 @@ public class Bridge {
         callback.accept(window.call(function, args));
     }
     
+    /**
+     * Saves the changes in the html file of the bin directory so that the changes are loaded the next time the page is loaded.
+     * Used to save the highlighting (both add and remove).
+     */
     public void savePage(){
     	
     	StringBuilder sb = new StringBuilder();
@@ -565,12 +577,19 @@ public class Bridge {
         }
     }
     
+    /**
+     * Use this to check if selected text is highlighted.
+     * Calls a javascript function that does the check.
+     */
     public void checkHighlight(){
     	this.engine.executeScript("checkHighlight()");
         this.previousUrl = this.engine.getLocation().replace("file:///", "");
         this.changedHtml = (String)this.engine.executeScript("document.documentElement.outerHTML");
     }
     
+    /**
+     * Copies all the html files from the src directory to the bin directory, thus resetting the highlighting
+     */
     public void resetFiles(){
     	for(int i = 0; i<Bridge.allFiles[0].length; i++){
 
@@ -586,14 +605,23 @@ public class Bridge {
     	}
     }
     
+    /**
+     * Get the folder path where the html files are stored
+     * @return a String containing the path of the folder
+     */
     public String getDocumentsFolderPath(){
-    	String filePath = getClass().getResource("html/" + this.setup + "/documents.html").toExternalForm().replaceAll("file:/", "");
+    	//String filePath = getClass().getResource("./bin/quizplatform/html/" + this.setup + "/documents.html").toExternalForm().replaceAll("file:/", "");
+    	//String filePath = "./bin/quizplatform/html/" + this.setup + "/documents.html";
+    	/*filePath = filePath.replaceAll("jar:", "");
     	String[] tmp = filePath.split("/");
     	String folder = "";
     	tmp[tmp.length-1] = "";
     	for(int i = 0; i < tmp.length; i++){
     		folder += tmp[i] + "/";
     	}
-    	return folder;
+    	return folder;*/
+
+    	String filePath = "./bin/quizplatform/html/" + this.setup + "/";
+    	return filePath;
     }
 }

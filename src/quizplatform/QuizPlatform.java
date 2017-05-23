@@ -1,14 +1,22 @@
 package quizplatform;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 /**
  *
  * @author koul1o
  */
 import java.net.URL;
-import java.time.Duration;
+import java.nio.charset.Charset;
 import javafx.application.Application;
 import javafx.event.EventHandler;
-import static javafx.application.Application.launch;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
@@ -22,8 +30,6 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
-
-import org.reactfx.util.FxTimer;
 
 public class QuizPlatform extends Application {
 
@@ -56,11 +62,13 @@ public class QuizPlatform extends Application {
         }
         
         /* Load the first Url */
-        engine.load(getClass().getResource(root + "/documents.html").toExternalForm());
+        //engine.load(getClass().getResource("../bin/quizplatform/" + root + "/documents.html").toExternalForm());
 
         /* Enable JS in the WebEngine */
         engine.setJavaScriptEnabled(true);
 
+        engine.load(getClass().getResource("/bin/quizplatform/" + root + "/documents.html").toExternalForm());
+        
         /* Create a progress bar */
         progressBar.setProgress(percent);
 
