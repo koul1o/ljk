@@ -43,7 +43,7 @@ public class QuizPlatform extends Application {
 
     ProgressBar progressBar = new ProgressBar();
 	private String partId = "00000";
-	private Boolean highlightEnabled = false;
+	private Boolean highlightEnabled = true;
 
     @Override
     public void start(Stage primaryStage) {

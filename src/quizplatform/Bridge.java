@@ -17,12 +17,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.CopyOption;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.FileVisitOption;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -68,6 +74,8 @@ public class Bridge {
     private String previousUrl = "";
     private String changedHtml = "";
     
+    private String section = "";
+    
     private String srcPath = "";
     private String binPath = "";
 
@@ -79,7 +87,7 @@ public class Bridge {
         this.tTime = tTime;
         this.fTime = fTime;
         this.srcPath = DOCUMENT_PATH;
-        this.binPath = this.getDocumentsFolderPath();
+        this.binPath = this.srcPath.replace("src", "bin");
         this.quizLinks = new HashMap<String, String>();
         try {
             findFiles(new File(DOCUMENT_PATH));
@@ -155,7 +163,8 @@ public class Bridge {
 
                     } else if (!(title.toLowerCase().contains("final") || title.toLowerCase().contains("documents") || title.toLowerCase().contains("demographic"))) {
                         getTime();
-                        traceT = time + "_" + title + "_Panel 1";
+                        this.section = "_Panel 1";
+                        traceT = time + "_" + title + this.section;
                         getTrace(traceT);
                     } else {
                         getTime();
@@ -228,6 +237,7 @@ public class Bridge {
 
     public void elementTrace(String element) {
         getTime();
+        this.section = element;
         traceT = time + "_" + title + "_" + element;
         getTrace(traceT);
     }
@@ -582,27 +592,62 @@ public class Bridge {
      * Calls a javascript function that does the check.
      */
     public void checkHighlight(){
-    	String highlightedText = (String)this.engine.executeScript("checkHighlight()");
+    	String highlightedText = this.engine.executeScript("checkHighlight()").toString();
         this.previousUrl = this.engine.getLocation().replace("file:///", "");
         this.changedHtml = (String)this.engine.executeScript("document.documentElement.outerHTML");
-        this.getTrace(time + "_" + title + "_highlighted_" + highlightedText);
+        getTime();
+        this.getTrace(time + "_" + title + "_" + this.section + "_highlighted_" + highlightedText);
     }
     
     /**
      * Copies all the html files from the src directory to the bin directory, thus resetting the highlighting
      */
     public void resetFiles(){
-    	for(int i = 0; i<Bridge.allFiles[0].length; i++){
-
-    		CopyOption options = REPLACE_EXISTING;
-    		Path source = Paths.get(this.srcPath + File.separator + Bridge.allFiles[0][i]);
-    		Path target = Paths.get(this.binPath + File.separator + Bridge.allFiles[0][i]);
-        	try {
-				Files.copy(source, target, options);
+    	File f = new File(this.binPath);
+    	if(f.exists()){
+	    	for(int i = 0; i<Bridge.allFiles[0].length; i++){
+	
+	    		CopyOption options = REPLACE_EXISTING;
+	    		Path source = Paths.get(this.srcPath + File.separator + Bridge.allFiles[0][i]);
+	    		Path target = Paths.get(this.binPath + File.separator + Bridge.allFiles[0][i]);
+	        	try {
+					Files.copy(source, target, options);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+	        	
+	    	}
+    	} else {
+    		Path source = Paths.get(this.srcPath);
+    		Path target = Paths.get(this.binPath);
+    		try {
+				Files.walkFileTree(source, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE,
+				         new SimpleFileVisitor<Path>() {
+				             @Override
+				             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
+				                 throws IOException
+				             {
+				                 Path targetdir = target.resolve(source.relativize(dir));
+				                 try {
+				                     Files.copy(dir, targetdir);
+				                 } catch (FileAlreadyExistsException e) {
+				                      if (!Files.isDirectory(targetdir))
+				                          throw e;
+				                 }
+				                 return FileVisitResult.CONTINUE;
+				             }
+				             @Override
+				             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+				                 throws IOException
+				             {
+				                 Files.copy(file, target.resolve(source.relativize(file)));
+				                 return FileVisitResult.CONTINUE;
+				             }
+				         });
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-        	
+
     	}
     }
     
