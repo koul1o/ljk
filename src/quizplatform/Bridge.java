@@ -596,7 +596,7 @@ public class Bridge {
         this.previousUrl = this.engine.getLocation().replace("file:///", "");
         this.changedHtml = (String)this.engine.executeScript("document.documentElement.outerHTML");
         getTime();
-        this.getTrace(time + "_" + title + "_" + this.section + "_highlighted_" + highlightedText);
+        this.getTrace(time + "_" + title + this.section + "_highlighted_" + highlightedText);
     }
     
     /**
