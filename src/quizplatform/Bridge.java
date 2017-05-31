@@ -128,7 +128,7 @@ public class Bridge {
                                 });
 
                         FxTimer.runLater(
-                                Duration.ofMillis((long) (tTime * MILIS)),
+                                Duration.ofMillis((long) ((tTime * MILIS) + 3000)), // adds 3 seconds to the time so that the progress bar is full during 3 seconds
                                 () -> {
                                     quizPlatform.percent = 0;
                                     augmentBar = ((fTime / step));
@@ -142,7 +142,7 @@ public class Bridge {
 
                                     quizPlatform.progressBar.setProgress(quizPlatform.percent);
                                     //engine.load(getClass().getResource(root + "final_quiz.html").toExternalForm());
-                                    engine.load("./" + root + "final_quiz.html");
+                                    engine.load(getClass().getResource(binPath.substring(1) + "/final_quiz.html").toExternalForm());
 
                                 });
 
@@ -156,7 +156,7 @@ public class Bridge {
                                         quizPlatform.percent = 0;
                                         quizPlatform.progressBar.setProgress(quizPlatform.percent);
                                         //engine.load(getClass().getResource(root + "info.html").toExternalForm());
-                                        engine.load("./" + root + "info.html");
+                                        engine.load(getClass().getResource(binPath.substring(1) + "/info.html").toExternalForm());
                                     }
                                 });
                         cnt++;

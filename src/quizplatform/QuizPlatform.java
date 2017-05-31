@@ -67,7 +67,7 @@ public class QuizPlatform extends Application {
         /* Enable JS in the WebEngine */
         engine.setJavaScriptEnabled(true);
 
-        engine.load(getClass().getResource("/bin/quizplatform/" + root + "/documents.html").toExternalForm());
+        engine.load(getClass().getResource("/bin/quizplatform/" + root + "/Instructions.html").toExternalForm());
         
         /* Create a progress bar */
         progressBar.setProgress(percent);
