@@ -16,6 +16,8 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.file.CopyOption;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileVisitOption;
@@ -308,9 +310,14 @@ public class Bridge {
     public void URLToNextQuestion(String quizUrl) {
 
         String r = this.incrementString(quizUrl);
-                System.out.println("quizplatform.Bridge.getUrl()"+ r);
-
-
+        try {
+			r = URLDecoder.decode(r, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        System.out.println("quizplatform.Bridge.getUrl()"+ r);
+        
         File f = new File(r);
         if (!f.exists()) {
             String s[] = r.split("/");
@@ -603,52 +610,39 @@ public class Bridge {
      * Copies all the html files from the src directory to the bin directory, thus resetting the highlighting
      */
     public void resetFiles(){
-    	File f = new File(this.binPath);
-    	if(f.exists()){
-	    	for(int i = 0; i<Bridge.allFiles[0].length; i++){
-	
-	    		CopyOption options = REPLACE_EXISTING;
-	    		Path source = Paths.get(this.srcPath + File.separator + Bridge.allFiles[0][i]);
-	    		Path target = Paths.get(this.binPath + File.separator + Bridge.allFiles[0][i]);
-	        	try {
-					Files.copy(source, target, options);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-	        	
-	    	}
-    	} else {
-    		Path source = Paths.get(this.srcPath);
-    		Path target = Paths.get(this.binPath);
-    		try {
-				Files.walkFileTree(source, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE,
-				         new SimpleFileVisitor<Path>() {
-				             @Override
-				             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
-				                 throws IOException
-				             {
-				                 Path targetdir = target.resolve(source.relativize(dir));
-				                 try {
-				                     Files.copy(dir, targetdir);
-				                 } catch (FileAlreadyExistsException e) {
-				                      if (!Files.isDirectory(targetdir))
-				                          throw e;
-				                 }
-				                 return FileVisitResult.CONTINUE;
-				             }
-				             @Override
-				             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
-				                 throws IOException
-				             {
-				                 Files.copy(file, target.resolve(source.relativize(file)));
-				                 return FileVisitResult.CONTINUE;
-				             }
-				         });
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+    	Path source = Paths.get(this.srcPath);
+		Path target = Paths.get(this.binPath);
+		try {
+			Files.walkFileTree(source, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE,
+			         new SimpleFileVisitor<Path>() {
 
-    	}
+             			 private CopyOption options = REPLACE_EXISTING;
+			             @Override
+			             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
+			                 throws IOException
+			             {
+
+			                 Path targetdir = target.resolve(source.relativize(dir));
+			                 try {
+			                	 if(!targetdir.toFile().exists() || !targetdir.toFile().isDirectory())
+			                		 Files.copy(dir, targetdir, options);
+			                 } catch (FileAlreadyExistsException e) {
+			                      if (!Files.isDirectory(targetdir))
+			                          throw e;
+			                 }
+			                 return FileVisitResult.CONTINUE;
+			             }
+			             @Override
+			             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+			                 throws IOException
+			             {
+			                 Files.copy(file, target.resolve(source.relativize(file)), options);
+			                 return FileVisitResult.CONTINUE;
+			             }
+			         });
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
     
     /**

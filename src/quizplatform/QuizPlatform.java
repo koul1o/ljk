@@ -56,9 +56,12 @@ public class QuizPlatform extends Application {
         /* Initialize the Bridge */
         bridge = new Bridge(engine, primaryStage, this, tTime, fTime, step, root, this.partId);
         
+        //webView.setContextMenuEnabled(false);
+        
         if(this.highlightEnabled){
-        	webView.setContextMenuEnabled(false);
         	createContextMenu(webView, bridge);
+        } else {
+            createBaseContextMenu(webView, bridge);
         }
         
         /* Load the first Url */
@@ -68,7 +71,7 @@ public class QuizPlatform extends Application {
         engine.setJavaScriptEnabled(true);
 
         engine.load(getClass().getResource("/bin/quizplatform/" + root + "/Instructions.html").toExternalForm());
-        
+        //engine.load("http://css3test.com/");
         /* Create a progress bar */
         progressBar.setProgress(percent);
 
@@ -194,6 +197,18 @@ public class QuizPlatform extends Application {
             }
         });
     }
+    
+    private void createBaseContextMenu(WebView webView, Bridge bridge) {
+        webView.setOnMousePressed(e -> {
+        	String s = webView.getEngine().executeScript("document.elementFromPoint(" + e.getX() + "," +  e.getY() + ").tagName;").toString();
+        	webView.setContextMenuEnabled(true);
+            if (e.getButton() != MouseButton.SECONDARY || s.equals("IMG")) {
+            	webView.setContextMenuEnabled(false);
+            }
+        });
+    }
+    
+    
 
     public static void main(String[] args) {
 
