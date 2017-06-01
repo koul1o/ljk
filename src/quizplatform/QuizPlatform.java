@@ -190,7 +190,8 @@ public class QuizPlatform extends Application {
         contextMenu.getItems().addAll(highlight);
 
         webView.setOnMousePressed(e -> {
-            if (e.getButton() == MouseButton.SECONDARY) {
+        	String s = webView.getEngine().executeScript("document.elementFromPoint(" + e.getX() + "," +  e.getY() + ").tagName;").toString();
+            if (e.getButton() == MouseButton.SECONDARY && !s.equals("IMG")) {
                 contextMenu.show(webView, e.getScreenX(), e.getScreenY());
             } else {
                 contextMenu.hide();
