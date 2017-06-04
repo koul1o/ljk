@@ -124,10 +124,10 @@ function checkFinalAnswers() {
         if (radios[i].checked) {
             ans = radios[i].name + "_Answer: " + radios[i].value;
             java.elementTrace(ans);
-
         }
 
     }
+    java.submitFinalQuiz();
 }
 
 function redirect() {

@@ -80,6 +80,8 @@ public class Bridge {
     
     private String srcPath = "";
     private String binPath = "";
+	private Timer demogTimer;
+	private Timer t;
 
     public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform, float tTime, float fTime, float step, String root, String experimentId) {
         String DOCUMENT_PATH = "./src" + File.separator + "quizplatform" + File.separator + root;
@@ -143,23 +145,24 @@ public class Bridge {
                                             });
 
                                     quizPlatform.progressBar.setProgress(quizPlatform.percent);
-                                    //engine.load(getClass().getResource(root + "final_quiz.html").toExternalForm());
+                                    this.t.restart();
                                     engine.load(getClass().getResource(binPath.substring(1) + "/final_quiz.html").toExternalForm());
-
+                                    
                                 });
 
-                        FxTimer.runLater(
-                                Duration.ofMillis((long) ((tTime + fTime) * MILIS)),
+                        this.demogTimer = FxTimer.create(
+                                Duration.ofMillis((long) (1)),
                                 () -> {
-                                    System.out.println("Entering demog");
-                                    if (title.toLowerCase().contains("final")) {
-                                        engine.executeScript("checkFinalAnswers();");
-                                        timer2.stop();
-                                        quizPlatform.percent = 0;
-                                        quizPlatform.progressBar.setProgress(quizPlatform.percent);
-                                        //engine.load(getClass().getResource(root + "info.html").toExternalForm());
-                                        engine.load(getClass().getResource(binPath.substring(1) + "/info.html").toExternalForm());
-                                    }
+                                    timer2.stop();
+                                    quizPlatform.percent = 0;
+                                    quizPlatform.progressBar.setProgress(quizPlatform.percent);
+                                    engine.load(getClass().getResource(binPath.substring(1) + "/info.html").toExternalForm());
+                                });
+                        
+                        this.t = FxTimer.create(
+                                Duration.ofMillis((long) ((fTime) * MILIS)),
+                                () -> {
+                                    engine.executeScript("checkFinalAnswers();");
                                 });
                         cnt++;
 
@@ -663,5 +666,10 @@ public class Bridge {
 
     	String filePath = "./bin/quizplatform/html/" + this.setup + "/";
     	return filePath;
+    }
+    
+    public void submitFinalQuiz(){
+    	this.t.stop();
+    	this.demogTimer.restart();
     }
 }

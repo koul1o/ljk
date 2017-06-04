@@ -201,11 +201,13 @@ public class QuizPlatform extends Application {
     
     private void createBaseContextMenu(WebView webView, Bridge bridge) {
         webView.setOnMousePressed(e -> {
-        	String s = webView.getEngine().executeScript("document.elementFromPoint(" + e.getX() + "," +  e.getY() + ").tagName;").toString();
-        	webView.setContextMenuEnabled(true);
-            if (e.getButton() != MouseButton.SECONDARY || s.equals("IMG")) {
-            	webView.setContextMenuEnabled(false);
-            }
+        	if(e.getButton() == MouseButton.SECONDARY){
+	        	String s = webView.getEngine().executeScript("document.elementFromPoint(" + e.getX() + "," +  e.getY() + ").tagName;").toString();
+	        	webView.setContextMenuEnabled(true);
+	            if (s.equals("IMG")) {
+	            	webView.setContextMenuEnabled(false);
+	            }
+        	}
         });
     }
     
