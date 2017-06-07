@@ -305,8 +305,7 @@ public class Bridge {
      * It then changes the entry of the document in the <b>quizLinks</b> hashmap
      * so that the value matches the path of the next question. <br>
      * <br>
-     * If the resulting file does not exist, the url is set to the list of
-     * documents. <br>
+     * If the resulting file does not exist, the url is set to "finished". <br>
      *
      * @param quizUrl - the url to save
      */
