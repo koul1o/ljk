@@ -315,7 +315,6 @@ public class Bridge {
         try {
 			r = URLDecoder.decode(r, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         System.out.println("quizplatform.Bridge.getUrl()"+ r);
@@ -450,7 +449,6 @@ public class Bridge {
         } else {
             clear = false;
         }
-
         return clear;
     }
 
@@ -652,16 +650,6 @@ public class Bridge {
      * @return a String containing the path of the folder
      */
     public String getDocumentsFolderPath(){
-    	//String filePath = getClass().getResource("./bin/quizplatform/html/" + this.setup + "/documents.html").toExternalForm().replaceAll("file:/", "");
-    	//String filePath = "./bin/quizplatform/html/" + this.setup + "/documents.html";
-    	/*filePath = filePath.replaceAll("jar:", "");
-    	String[] tmp = filePath.split("/");
-    	String folder = "";
-    	tmp[tmp.length-1] = "";
-    	for(int i = 0; i < tmp.length; i++){
-    		folder += tmp[i] + "/";
-    	}
-    	return folder;*/
 
     	String filePath = "./bin/quizplatform/html/" + this.setup + "/";
     	return filePath;

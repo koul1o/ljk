@@ -124,10 +124,10 @@ function checkFinalAnswers() {
         if (radios[i].checked) {
             ans = radios[i].name + "_Answer: " + radios[i].value;
             java.elementTrace(ans);
-
         }
 
     }
+    java.submitFinalQuiz();
 }
 
 function redirect() {
@@ -188,6 +188,11 @@ function collectInfo() {
     }
     quit();
 }
+/*
+ * This function checks if the selected portion of the text is highlighted.
+ * If it is, it calls the unHighlight function.
+ * If it is not already higlighted, it calls the highlight function.
+ */
 
 function checkHighlight(){
 	if (window.getSelection) {
@@ -206,6 +211,10 @@ function checkHighlight(){
     }
 }
 
+/*
+ * This function highlights the selected portion of the text.
+ */
+
 function highlight() {
     if (window.getSelection) {
         var selection = window.getSelection();
@@ -219,6 +228,10 @@ function highlight() {
         }
     }
 }
+
+/*
+ * This function removes the highlight block containing the selected text.
+ */
 
 function unHighlight(){
 	if (window.getSelection) {
@@ -248,21 +261,5 @@ function unHighlight(){
             selection.addRange(previousRange);
             selection.addRange(nextRange);
         }
-	}
-}
-
-function clearHighlights(){
-	// select element to unwrap
-	var el = document.querySelector('#highlighted');
-	
-	// get the element's parent node
-	if(el != null){
-		var parent = el.parentNode;
-		
-		// move all children out of the element
-		while (el.firstChild) parent.insertBefore(el.firstChild, el);
-		
-		// remove the empty element
-		parent.removeChild(el);
 	}
 }

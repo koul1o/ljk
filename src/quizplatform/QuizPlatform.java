@@ -184,6 +184,11 @@ public class QuizPlatform extends Application {
 
     }
     
+    /**
+     * Creates a new Context Menu that only has the Highlight option.
+     * @param webView the WebView object in which to create the context menu
+     * @param bridge the Bridge object that will send the actions to the javascript
+     */
     private void createContextMenu(WebView webView, Bridge bridge) {
         ContextMenu contextMenu = new ContextMenu();
         MenuItem highlight = new MenuItem("Highlight");
@@ -199,6 +204,11 @@ public class QuizPlatform extends Application {
         });
     }
     
+    /**
+     * Disables the context menu on images to avoid problems
+     * @param webView the WebView object in which to create the context menu
+     * @param bridge the Bridge object that will send the actions to the javascript
+     */
     private void createBaseContextMenu(WebView webView, Bridge bridge) {
         webView.setOnMousePressed(e -> {
         	if(e.getButton() == MouseButton.SECONDARY){
