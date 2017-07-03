@@ -1,5 +1,4 @@
 package quizplatform;
-
 /**
  *
  * @author koul1o
@@ -7,9 +6,7 @@ package quizplatform;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
