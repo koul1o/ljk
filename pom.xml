@@ -65,7 +65,7 @@
 								<exclude>src/</exclude>
 								<exclude>bin/</exclude>
 								<exclude>html/</exclude>
-                                                                <exclude>.git/</exclude>
+				                <exclude>.git/</exclude>
 								<exclude>pom.xml</exclude>
 								<exclude>*.bat</exclude>
 								<exclude>.classpath</exclude>

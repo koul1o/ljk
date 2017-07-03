@@ -39,7 +39,7 @@ public class QuizPlatform extends Application {
     private float step = 4;
     private String root = "html/math";
     private double percent = 0;
-    ProgressBar progressBar = new ProgressBar();
+    private ProgressBar progressBar = new ProgressBar();
     private String experimentId = "00000";
     private Boolean highlightEnabled = true;
 
