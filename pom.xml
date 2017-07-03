@@ -68,6 +68,7 @@
 				                <exclude>.git/</exclude>
 								<exclude>pom.xml</exclude>
 								<exclude>*.bat</exclude>
+								<exclude>Readme.txt</exclude>
 								<exclude>.classpath</exclude>
 								<exclude>.project</exclude>
 							</excludes>
