@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Demographic</title>
+        <link href="css/bootstrap.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/quizplatform.js"></script>
+
+        <div id="logos" style="overflow: auto;"> 
+            <img src="img/logo_gipsa.jpg" style="width: 200px; height: 150px; margin: auto; float: left;"> </img>
+            <img src="img/logo_ljk.jpg" style="width: 200px; height: 150px; margin: auto; float: right; "> </img>
+        </div>  
+
+
+        <div style="background-color: #e2e2e2;">
+            <h1 align="center">Please answer all the questions below,</br>and thank you for your participation!</h1>  
+        </div>
+
+        <div class="container">
+            <!--<legend>Merci de répondre à toutes les questions ci-dessous:</legend>-->
+
+
+            <form class="form-group row">
+
+                <label>Sex</label>
+                <div>
+                    <input type="radio" class="form-control-radio" name="Sex" id="optionsRadios1" value="Male" checked>
+                    Male
+                    <input type="radio" class="form-control-radio" name="Sex" id="optionsRadios2" value="Female">
+                    Female
+                </div>
+
+                <label for="text-input" class="col-2 col-form-label" >Age</label>
+                <div class="col-10">
+                    <input class="form-control" type="text"  id="Age" required="true">
+                </div>
+                <label for="text-input" class="col-2 col-form-label">Cursus / specialty (e.g. computer science, math / statistics, machine learning...)</label>
+                <div class="col-10">
+                    <input class="form-control" type="text" id="Cursus" required="true">
+                </div>
+                <label for="example-text-input" class="col-2 col-form-label">Position (e.g. intern, PhD, tenured...)</label>
+                <div class="col-10">
+                    <input class="form-control" type="text"  id="Position" required="true">
+                </div>
+                <label for="example-text-input" class="col-2 col-form-label">Institution (e.g. LIG, LJK, company name...)</label>
+                <div class="col-10">
+                    <input class="form-control" type="text"  id="Institution" required="true">
+                </div>
+                <label for="example-text-input" class="col-2 col-form-label">Email (only if you would like a feedback on the experiment, else leave empty)</label>
+                <div class="col-10">
+                    <input class="form-control" type="text"  id="Position" required="false">
+                </div>
+
+
+			</br>
+			For the following questions, please indicate your knowledge on the given concepts, prior to the experiment. If you had absolutely no knowledge, choose 0. At the other end of the spectrum, if you were already proficient on it and did not learn anything from the associated document, choose 6.</br>
+			</br>
+                <label for="exampleSelect1">Prior knowledge on dependent/independent variables</label>
+                <select class="form-control" id="Knowledge_DV-IV">
+				<option>0</option>
+				<option>1</option>
+				<option>2</option>
+				<option>3</option>
+				<option>4</option>
+				<option>5</option>
+				<option>6</option>
+                </select>
+                <label for="exampleSelect1">Prior knowledge on degrees of freedom</label>
+                <select class="form-control" id="Knowledge_DoF">
+				<option>0</option>
+				<option>1</option>
+				<option>2</option>
+				<option>3</option>
+				<option>4</option>
+				<option>5</option>
+				<option>6</option>
+                </select>
+                <label for="exampleSelect1">Prior knowledge on statistical hypothesis testing</label>
+                <select class="form-control" id="Knowledge_Test">
+				<option>0</option>
+				<option>1</option>
+				<option>2</option>
+				<option>3</option>
+				<option>4</option>
+				<option>5</option>
+				<option>6</option>
+                </select>
+                <label for="exampleSelect1">Prior knowledge on linear regression</label>
+                <select class="form-control" id="Knowledge_Regression">
+				<option>0</option>
+				<option>1</option>
+				<option>2</option>
+				<option>3</option>
+				<option>4</option>
+				<option>5</option>
+				<option>6</option>
+                </select>
+
+                <div id="message"  style="display:none; position: fixed; color: red;">Please fill up all the fields</div>
+                <div id="buttons_area" style="padding-top: 15px;">
+
+                    <a  class="btn btn-success" role="button" onclick="collectInfo();" style="float: right;">Submit</a>
+                </div>
+
+
+
+
+            </form>
+
+        </div>
+    </body>
+</html>

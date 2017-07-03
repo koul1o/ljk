@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Statistical hypothesis testing</title>
+        <link href="css/bootstrap.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body >
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/quizplatform.js"></script>
+
+
+
+        <div id="logos" style="overflow: auto;"> 
+            <img src="img/logo_gipsa.jpg" style="width: 200px; height: 150px; margin: auto; float: left;"> </img>
+            <img src="img/logo_ljk.jpg" style="width: 200px; height: 150px; margin: auto; float: right; "> </img>
+        </div>  
+
+        <div id="main">
+            <div style="background-color: #e2e2e2;">
+                <h1 align="center">Statistical hypothesis testing</h1>  
+            </div>
+
+            <div class="container">
+                <div class="panel-group" id="accordion">
+                    <div class="panel panel-default" id="Panel 1">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" onclick="sendElementTrace();" data-parent="#accordion" href="#collapseOne">
+                                    Introduction
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in">
+                            <div class="panel-body">
+						A statistical hypothesis, sometimes called confirmatory data analysis, is a hypothesis that is testable on the basis of observing a process that is modeled via a set of random variables. A statistical hypothesis test is a method of statistical inference. Commonly, two statistical data sets are compared, or a data set obtained by sampling is compared against a synthetic data set from an idealized model. A hypothesis is proposed for the statistical relationship between the two data sets (H<sub>1</sub>, for instance using <a href="Linear regression.html">linear regression</a>), and this is compared as an alternative to an idealized null hypothesis that proposes no relationship between two data sets (H<sub>0</sub>). The comparison is deemed statistically significant if the relationship between the data sets leads to highly unlikely results, would the null hypothesis be true.</br></br>
+						Hypothesis tests are used in determining what outcomes of a study would lead to a rejection of the null hypothesis for a pre-specified level of significance. The process of distinguishing between the null hypothesis and the alternative hypothesis is aided by identifying two conceptual types of errors (type 1 and type 2), and by specifying a limit on how much type 1 error will be permitted (e.g., 5% of false positive results in psychology).</br></br>
+						Student's t-test, and Fisher's F-test, used in linear regression models, are two specific instances of such statistical hypothesis testing approach. The test statistics use to reach a conclusion usually rely on the data, the model and thus the <a href="Degrees of freedom.html">degrees of freedom</a>.
+                            </div>
+                       </div>
+                    </div>
+                    <div class="panel panel-default" id="Panel 2">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" onclick="sendElementTrace();" data-parent="#accordion" href="#collapseTwo">
+                                    Technical details
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse collapse">
+                            <div class="panel-body">
+						<img src="img/t_test.png" align="right"></img>
+						A statistical test procedure is comparable to a criminal trial; a defendant is considered not guilty as long as his or her guilt is not proven. The prosecutor tries to prove the guilt of the defendant. Only when there is enough charging evidence the defendant is convicted.
+In the start of the procedure, there are two hypotheses H<sub>0</sub>: "the defendant is not guilty", and H<sub>1</sub>: "the defendant is guilty". The first one, H<sub>0</sub>, is called the null hypothesis, and is for the time being accepted. The second one, H<sub>1</sub>, is called the alternative hypothesis. It is the alternative hypothesis that one hopes to support. The hypothesis of innocence is only rejected when an error is very unlikely, because one doesn't want to convict an innocent defendant. Such an error is of type 1 (i.e., false positive, the conviction of an innocent person), and the occurrence of this error is controlled to be rare. As a consequence of this asymmetric behaviour, the error of type 2 (false negative, acquitting a person who committed the crime), is often rather large.</br></br>
+						The general procedure for statistical hypothesis testing can be summarized as follows:
+						<ol>
+							<li>Compute from the observations the observed value t<sub>obs</sub> of the test statistic T.</li>
+							<li>Calculate the p-value. This is the probability, under the null hypothesis, of sampling a test statistic at least as extreme as that which was observed.</li>
+							<li>Reject the null hypothesis, in favor of the alternative hypothesis, if and only if the p-value is less than the significance level (the selected probability) threshold.</li>
+						</ol>
+						The figure illustrates a one sample t-test, which follows the above procedure with T being based on Student's distribution. Depending on the value and uncertainty of the parameter estimate <i>b<sub>1</sub></i>, this value might be considered significantly different from zero, only if zero is sufficiently distant from <i>b<sub>1</sub></i>. Here, the area in red represents the region of rejection for H<sub>0</sub> (correponding to a type I error rate of 5%), and therefore in this specific example, H<sub>0</sub> can be rejected (since the part of the distribution beyond 0 is smaller than 5%).</br></br>
+						There have been two main approaches to statistical hypothesis testing, concurrently developped in the early 20th century, with similarities yet different procedures:
+						<ul>
+							<li>Fisher's null hypothesis testing<ol>
+								<li>Decide of the null hypothesis H<sub>0</sub>, against which to test H<sub>1</sub>.</li>
+								<li>Report the exact level of significance (p-value) instead of using a conventional level (e.g. 5%). Hypotheses are neither accepted nor rejected, and in absence of strong evidence, any decision should be suspended until further data is available.</li>
+								<li>Use this procedure only if little is known about the problem at hand, and only to draw provisional conclusions in the context of an attempt to understand the experimental situation.</li>
+							</ol></li>
+							<li>Neyman-Pearson decision theory<ol>
+								<li>Decide of two hypotheses to compare (H<sub>0</sub> and H<sub>1</sub>), but also the type 1 error rate (e.g. 5%), type 2 error rate, as well as sample size (number of observations). All this should be done before the experiment, and determine a rejection region for each hypothesis.</li>
+								<li>If the data falls into the rejection region of H<sub>1</sub>, accept H<sub>0</sub>; otherwise accept H<sub>1</sub>. Note that accepting a hypothesis does not mean that you believe in it, but only that you act as if it were true.</li>
+								<li>The usefulness of the procedure is limited among others to situations where you have a disjunction of hypotheses, and where you can make meaningful cost-benefit trade-offs for choosing type 1 and 2 error rates (e.g. taking into account the difficulty to find participants).</li>
+							</ol></li>
+						</ul>
+						Although the null hypothesis (H<sub>0</sub>) is also usually considered to be the nil hypothesis (i.e. expected zero difference or zero effect of the factors), it does not need to be the case.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default" id="Panel 3">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" onclick="sendElementTrace();" data-parent="#accordion" href="#collapseThree" >
+                                    Avoid confusion and errors
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseThree" class="panel-collapse collapse">
+                            <div class="panel-body">
+						Confirmatory data analysis (thus statistical hypothesis testing) can be contrasted with exploratory data analysis, which may not have pre-specified hypotheses, and just attempts to extract patterns from data.</br></br>
+						An alternative framework for statistical hypothesis testing is to specify a set of statistical models, one for each candidate hypothesis, and then use model selection techniques to choose the most appropriate model. The most common selection techniques are based on either Akaike information criterion or Bayes factor.</br></br>	
+						The numerous criticisms of significance testing do not lead to a single alternative. A unifying position of critics is that statistics should not lead to a conclusion or a decision but to a probability or to an estimated value with a confidence interval rather than to an accept-reject decision regarding a particular hypothesis. It is unlikely that the controversy surrounding significance testing will be resolved in the near future. Its supposed flaws and unpopularity do not eliminate the need for an objective and transparent means of reaching conclusions regarding studies that produce statistical results. Critics have not unified around an alternative. Other forms of reporting confidence or uncertainty could probably grow in popularity. One strong critic of significance testing suggested a list of reporting alternatives: effect sizes for importance, prediction intervals for confidence, replications and extensions for replicability, meta-analyses for generality. None of these suggested alternatives produces a conclusion/decision.</br></br>
+						Advocates of a Bayesian approach sometimes claim that the goal of a researcher is most often to objectively assess the probability that a hypothesis is true based on the data they have collected. Neither Fisher's significance testing, nor Neyman-Pearson hypothesis testing can provide this information, and do not claim to. The probability a hypothesis is true can only be derived from use of Bayes' Theorem, which was unsatisfactory to both the Fisher and Neyman-Pearson camps due to the explicit use of subjectivity in the form of the prior probability. Fisher's strategy is to sidestep this with the p-value (an objective index based on the data alone) followed by inductive inference, while Neyman-Pearson devised their approach of inductive behaviour.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default" id="Panel 4">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" onclick="sendElementTrace();setQuizUrl();" data-parent="#accordion" href="#collapseFour" >
+                                    Quiz on this page
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseFour" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <div id="quiz-container">
+                                    <iframe id="mbd" src="#" width="100%" height="100%" onload="qTrace()" frameborder="0" scrolling="no" > 
+                                    </iframe>
+                                    <div id="message_completed" style="color: green; display:none;">You have completed the quiz</div>
+                                    <a href="asa" id="retake" class="btn btn-info" role="button" onclick="retake();" style=" display:none;" >Retake the quiz</a> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div> <!-- end container -->
+
+
+            <div id="buttons_area" style="padding-top: 15px;">
+                <a href="documents.html" class="btn btn-info" role="button"   >Documents</a> 
+            </div>
+            <div id="message_completed"> </div>
+
+
+        </div>
+
+
+    </body>
+</html>
