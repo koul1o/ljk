@@ -34,27 +34,18 @@ import javafx.stage.WindowEvent;
 public class QuizPlatform extends Application {
 
     private static String[] arguments;
-<<<<<<< HEAD
-=======
+
     double percent = 0.0;
->>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
     private Bridge bridge;
     private float tTime = 60;
     private float fTime = 20;
     private float step = 4;
     private String root = "html/math";
-<<<<<<< HEAD
     private double percent = 0;
 
     ProgressBar progressBar = new ProgressBar();
     private String experimentId = "00000";
     private Boolean highlightEnabled = true;
-=======
-
-    ProgressBar progressBar = new ProgressBar();
-	private String experimentId = "00000";
-	private Boolean highlightEnabled = true;
->>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
 
     @Override
     public void start(Stage primaryStage) {
@@ -63,7 +54,7 @@ public class QuizPlatform extends Application {
         WebView webView = new WebView();
         WebEngine engine = webView.getEngine();
         setProperties();
-<<<<<<< HEAD
+
 
         /* Initialize the Bridge */
         bridge = new Bridge(engine, primaryStage, this, tTime, fTime, step, root, experimentId,progressBar);
@@ -76,21 +67,6 @@ public class QuizPlatform extends Application {
             createBaseContextMenu(webView, bridge);
         }
 
-=======
-        
-        /* Initialize the Bridge */
-        bridge = new Bridge(engine, primaryStage, this, tTime, fTime, step, root, this.experimentId);
-        
-        //webView.setContextMenuEnabled(false);
-        
-        if(this.highlightEnabled){
-        	webView.setContextMenuEnabled(false);
-        	createContextMenu(webView, bridge);
-        } else {
-            createBaseContextMenu(webView, bridge);
-        }
-        
->>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
         /* Load the first Url */
         //engine.load(getClass().getResource("../bin/quizplatform/" + root + "/documents.html").toExternalForm());
 
@@ -209,7 +185,7 @@ public class QuizPlatform extends Application {
         }
 
     }
-<<<<<<< HEAD
+
 
     /**
      * Creates a new Context Menu that only has the Highlight option.
@@ -217,13 +193,6 @@ public class QuizPlatform extends Application {
      * @param webView the WebView object in which to create the context menu
      * @param bridge the Bridge object that will send the actions to the
      * javascript
-=======
-    
-    /**
-     * Creates a new Context Menu that only has the Highlight option.
-     * @param webView the WebView object in which to create the context menu
-     * @param bridge the Bridge object that will send the actions to the javascript
->>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
      */
     private void createContextMenu(WebView webView, Bridge bridge) {
         ContextMenu contextMenu = new ContextMenu();
@@ -239,7 +208,6 @@ public class QuizPlatform extends Application {
             }
         });
     }
-<<<<<<< HEAD
 
     /**
      * Disables the context menu on images to avoid problems
@@ -259,27 +227,7 @@ public class QuizPlatform extends Application {
             }
         });
     }
-=======
-    
-    /**
-     * Disables the context menu on images to avoid problems
-     * @param webView the WebView object in which to create the context menu
-     * @param bridge the Bridge object that will send the actions to the javascript
-     */
-    private void createBaseContextMenu(WebView webView, Bridge bridge) {
-        webView.setOnMousePressed(e -> {
-        	if(e.getButton() == MouseButton.SECONDARY){
-	        	String s = webView.getEngine().executeScript("document.elementFromPoint(" + e.getX() + "," +  e.getY() + ").tagName;").toString();
-	        	webView.setContextMenuEnabled(true);
-	            if (s.equals("IMG")) {
-	            	webView.setContextMenuEnabled(false);
-	            }
-        	}
-        });
-    }
-    
-    
->>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
+
 
     public static void main(String[] args) {
 

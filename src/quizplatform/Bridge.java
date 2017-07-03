@@ -72,14 +72,10 @@ public class Bridge {
     private Timer timer2;
     private String setup;
     private float tTime, fTime;
-<<<<<<< HEAD
     private double percent;
-
     private String previousUrl = "";
     private String changedHtml = "";
-
     private String section = "";
-
     private String srcPath = "";
     private String binPath = "";
     private Timer demogTimer;
