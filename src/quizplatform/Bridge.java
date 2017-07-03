@@ -44,7 +44,6 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.web.WebEngine;
 import javafx.stage.Stage;
 import netscape.javascript.JSObject;
-
 import org.reactfx.util.FxTimer;
 import org.reactfx.util.Timer;
 
@@ -73,6 +72,7 @@ public class Bridge {
     private Timer timer2;
     private String setup;
     private float tTime, fTime;
+<<<<<<< HEAD
     private double percent;
 
     private String previousUrl = "";
@@ -90,7 +90,7 @@ public class Bridge {
         
         this.setup = root;
         this.setup = this.setup.replace("html/", "");
-        
+  
         this.srcPath = DOCUMENT_PATH;
         this.binPath = this.srcPath.replace("src", "bin");
         this.quizLinks = new HashMap<String, String>();
@@ -148,7 +148,6 @@ public class Bridge {
                                     progressBar.setProgress(percent);
                                     this.t.restart();
                                     engine.load(getClass().getResource(binPath.substring(1) + "/final_quiz.html").toExternalForm());
-
                                 });
 
                         this.demogTimer = FxTimer.create(
@@ -319,7 +318,6 @@ public class Bridge {
             e.printStackTrace();
         }
         System.out.println("quizplatform.Bridge.getUrl()" + r);
-
         File f = new File(r);
         if (!f.exists()) {
             String s[] = r.split("/");
@@ -395,6 +393,7 @@ public class Bridge {
                 if (f.isDirectory()) {
                     // findFiles(f);
                 } else {
+
                     System.out.println(f.getAbsolutePath());
                     String key = f.getName();
                     String value = f.getName().split("\\.")[0]; // we remove extension from the file name.
@@ -415,7 +414,6 @@ public class Bridge {
                 Bridge.files[1][i] = al.get(key);
                 i++;
             }
-
             Bridge.allFiles = new String[2][allFileList.size()];
             SortedSet<String> sortedKeysAllFiles = new TreeSet<String>(allFileList.keySet());
             int j = 0;
@@ -503,7 +501,6 @@ public class Bridge {
                 int cpt = 1;
                 new SimpleDateFormat("yyyyMMdd_HHmmss");
                 Date date = new Date();
-
                 f = new File(this.setup);
 
                 if (!f.exists()) {

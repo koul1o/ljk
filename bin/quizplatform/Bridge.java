@@ -40,6 +40,10 @@ import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker.State;
+<<<<<<< HEAD
+import javafx.scene.control.ProgressBar;
+=======
+>>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
 import javafx.scene.web.WebEngine;
 import javafx.stage.Stage;
 import netscape.javascript.JSObject;
@@ -72,6 +76,26 @@ public class Bridge {
     private Timer timer2;
     private String setup;
     private float tTime, fTime;
+<<<<<<< HEAD
+    private double percent;
+
+    private String previousUrl = "";
+    private String changedHtml = "";
+
+    private String section = "";
+
+    private String srcPath = "";
+    private String binPath = "";
+    private Timer demogTimer;
+    private Timer t;
+
+    public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform, float tTime, float fTime, float step, String root, String experimentId, ProgressBar progressBar) {
+        String DOCUMENT_PATH = "./src" + File.separator + "quizplatform" + File.separator + root;
+        
+        this.setup = root;
+        this.setup = this.setup.replace("html/", "");
+        
+=======
 
     private String previousUrl = "";
     private String changedHtml = "";
@@ -90,12 +114,17 @@ public class Bridge {
         this.setup = this.setup.replace("html/", "");
         this.tTime = tTime;
         this.fTime = fTime;
+>>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
         this.srcPath = DOCUMENT_PATH;
         this.binPath = this.srcPath.replace("src", "bin");
         this.quizLinks = new HashMap<String, String>();
         try {
             findFiles(new File(DOCUMENT_PATH));
+<<<<<<< HEAD
+
+=======
             
+>>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
             this.resetFiles();
 
         } catch (IOException e) {
@@ -127,19 +156,38 @@ public class Bridge {
                         Timer timer = FxTimer.runPeriodically(
                                 Duration.ofMillis((long) (augmentBar * MILIS)),
                                 () -> {
+<<<<<<< HEAD
+                                    percent += 1 / step;
+                                    progressBar.setProgress(percent);
+=======
                                     quizPlatform.percent += 1 / step;
                                     quizPlatform.progressBar.setProgress(quizPlatform.percent);
+>>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
                                 });
 
                         FxTimer.runLater(
                                 Duration.ofMillis((long) ((tTime * MILIS) + 3000)), // adds 3 seconds to the time so that the progress bar is full during 3 seconds
                                 () -> {
+<<<<<<< HEAD
+                                    percent = 0;
+=======
                                     quizPlatform.percent = 0;
+>>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
                                     augmentBar = ((fTime / step));
                                     timer.stop();
                                     timer2 = FxTimer.runPeriodically(
                                             Duration.ofMillis((long) (augmentBar * MILIS)),
                                             () -> {
+<<<<<<< HEAD
+                                                percent += 1 / step;
+                                                progressBar.setProgress(percent);
+                                            });
+
+                                    progressBar.setProgress(percent);
+                                    this.t.restart();
+                                    engine.load(getClass().getResource(binPath.substring(1) + "/final_quiz.html").toExternalForm());
+
+=======
                                                 quizPlatform.percent += 1 / step;
                                                 quizPlatform.progressBar.setProgress(quizPlatform.percent);
                                             });
@@ -148,17 +196,26 @@ public class Bridge {
                                     this.t.restart();
                                     engine.load(getClass().getResource(binPath.substring(1) + "/final_quiz.html").toExternalForm());
                                     
+>>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
                                 });
 
                         this.demogTimer = FxTimer.create(
                                 Duration.ofMillis((long) (1)),
                                 () -> {
                                     timer2.stop();
+<<<<<<< HEAD
+                                    percent = 0;
+                                    progressBar.setProgress(percent);
+                                    engine.load(getClass().getResource(binPath.substring(1) + "/info.html").toExternalForm());
+                                });
+
+=======
                                     quizPlatform.percent = 0;
                                     quizPlatform.progressBar.setProgress(quizPlatform.percent);
                                     engine.load(getClass().getResource(binPath.substring(1) + "/info.html").toExternalForm());
                                 });
                         
+>>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
                         this.t = FxTimer.create(
                                 Duration.ofMillis((long) ((fTime) * MILIS)),
                                 () -> {
@@ -183,7 +240,11 @@ public class Bridge {
                         engine.executeScript("setDocuments();");
 
                     }
+<<<<<<< HEAD
+                    if (!title.toLowerCase().contains(QUESTION_NAME)) {
+=======
                     if ( !title.toLowerCase().contains(QUESTION_NAME)) {
+>>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
                         docUrl = engine.getLocation();
                         docUrl = docUrl.replace("file://", "");
                     }
@@ -228,8 +289,13 @@ public class Bridge {
     public void getTrace(String trace) {
         System.out.println("Trace: " + trace);
         saveData(trace);
+<<<<<<< HEAD
+        if (!this.previousUrl.equals(this.engine.getLocation()) && !this.changedHtml.equals("")) {
+            this.savePage();
+=======
         if(!this.previousUrl.equals(this.engine.getLocation()) && !this.changedHtml.equals("")){
         	this.savePage();
+>>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
         }
 
     }
@@ -313,12 +379,21 @@ public class Bridge {
 
         String r = this.incrementString(quizUrl);
         try {
+<<<<<<< HEAD
+            r = URLDecoder.decode(r, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        System.out.println("quizplatform.Bridge.getUrl()" + r);
+
+=======
 			r = URLDecoder.decode(r, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
         System.out.println("quizplatform.Bridge.getUrl()"+ r);
         
+>>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
         File f = new File(r);
         if (!f.exists()) {
             String s[] = r.split("/");
@@ -335,16 +410,27 @@ public class Bridge {
             }
 
         }
+<<<<<<< HEAD
+        System.out.println("quizplatform.Bridge.getUrl()" + this.quizLinks.get(docUrl));
+
+        this.quizLinks.replace(docUrl, r);
+        System.out.println("quizplatform.Bridge.getUrl()" + this.quizLinks.get(docUrl));
+=======
         System.out.println("quizplatform.Bridge.getUrl()"+ this.quizLinks.get(docUrl));
 
         this.quizLinks.replace(docUrl, r);
                 System.out.println("quizplatform.Bridge.getUrl()"+ this.quizLinks.get(docUrl));
 
+>>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
 
     }
 
     /**
      * Adds one to the last digit of the argument
+<<<<<<< HEAD
+     *
+=======
+>>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
      * @param sti the String to increment
      * @return the modified String
      */
@@ -394,7 +480,11 @@ public class Bridge {
                 if (f.isDirectory()) {
                     // findFiles(f);
                 } else {
+<<<<<<< HEAD
+                    System.out.println(f.getAbsolutePath());
+=======
                 	System.out.println(f.getAbsolutePath());
+>>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
                     String key = f.getName();
                     String value = f.getName().split("\\.")[0]; // we remove extension from the file name.
 
@@ -402,7 +492,11 @@ public class Bridge {
                         al.put(key, value);
                     }
                     if (!allFileList.containsKey(key)) {
+<<<<<<< HEAD
+                        allFileList.put(key, value);
+=======
                     	allFileList.put(key, value);
+>>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
                     }
                 }
             }
@@ -414,7 +508,11 @@ public class Bridge {
                 Bridge.files[1][i] = al.get(key);
                 i++;
             }
+<<<<<<< HEAD
+
+=======
             
+>>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
             Bridge.allFiles = new String[2][allFileList.size()];
             SortedSet<String> sortedKeysAllFiles = new TreeSet<String>(allFileList.keySet());
             int j = 0;
@@ -453,7 +551,12 @@ public class Bridge {
     }
 
     /**
+<<<<<<< HEAD
+     * This function saves the String <b>j</b> into a file called
+     * "./%ParticipantID%_1.csv".
+=======
      * This function saves the String <b>j</b> into a file called "./%ParticipantID%_1.csv".
+>>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
      * <br>
      * It takes a formatted String containing data separated by underscores and
      * changes the underscores into commas. <br>
@@ -484,8 +587,13 @@ public class Bridge {
      * If the file does not exist, it creates it and adds the right header to it
      * (separation char ',' and the name of each columns : "Time" and
      * "Location"). <br>
+<<<<<<< HEAD
+     * If it exists and the data is the first one of the test, it adds one to
+     * the file name to separate the tests <br>
+=======
      * If it exists and the data is the first one of the test, it adds one to the
      * file name to separate the tests <br>
+>>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
      *
      * @param j - the string to save
      * @param filepath - the file path of the file to save in
@@ -501,11 +609,19 @@ public class Bridge {
                 int cpt = 1;
                 new SimpleDateFormat("yyyyMMdd_HHmmss");
                 Date date = new Date();
+<<<<<<< HEAD
+
+                f = new File(this.setup);
+
+                if (!f.exists()) {
+                    f.mkdir();
+=======
                 
                 f = new File(this.setup);
                 
                 if(!f.exists()){
                 	f.mkdir();
+>>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
                 }
 
                 f = new File(this.setup + File.separator + filepath);
@@ -568,6 +684,103 @@ public class Bridge {
     public void execute(Consumer<Object> callback, String function, Object... args) {
         callback.accept(window.call(function, args));
     }
+<<<<<<< HEAD
+
+    /**
+     * Saves the changes in the html file of the bin directory so that the
+     * changes are loaded the next time the page is loaded. Used to save the
+     * highlighting (both add and remove).
+     */
+    public void savePage() {
+
+        StringBuilder sb = new StringBuilder();
+
+        File f = new File(this.previousUrl.replaceAll("src", "bin"));
+        if (f.exists()) {
+            this.changedHtml = this.changedHtml.replaceAll("(<div id=\"documents\">)[^&]*(</div>)", "$1 <h2>Documents</h2> $2");
+            sb.append(this.changedHtml);
+            FileWriter fw;
+            try {
+                fw = new FileWriter(f, false);
+                BufferedWriter bw = new BufferedWriter(fw);
+                PrintWriter pw = new PrintWriter(bw);
+                pw.write(sb.toString());
+                pw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Use this to check if selected text is highlighted. Calls a javascript
+     * function that does the check.
+     */
+    public void checkHighlight() {
+        String highlightedText = this.engine.executeScript("checkHighlight()").toString();
+        this.previousUrl = this.engine.getLocation().replace("file:///", "");
+        this.changedHtml = (String) this.engine.executeScript("document.documentElement.outerHTML");
+        getTime();
+        this.getTrace(time + "_" + title + this.section + "_highlighted_" + highlightedText);
+    }
+
+    /**
+     * Copies all the html files from the src directory to the bin directory,
+     * thus resetting the highlighting
+     */
+    public void resetFiles() {
+        Path source = Paths.get(this.srcPath);
+        Path target = Paths.get(this.binPath);
+        try {
+            Files.walkFileTree(source, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE,
+                    new SimpleFileVisitor<Path>() {
+
+                private CopyOption options = REPLACE_EXISTING;
+
+                @Override
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
+                        throws IOException {
+
+                    Path targetdir = target.resolve(source.relativize(dir));
+                    try {
+                        if (!targetdir.toFile().exists() || !targetdir.toFile().isDirectory()) {
+                            Files.copy(dir, targetdir, options);
+                        }
+                    } catch (FileAlreadyExistsException e) {
+                        if (!Files.isDirectory(targetdir)) {
+                            throw e;
+                        }
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                        throws IOException {
+                    Files.copy(file, target.resolve(source.relativize(file)), options);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Get the folder path where the html files are stored
+     *
+     * @return a String containing the path of the folder
+     */
+    public String getDocumentsFolderPath() {
+
+        String filePath = "./bin/quizplatform/html/" + this.setup + "/";
+        return filePath;
+    }
+
+    public void submitFinalQuiz() {
+        this.t.stop();
+        this.demogTimer.restart();
+=======
     
     /**
      * Saves the changes in the html file of the bin directory so that the changes are loaded the next time the page is loaded.
@@ -658,5 +871,6 @@ public class Bridge {
     public void submitFinalQuiz(){
     	this.t.stop();
     	this.demogTimer.restart();
+>>>>>>> bef379a8501d6e60a60de1c42f2bf56305ad213a
     }
 }

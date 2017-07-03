@@ -34,6 +34,8 @@ import javafx.stage.WindowEvent;
 public class QuizPlatform extends Application {
 
     private static String[] arguments;
+
+    double percent = 0.0;
     private Bridge bridge;
     private float tTime = 60;
     private float fTime = 20;
@@ -52,6 +54,7 @@ public class QuizPlatform extends Application {
         WebView webView = new WebView();
         WebEngine engine = webView.getEngine();
         setProperties();
+
 
         /* Initialize the Bridge */
         bridge = new Bridge(engine, primaryStage, this, tTime, fTime, step, root, experimentId,progressBar);
@@ -183,6 +186,7 @@ public class QuizPlatform extends Application {
 
     }
 
+
     /**
      * Creates a new Context Menu that only has the Highlight option.
      *
@@ -223,6 +227,7 @@ public class QuizPlatform extends Application {
             }
         });
     }
+
 
     public static void main(String[] args) {
 
