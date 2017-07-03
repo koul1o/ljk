@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Dependent and independent variables</title>
+        <link href="css/bootstrap.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body >
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/quizplatform.js"></script>
+
+
+
+        <div id="logos" style="overflow: auto;"> 
+            <img src="img/logo_gipsa.jpg" style="width: 200px; height: 150px; margin: auto; float: left;"> </img>
+            <img src="img/logo_ljk.jpg" style="width: 200px; height: 150px; margin: auto; float: right; "> </img>
+        </div>  
+
+        <div id="main">
+            <div style="background-color: #e2e2e2;">
+                <h1 align="center">Dependent and independent variables</h1>  
+            </div>
+
+            <div class="container">
+                <div class="panel-group" id="accordion">
+                    <div class="panel panel-default" id="Panel 1">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" onclick="sendElementTrace();" data-parent="#accordion" href="#collapseOne">
+                                    Introduction
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in">
+                            <div class="panel-body">
+						In mathematical modelling and statistical modelling, there are dependent variables (DV) and independent variables (IV). The models investigate how the former depend on the latter. The dependent variables represent the output or outcome whose variation is being studied. The independent variables represent inputs or causes, i.e. potential reasons for variation. Models test or explain the effects that the independent variables have on the dependent variables. Sometimes, independent variables may be included for other reasons, such as for their potential confounding effect, without a wish to test their effect directly.</br></br>
+						In an experiment, the dependent variable is the event expected to change when the independent variable is manipulated.
+                            </div>
+                       </div>
+                    </div>
+                    <div class="panel panel-default" id="Panel 2">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" onclick="sendElementTrace();" data-parent="#accordion" href="#collapseTwo">
+                                    Technical details
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse collapse">
+                            <div class="panel-body">
+						<img src="img/Polynomialdeg2.png" width="250px" align="right">
+						In mathematics, a function is a rule for taking an input (usually number or set of numbers) and providing an output (which is also usually a number). A symbol that stands for an arbitrary input is called an independent variable, while a symbol that stands for an arbitrary output is called a dependent variable. The most common symbol for the input is <i>x</i>, and the most common symbol for the output is <i>y</i>; the function itself is commonly written <i>y</i> = <i>f(x)</i>.</br></br>
+						It is possible to have multiple independent variables and/or multiple dependent variables. For instance, in multivariable calculus, one often encounters functions of the form y=f(x<sub>1</sub>,x<sub>2</sub>), where y is a dependent variable and x<sub>1</sub> and x<sub>2</sub> are independent variables.</br></br>
+						A simple linear (affine) function, as used in <a href="Linear regression.html">linear regression</a> is defined by <i>y</i> = <i>b<sub>0</sub></i> + <i>b<sub>1</sub>x</i>. With multiple independent variables, the expression becomes: <i>y</i> = <i>b<sub>0</sub></i> + <i>b<sub>1</sub>x<sub>1</sub></i> + ... + <i>b<sub>p</sub>x<sub>p</sub></i>, where <i>p</i> is the number of independent variables (also see the relationship with <a href="Degrees of freedom.html">degrees of feedom</a>). As illustated on the figure, a quadratic relationship between the independent and dependent variable may be described by: <i>y</i> = <i>b<sub>0</sub></i> + <i>b<sub>1</sub>x</i> + <i>b<sub>2</sub>x<sup>2</sup></i> (with <i>b<sub>0</sub></i> = -2, <i>b<sub>1</sub></i> = -1, <i>b<sub>2</sub></i> = 1 here).</br></br>
+						Extraneous variables, if included in a regression as independent variables, may aid a researcher with accurate response parameter estimation, prediction, and goodness of fit, but are not of substantive interest to the hypothesis under examination. For example, in a study examining the effect of post-secondary education on lifetime earnings, some extraneous variables might be gender, ethnicity, social class, genetics, intelligence, age, and so forth. A variable is extraneous only when it can be assumed (or shown) to influence the dependent variable. If included in a regression, it can improve the fit of the model. If it is excluded from the regression and if it has a non-zero covariance with one or more of the independent variables of interest, its omission will bias the regression's result for the effect of that independent variable of interest. This effect is called confounding or omitted variable bias; in these situations, design changes and/or statistical control is necessary.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default" id="Panel 3">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" onclick="sendElementTrace();" data-parent="#accordion" href="#collapseThree" >
+                                    Avoid confusion and errors
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseThree" class="panel-collapse collapse">
+                            <div class="panel-body">
+						Depending on the context, an independent variable is sometimes called a "predictor variable", "regressor", "controlled variable", "manipulated variable", "explanatory variable", "exposure variable" (see reliability theory), "risk factor" (see medical statistics), "feature" (in machine learning and pattern recognition) or "input variable."</br></br>
+						Depending on the context, a dependent variable is sometimes called a "response variable", "regressand", "predicted variable", "measured variable", "explained variable", "experimental variable", "responding variable", "outcome variable", "output variable" or "label".</br></br>
+						"Explanatory variable" is preferred by some authors over "independent variable" when the quantities treated as independent variables may not be statistically independent or independently manipulable by the researcher. If the independent variable is referred to as an "explanatory variable" then the term "response variable" is preferred by some authors for the dependent variable.</br></br>
+						"Explained variable" is preferred by some authors over "dependent variable" when the quantities treated as "dependent variables" may not be statistically dependent. If the dependent variable is referred to as an "explained variable" then the term "predictor variable" is preferred by some authors for the independent variable.</br></br>
+						Variables may also be referred to by their form: continuous, binary/dichotomous, nominal categorical, and ordinal categorical, among others.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default" id="Panel 4">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" onclick="sendElementTrace();setQuizUrl();" data-parent="#accordion" href="#collapseFour" >
+                                    Quiz on this page
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseFour" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <div id="quiz-container">
+                                    <iframe id="mbd" src="#" width="100%" height="100%" onload="qTrace()" frameborder="0" scrolling="no" > 
+                                    </iframe>
+                                    <div id="message_completed" style="color: green; display:none;">You have completed the quiz</div>
+                                    <a href="asa" id="retake" class="btn btn-info" role="button" onclick="retake();" style=" display:none;" >Retake the quiz</a> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div> <!-- end container -->
+
+
+            <div id="buttons_area" style="padding-top: 15px;">
+                <a href="documents.html" class="btn btn-info" role="button"   >Documents</a> 
+            </div>
+            <div id="message_completed"> </div>
+
+
+        </div>
+
+
+    </body>
+</html>

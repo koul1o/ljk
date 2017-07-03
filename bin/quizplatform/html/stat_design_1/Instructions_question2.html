@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Question 2</title>
+        <link href="css/bootstrap.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/quizplatform.iframe.js"></script>
+        <div id="logos" style="overflow: auto;"> 
+            <img src="img/logo_gipsa.jpg" style="width: 200px; height: 150px; margin: auto; float: left;"> </img>
+            <img src="img/logo_ljk.jpg" style="width: 200px; height: 150px; margin: auto; float: right; "> </img>
+        </div>  
+
+        <div id="main">
+            <div style="background-color: #e2e2e2;">
+                <h1 align="center">Quiz</h1>  
+            </div>
+
+
+            <div class="container">
+                <div class="question">
+                    <h2 style="padding-top: 10px;">Second Question</h2>
+                    <h4 style="padding-top: 10px;">What can you display at the same time on a single page?</h4>
+                    <ul  class="answers" style="padding-top: 10px;">
+                        <input type="radio" name="q1" value="a" id="a" class="question_item" onclick="sendElementTraceQ();"> Several documents and associated sections<br/>
+                        <input type="radio" name="q1" value="b" id="b" class="question_item" onclick="sendElementTraceQ();"> Detail sections and current question<br/>
+                        <input type="radio" name="q1" value="c" id="c" class="question_item" onclick="sendElementTraceQ();"> Several sections from a single document<br/>
+                        <input type="radio" name="q1" value="correct" id="d" class="question_item" onclick="sendElementTraceQ();"> Nothing but a single section/question <br/>
+                    </ul>
+                    <div id="message">Select an answer</div>
+
+                </div>
+
+                <div id="buttons_area" style="padding-top: 15px;">
+                    <a href="#" class="btn btn-success" role="button" onclick="checkAnswer();" style="float: right;">Submit</a>
+                </div>
+
+            </div>
+        </div>
+
+    </body>
+</html>
