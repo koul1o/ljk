@@ -1,8 +1,5 @@
 package quizplatform;
-/**
- *
- * @author koul1o
- */
+
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,6 +41,71 @@ import netscape.javascript.JSObject;
 import org.reactfx.util.FxTimer;
 import org.reactfx.util.Timer;
 
+/**
+ * <h1>Bridge</h1>
+ * The Bridge class manages:
+ * <ol>
+ * <li> The connection with JavaScript (html/name_of_root/js/quizplatform.js or
+ * quizplatform.iframe.js)</li>
+ * <li> The functionality of the platform and the content of the HTML pages
+ * through the constructor</li>
+ * <li> The time & the progression of the progressBar of
+ * {@link quizplatform.Quizplatform}</li>
+ * <li> The collection and storing of traces</li>
+ * </ol>
+ * <p>
+ * <b>1.</b> By registering Bridge to the window, we obtain two way
+ * communication between Java and JavaScript. First we need to register a member
+ * to the window: {@code FFwindow.setMember("member_name", this);}. We can
+ * <b>call JavaScript functions</b> by calling executeScript in engine:
+ * {@code engine.executeScript("setDocuments();");}. To perform <b>upcalls</b>
+ * from JavaScript to Java we are using the name of the registered member to the
+ * window object {@code member_name.getUrl(url);}. The execute() function
+ * manages the upcalls from JavaScript.  </p>
+ * <p>
+ * <b>2.</b> Bridge contains various functions managing the functionality of the
+ * platform. Once the Bridge constructor is initialized in
+ * {@link quizplatform.Quizplatform}, it takes the parameters such as: tTime,
+ * fTime, step, root etc. that will be used here and resets the previous files
+ * (to avoid viewing already highlighted files). Using a <b>state Listener</b>
+ * {@code engine.getLoadWorker().stateProperty().addListener((ObservableValue<? extends State> obs, State oldState, State newState)}
+ * we observe state changes (e.g. when a new page is being loaded). At <b>fist
+ * page load</b> (instructions page) {@code cnt<1} we are calling
+ * {@link quizplatform.Bridge#setTimersAndProgressBar(javafx.scene.control.ProgressBar, float, float, float)}
+ * to set the timers and the progressBar. In <b>any other page load</b>
+ * {@code cnt=<1} we are managing the various aspects of the platform according
+ * to a given state and collecting traces when a new state (page load) occurs.
+ * When we are inside a document page we perform a <b>hotfix</b>
+ * by adding "Panel 1" to the traces since it was not possible to collect this
+ * information otherwise and update information about the current document that
+ * will be used by JavaScript. Then, when the "documents" page is accessed
+ * (documents.html) we are <b>setting all the available documents </b>. If we
+ * are not in one of these pages we are just collecting the traces of the
+ * visited page.
+ * </p>
+ * <p>
+ * <b>3.</b> As mentioned above, at first page load we are calling the
+ * {@link quizplatform.Bridge#setTimersAndProgressBar(javafx.scene.control.ProgressBar, float, float, float)}
+ * function to set the timers for the automatic redirection to the pages of
+ * final quiz(final_quiz.html) and demographic (info.html) and augmenting or
+ * reseting the progressBar. Here, when finishing the training period we are
+ * redirecting to the final quiz and starting a new timer. Similarly when the
+ * final quiz time is over we redirect to the demographic. In the scenario when
+ * a user submits the final quiz prior to the end of the designated time we are
+ * using the {@link quizplatform.Bridge#submitFinalQuiz()} function to reset the
+ * timer and progress bar.
+ * </p>
+ * <p>
+ * <b>4.</b> Saving the traces is done through
+ * {@link quizplatform.Bridge#getTrace(java.lang.String)} function that outputs
+ * the trace in the console and calls
+ * {@link quizplatform.Bridge#saveData(java.lang.String)} and
+ * {@link quizplatform.Bridge#saveData(java.lang.String, java.lang.String)}
+ * functions that save the trace to a .csv file.
+ * </p>
+ *
+ * @author koul1o
+ */
 public class Bridge {
 
     private static final String QUESTION_NAME = "question";
@@ -80,10 +142,9 @@ public class Bridge {
 
     public Bridge(WebEngine engine, Stage stage, QuizPlatform quizPlatform, float tTime, float fTime, float step, String root, String experimentId, ProgressBar progressBar) {
         String DOCUMENT_PATH = "./src" + File.separator + "quizplatform" + File.separator + root;
-        
+
         this.setup = root;
         this.setup = this.setup.replace("html/", "");
-  
         this.srcPath = DOCUMENT_PATH;
         this.binPath = this.srcPath.replace("src", "bin");
         this.quizLinks = new HashMap<String, String>();
@@ -95,6 +156,7 @@ public class Bridge {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //Observe state changes. (page loads)
         engine.getLoadWorker().stateProperty().addListener((ObservableValue<? extends State> obs, State oldState, State newState) -> {
 
             if (newState == State.SUCCEEDED) {
@@ -105,104 +167,70 @@ public class Bridge {
                 window.setMember("java", this);
                 title = engine.getTitle();
                 stage.setTitle(engine.getTitle());
-                /* */
 
-                if (engine != null) {
-                    if (cnt < 1) {
-                        //saveData("Time_Location_Area_Value");
-                        startTime.set(System.nanoTime());
+                /**
+                 * FIRST (start/instructions) PAGE LOAD - cnt <1, to set the
+                 * timers and what to run later.
+                 */
+                if (cnt < 1) {
+                    //saveData("Time_Location_Area_Value");
+                    startTime.set(System.nanoTime());
+                    getTime();
+                    //Hotfix for default Panel trace. If load a document page, add "_Panel 1" and collect trace. 
+                    traceT = time + "_" + title + "_Panel 1";
+                    getTrace(traceT);
+                    docUrl = engine.getLocation();
+                    docUrl = docUrl.replace("file://", "");
+                    manageQuiz();
+                    setTimersAndProgressBar(progressBar, step, tTime, fTime);
+                    cnt++;
+
+                } /**
+                 * NOT FIRST PAGE LOAD - cnt >1.
+                 */
+                else {
+                    //Hotfix for default Panel trace. If load a document page, add "_Panel 1" and collect trace. In any other case save the trace as is. 
+                    if (!(title.toLowerCase().contains("final") || title.toLowerCase().contains("documents") || title.toLowerCase().contains("demographic"))) {
                         getTime();
-                        traceT = time + "_" + title;
-                        getTrace(traceT);
-
-                        /* Using org.reactfx.util.FxTimer augment the progress bar periodicaly every 15min by 25% */
-                        augmentBar = ((tTime / step));
-
-                        Timer timer = FxTimer.runPeriodically(
-                                Duration.ofMillis((long) (augmentBar * MILIS)),
-                                () -> {
-                                    percent += 1 / step;
-                                    progressBar.setProgress(percent);
-                                });
-
-                        FxTimer.runLater(
-                                Duration.ofMillis((long) ((tTime * MILIS) + 3000)), // adds 3 seconds to the time so that the progress bar is full during 3 seconds
-                                () -> {
-                                    percent = 0;
-                                    augmentBar = ((fTime / step));
-                                    timer.stop();
-                                    timer2 = FxTimer.runPeriodically(
-                                            Duration.ofMillis((long) (augmentBar * MILIS)),
-                                            () -> {
-                                                percent += 1 / step;
-                                                progressBar.setProgress(percent);
-                                            });
-
-                                    progressBar.setProgress(percent);
-                                    this.t.restart();
-                                    engine.load(getClass().getResource(binPath.substring(1) + "/final_quiz.html").toExternalForm());
-                                });
-
-                        this.demogTimer = FxTimer.create(
-                                Duration.ofMillis((long) (1)),
-                                () -> {
-                                    timer2.stop();
-                                    percent = 0;
-                                    progressBar.setProgress(percent);
-                                    engine.load(getClass().getResource(binPath.substring(1) + "/info.html").toExternalForm());
-                                });
-
-                        this.t = FxTimer.create(
-                                Duration.ofMillis((long) ((fTime) * MILIS)),
-                                () -> {
-                                    engine.executeScript("checkFinalAnswers();");
-                                });
-                        cnt++;
-
-                    } else if (!(title.toLowerCase().contains("final") || title.toLowerCase().contains("documents") || title.toLowerCase().contains("demographic"))) {
-                        getTime();
+                        docUrl = engine.getLocation();
+                        docUrl = docUrl.replace("file://", "");
                         this.section = "_Panel 1";
                         traceT = time + "_" + title + this.section;
                         getTrace(traceT);
+                    } //When in "documents" page get all available docs with getDocuments and call setDocuments in JS to add the doc urls and titles in the html. 
+                    else if (title.toLowerCase().contains("documents")) {
+                        getDocuments();
+                        engine.executeScript("setDocuments();");
+                        getTime();
+                        traceT = time + "_" + title;
+                        getTrace(traceT);
                     } else {
                         getTime();
-
                         traceT = time + "_" + title;
                         getTrace(traceT);
                     }
-
-                    if (engine.getTitle().toLowerCase().contains("documents")) {
-                        getDocuments();
-                        engine.executeScript("setDocuments();");
-
-                    }
-                    if (!title.toLowerCase().contains(QUESTION_NAME)) {
-                        docUrl = engine.getLocation();
-                        docUrl = docUrl.replace("file://", "");
-                    }
-                    /* Update the doc url in the webpage */
-                    if (docUrl != null) {
-                        engine.executeScript("var bUrl=\'" + docUrl + "\'" + "");
-
-                        // add the doc into the hashmap if it doesn't exist yet then update the quiz URL
-                        if (!this.quizLinks.containsKey(docUrl) && !title.toLowerCase().contains(QUESTION_NAME)) {
-                            this.quizLinks.put(docUrl, docUrl.replace(".html", "_" + QUESTION_NAME + "1.html"));
-                        }
-
-                        /* 	if the quizLink point to a quiz (ie if the quiz hasn't already been finished) it changes the value of qUrl
-                                    	the next question of the quizz */
-                        if (this.quizLinks.get(docUrl) != null && this.quizLinks.get(docUrl).contains("_" + QUESTION_NAME)) {
-                            engine.executeScript("var qUrl=\'" + this.quizLinks.get(docUrl) + "\'");
-                        } else {
-                            engine.executeScript("var qUrl='#'");
-                        }
-
-                    }
-
                 }
+                manageQuiz();
             }
         });
+    }
 
+    /**
+     * This function manages the progression of the questions by updating the
+     * qUrl. If qUlr=='#' there is no more questions left.
+     */
+    public void manageQuiz() {
+        if (docUrl != null) {
+            // add the doc into the hashmap if it doesn't exist yet then update the quiz URL
+            if (!this.quizLinks.containsKey(docUrl) && !title.toLowerCase().contains(QUESTION_NAME)) {
+                this.quizLinks.put(docUrl, docUrl.replace(".html", "_" + QUESTION_NAME + "1.html"));
+            }
+            if (this.quizLinks.get(docUrl) != null && this.quizLinks.get(docUrl).contains("_" + QUESTION_NAME)) {
+                engine.executeScript("var qUrl=\'" + this.quizLinks.get(docUrl) + "\'");
+            } else {
+                engine.executeScript("var qUrl='#'");
+            }
+        }
     }
 
     /**
@@ -210,13 +238,13 @@ public class Bridge {
      */
     public void exit() {
 
-        getLastTrace(traceT);
+        getLastTrace();
         Platform.exit();
 
     }
 
     /**
-     * Upcall to this function from the page, to get the interaction trace
+     * This function collects the traces.
      */
     public void getTrace(String trace) {
         System.out.println("Trace: " + trace);
@@ -227,12 +255,23 @@ public class Bridge {
 
     }
 
-    public void getLastTrace(String trace) {
+    /**
+     * This function is called upon sudden exit of the platform to save the last
+     * trace.
+     *
+     */
+    public void getLastTrace() {
         getTime();
         traceT = time + "_" + title + "_Exit";
         getTrace(traceT);
     }
 
+    /**
+     * This function collects traces that contain elements such as Panel numbers
+     * and question numbers.
+     *
+     * @param element a trace string that also contains the name of the element
+     */
     public void elementTrace(String element) {
         getTime();
         this.section = element;
@@ -240,6 +279,9 @@ public class Bridge {
         getTrace(traceT);
     }
 
+    /**
+     * This function updates the time in ms.
+     */
     public void getTime() {
         endTime.set(System.nanoTime());
         elapsedTime.bind(Bindings.subtract(endTime, startTime));
@@ -247,8 +289,10 @@ public class Bridge {
     }
 
     /**
-     * Upcall to this function from the page, to update the next question Url
-     * for a document quiz
+     * Up-call to this function from the page, to update the next question URL
+     * for a document quiz.
+     *
+     * @param url - The current quiz URL
      */
     public void getUrl(String url) {
         URLToNextQuestion(url);
@@ -256,26 +300,24 @@ public class Bridge {
         if (!this.quizLinks.get(docUrl).contains("finished")) {
             engine.executeScript("redirect();");
         } else {
-
-            //engine.executeScript("redirect();");
             engine.executeScript("afterSubmit();");
-
         }
     }
 
+    /**
+     * This function once called from the JavaScript, it restarts the quiz.
+     */
     public void restartQuiz() {
         String docUrltmp = docUrl.replace(".html", "_question1.html");
         this.quizLinks.replace(docUrl, docUrltmp);
-
         engine.executeScript("var qUrl=\'" + this.quizLinks.get(docUrl) + "\'");
-        System.out.println("quizplatform.Bridge.getUrl()" + this.quizLinks.get(docUrl));
     }
 
     /**
-     * This function sends an double dimension array to the javascript
-     * containing the name of the documents and their urls.</br>
-     * The urls are in the first column, the names are in the second. </br>
-     * The array is stored in the <b>docs</b> variable in the javascript.
+     * This function sends an double dimension array to the JavaScript
+     * containing the name of the documents and their URLs.<br>
+     * The URLs are in the first column, the names are in the second. <br>
+     * The array is stored in the <b>docs</b> variable in the JavaScript.
      */
     public void getDocuments() {
         String s = "var docs = [";
@@ -293,14 +335,14 @@ public class Bridge {
      * This function changes the String <b>quizUrl</b> by adding 1 to the number
      * of the quiz. So C://example/document1_quiz1.html would become
      * C://example/document1_quiz2.html.<br>
-     * It takes the path to the html file then parses it and changes only the
+     * It takes the path to the HTML file then parses it and changes only the
      * last number. <br>
      * It then changes the entry of the document in the <b>quizLinks</b> hashmap
      * so that the value matches the path of the next question. <br>
      * <br>
-     * If the resulting file does not exist, the url is set to "finished". <br>
+     * If the resulting file does not exist, the URL is set to "finished". <br>
      *
-     * @param quizUrl - the url to save
+     * @param quizUrl the URL to save
      */
     public void URLToNextQuestion(String quizUrl) {
 
@@ -310,7 +352,6 @@ public class Bridge {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        System.out.println("quizplatform.Bridge.getUrl()" + r);
         File f = new File(r);
         if (!f.exists()) {
             String s[] = r.split("/");
@@ -327,11 +368,7 @@ public class Bridge {
             }
 
         }
-        System.out.println("quizplatform.Bridge.getUrl()" + this.quizLinks.get(docUrl));
-
         this.quizLinks.replace(docUrl, r);
-        System.out.println("quizplatform.Bridge.getUrl()" + this.quizLinks.get(docUrl));
-
     }
 
     /**
@@ -356,7 +393,11 @@ public class Bridge {
         return result.toString();
     }
 
-    /* This function redirects us to the next question while in the quiz */
+    /**
+     * This function redirects us to the next question while in the quiz.
+     *
+     * @param url the current quiz url.
+     */
     public void redirect(String url) {
         engine.executeScript("window.location.replace(\'" + url + "\');");
     }
@@ -557,6 +598,13 @@ public class Bridge {
         System.out.println("quizplatform.Bridge.print()" + l);
     }
 
+    /**
+     * This function handles the callbacks from JS
+     *
+     * @param callback
+     * @param function the called function of Bridge
+     * @param args the args to a function
+     */
     public void execute(Consumer<Object> callback, String function, Object... args) {
         callback.accept(window.call(function, args));
     }
@@ -642,7 +690,7 @@ public class Bridge {
     }
 
     /**
-     * Get the folder path where the html files are stored
+     * Get the folder path where the HTML files are stored.
      *
      * @return a String containing the path of the folder
      */
@@ -652,8 +700,69 @@ public class Bridge {
         return filePath;
     }
 
+    /**
+     * This function is called in JavaScript after checking/submitting the
+     * answers of the final quiz. It stops and resets the timers. This is for
+     * the scenario that a user submits the final quiz answers prior to the end
+     * of the designated time.
+     */
     public void submitFinalQuiz() {
         this.t.stop();
         this.demogTimer.restart();
     }
+
+    /**
+     * This function is responsible for managing the training and final quiz
+     * time and redirecting us to the corresponding pages. Using the APIs
+     * provided by the reactfx jar, after the first page load we creating timers
+     * that after a period of time will manage the redirections or augment the
+     * progressBar.
+     *
+     * @param progressBar the progressBar created in QuizPlatform.
+     * @param step the step of the progression setting collected from the
+     * execution parameters.
+     */
+    public void setTimersAndProgressBar(ProgressBar progressBar, float step, float tTime, float fTime) {
+        augmentBar = ((tTime / step));
+        Timer timer = FxTimer.runPeriodically(
+                Duration.ofMillis((long) (augmentBar * MILIS)),
+                () -> {
+                    percent += 1 / step;
+                    progressBar.setProgress(percent);
+                });
+
+        FxTimer.runLater(
+                Duration.ofMillis((long) ((tTime * MILIS) + 3000)), // adds 3 seconds to the time so that the progress bar is full during 3 seconds
+                () -> {
+                    percent = 0;
+                    augmentBar = ((fTime / step));
+                    timer.stop();
+                    timer2 = FxTimer.runPeriodically(
+                            Duration.ofMillis((long) (augmentBar * MILIS)),
+                            () -> {
+                                percent += 1 / step;
+                                progressBar.setProgress(percent);
+                            });
+
+                    progressBar.setProgress(percent);
+                    this.t.restart();
+                    engine.load(getClass().getResource(binPath.substring(1) + "/final_quiz.html").toExternalForm());
+                });
+
+        this.demogTimer = FxTimer.create(
+                Duration.ofMillis((long) (1)),
+                () -> {
+                    timer2.stop();
+                    percent = 0;
+                    progressBar.setProgress(percent);
+                    engine.load(getClass().getResource(binPath.substring(1) + "/info.html").toExternalForm());
+                });
+
+        this.t = FxTimer.create(
+                Duration.ofMillis((long) ((fTime) * MILIS)),
+                () -> {
+                    engine.executeScript("checkFinalAnswers();");
+                });
+    }
+
 }

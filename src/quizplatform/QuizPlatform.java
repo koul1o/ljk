@@ -1,19 +1,6 @@
 package quizplatform;
-/**
- *
- * @author koul1o
- */
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
+
 import java.net.URL;
-import java.nio.charset.Charset;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -30,6 +17,54 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
+/**
+ * <h1>QuizPlatform</h1>
+ * The QuizPlatform class contains the main class of the program. It is
+ * responsible for: <ol>
+ * <li> Creating the JavaFX application</li>
+ * <li> Creating and positioning visual elements of the platform</li>
+ * <li> Extracting system properties from the execution arguments</li>
+ * <li> Setting up the window and on-window behaviors</li>
+ * </ol>
+ * <p>
+ * <b>1.</b> To create the JavaFX application and display the content we need to
+ * create a <b>WebEngine</b> that will load Web pages, create their document models,
+ * apply styles as necessary, run JavaScript on pages, and a <b>WebView</b> that will
+ * manage the WebEngine and displays its content. To display the content we are
+ * creating a <b>scene</b> with given initial dimensions and we set it as the <b>primary
+ * stage</b>. An event handler is responsible for exiting the platform.
+ * <p>
+ * <b>2.</b> To keep track of the time we are providing the user with a
+ * <b>progress bar</b> {@code ProgressBar {@code progressBar = new ProgressBar()}} that
+ * is being augmented by the percent variable. The progress bar progression is
+ * managed by the
+ * {@link quizplatform.Bridge#setTimersAndProgressBar(javafx.scene.control.ProgressBar, float, float, float)} functioon.
+ * The <i>scene</i> is brought together by a <b>BorderPane</b> where at the
+ * center we have the WebView and at the bottom the ProgressBar. The
+ * <i>caspian.css</i> contains style options for the progress bar.
+ * <p>
+ * <b>3.</b> When executing the platform, command line <b>arguments</b> can be
+ * passed to alter the experimental setting such as training time (tTime), final
+ * quiz time (fTime), progression of the progress bar (step), highlighting
+ * option, full screen options, the experimentId and the setup/folder of content
+ * (e.g. psych, math, stat). These options are converted into <b>system
+ * properties</b> using the argsToProperties(String[] args) function. These
+ * system properties are later converted into variables by the setProperties()
+ * function. The <b>full screen</b> is set at the start function.
+ * <p>
+ * <b>4.</b> Other window settings while on full screen include disabling the
+ * <b>window title bar buttons</b>:
+ * {@code primaryStage.initStyle(StageStyle.UNDECORATED);} and disabling
+ * <b>window close key combinations</b> (alt+f4):
+ * {@code primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);}.
+ * Furthermore, when the highlighting option is selected the
+ * createContextMenu(WebView webView, Bridge bridge) function creates a new
+ * Context Menu that only has the Highlight option (when right click). Then the
+ * createBaseContextMenu(WebView webView, Bridge bridge) function disables the
+ * context menu on images to avoid problems.
+ *
+ * @author koul1o
+ */
 public class QuizPlatform extends Application {
 
     private static String[] arguments;
@@ -50,12 +85,8 @@ public class QuizPlatform extends Application {
         WebView webView = new WebView();
         WebEngine engine = webView.getEngine();
         setProperties();
-
-
         /* Initialize the Bridge */
-        bridge = new Bridge(engine, primaryStage, this, tTime, fTime, step, root, experimentId,progressBar);
-
-        //webView.setContextMenuEnabled(false);
+        bridge = new Bridge(engine, primaryStage, this, tTime, fTime, step, root, experimentId, progressBar);
         if (this.highlightEnabled) {
             webView.setContextMenuEnabled(false);
             createContextMenu(webView, bridge);
@@ -63,14 +94,11 @@ public class QuizPlatform extends Application {
             createBaseContextMenu(webView, bridge);
         }
 
-        /* Load the first Url */
-        //engine.load(getClass().getResource("../bin/quizplatform/" + root + "/documents.html").toExternalForm());
-
         /* Enable JS in the WebEngine */
         engine.setJavaScriptEnabled(true);
 
         engine.load(getClass().getResource("/bin/quizplatform/" + root + "/Instructions.html").toExternalForm());
-        //engine.load("http://css3test.com/");
+
         /* Create a progress bar */
         progressBar.setProgress(percent);
 
@@ -107,11 +135,14 @@ public class QuizPlatform extends Application {
         }
 
         primaryStage.show();
-
         primaryStage.setOnCloseRequest(exit());
     }
 
-    /* Handles the platform exit. Collects the last trace prior to exit*/
+    /**
+     * Handles the platform exit.
+     *
+     * @return exit the bridge
+     */
     public EventHandler<WindowEvent> exit() {
         return (WindowEvent event) -> {
             bridge.exit();
@@ -119,7 +150,8 @@ public class QuizPlatform extends Application {
     }
 
     /**
-     * Convert command line arguments into system properties
+     * Convert command line arguments into system properties. <br>
+     * The command line arguments can be set through the "run" files.
      *
      * @param args
      */
@@ -136,11 +168,14 @@ public class QuizPlatform extends Application {
                 nameval[1].replace('\'', ' ');
                 // Set the property
                 System.setProperty(nameval[0].trim(), nameval[1].trim());
-
             }
         }
     }
 
+    /**
+     * This function converts the system properties to variables.<br>
+     * If a property is not filled as message is being prompted.
+     */
     public void setProperties() {
 
         try {
@@ -182,7 +217,6 @@ public class QuizPlatform extends Application {
 
     }
 
-
     /**
      * Creates a new Context Menu that only has the Highlight option.
      *
@@ -210,7 +244,7 @@ public class QuizPlatform extends Application {
      *
      * @param webView the WebView object in which to create the context menu
      * @param bridge the Bridge object that will send the actions to the
-     * javascript
+     * javascript.
      */
     private void createBaseContextMenu(WebView webView, Bridge bridge) {
         webView.setOnMousePressed(e -> {
@@ -223,7 +257,6 @@ public class QuizPlatform extends Application {
             }
         });
     }
-
 
     public static void main(String[] args) {
 
